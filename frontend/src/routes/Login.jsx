@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FormComponent from "../components/Form/FormComponent";
 import Loader from "../components/Loader/Loader";
-import { handleLogin } from "../utils/auth"; // Import the new function
+import { handleLogin } from "../utils/auth"; 
 
 const Login = ({
     userType = "student",

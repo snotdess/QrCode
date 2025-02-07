@@ -1,6 +1,7 @@
+
+
 import { Button, Form, Modal } from "antd";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
     createLectureCourse,
@@ -17,7 +18,6 @@ const RegisterCourse = ({
     onCourseRegistered,
 }) => {
     const [form] = Form.useForm();
-    const navigate = useNavigate();
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -55,37 +55,31 @@ const RegisterCourse = ({
 
             if (userRole === "lecturer") {
                 await createLectureCourse(formData);
-                toast.success("Course registered successfully!");
             } else if (userRole === "student") {
                 await createStudentCourse(formData);
-                toast.success("Course registered successfully!");
             } else {
                 toast.error("User not authenticated");
-                navigate("/onboarding");
                 return;
             }
 
+            toast.success("Course registered successfully!");
             form.resetFields();
             setIsModalVisible(false);
-            onCourseRegistered(); // Trigger reload after registration
-            navigate("/courses");
+            onCourseRegistered(); // Refresh course list
         } catch (error) {
             toast.error(error || "Failed to register the course. Try again.");
         }
     };
 
     const handleCancel = () => {
-        setIsModalVisible(false);
+        setIsModalVisible(false); // Close modal without redirection
         toast.info("Closed Course Registration Form");
-        setTimeout(() => {
-            navigate("/courses");
-        }, 500);
     };
 
     return (
         <Modal
-            title="Register New Course"
-            visible={isModalVisible}
+            // title="Register New Course"
+            open={isModalVisible}
             onCancel={handleCancel}
             footer={[
                 <div
@@ -127,6 +121,5 @@ const RegisterCourse = ({
         </Modal>
     );
 };
-
 
 export default RegisterCourse;

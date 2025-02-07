@@ -28,8 +28,11 @@ async def student_signup_service(student_data, db: AsyncSession):
 
 async def student_login_service(student_data, db: AsyncSession):
     db_student = await get_record(Student, Student.matric_number == student_data.matric_number, db)
-    if not db_student or not verify_password(student_data.student_password, db_student.student_password):
-        raise HTTPException(status_code=401, detail="Invalid credentials.")
+    if not db_student:
+        raise HTTPException(status_code=401, detail="Student Not Found.")
+
+    if not verify_password(student_data.student_password, db_student.student_password):
+        raise HTTPException(status_code=401, detail="Invalid Password.")
 
     token = create_access_token(data={"sub": db_student.student_email})
     return {
@@ -150,5 +153,21 @@ async def get_student_courses_service(current_student: Student, db: AsyncSession
     } for c in courses]
 
 
-async def get_student_course_stats(db:AsyncSession, current_student: Student):
-    pass
+async def get_student_course_stats(db: AsyncSession, current_student: Student):
+    # Query to get the total number of courses and sum of course credits
+    query = (
+        select(
+            func.count(StudentCourses.course_code).label("total_courses"),
+            func.coalesce(func.sum(Course.course_credits), 0).label("total_credits"),
+        )
+        .join(Course, StudentCourses.course_code == Course.course_code)
+        .where(StudentCourses.matric_number == current_student.matric_number)
+    )
+
+    result = await db.execute(query)
+    stats = result.fetchone()
+
+    return {
+        "total_courses": stats.total_courses,
+        "total_credit_units": stats.total_credits,
+    }

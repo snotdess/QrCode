@@ -4,9 +4,33 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_db
 from models import Lecturer
-from schemas import LecturerCreate, LecturerLogin, LecturerToken, ChangePassword, CourseCreate, CourseResponse, QRCodeCreate, QRCodeResponse, CourseStats, LecturerCoursesListResponse
+from schemas import (
+    LecturerCreate,
+    LecturerLogin,
+    LecturerToken,
+    ChangePassword,
+    CourseCreate,
+    CourseResponse,
+    QRCodeCreate,
+    QRCodeResponse,
+    CourseStats,
+    LecturerCoursesListResponse,
+    AttendanceResponse,
+)
 from utils import  get_current_lecturer
-from services.lecturer_service import register_lecturer, login_lecturer, change_lecturer_password, create_course_for_lecturer, generate_qr_code_service, delete_qr_code_service, get_courses_for_lecturer, get_courses_stats, get_lecturer_courses
+from services.lecturer_service import (
+    register_lecturer,
+    login_lecturer,
+    change_lecturer_password,
+    create_course_for_lecturer,
+    generate_qr_code_service,
+    delete_qr_code_service,
+    get_courses_for_lecturer,
+    get_courses_stats,
+    get_lecturer_courses,
+    get_lecturer_course_students,
+    get_attendance_service,
+)
 from typing import List
 
 
@@ -100,6 +124,26 @@ async def fetch_lecturer_courses(db: AsyncSession = Depends(get_db)):
     """
     lecturer_courses = await get_lecturer_courses(db)
     return {"lecturer_courses": lecturer_courses}
+
+
+@router.get("/lecturer_course_students")
+async def lecturer_course_students(
+    db: AsyncSession = Depends(get_db),
+    current_lecturer: Lecturer = Depends(get_current_lecturer),
+):
+    """
+    API endpoint to get courses taught by the current lecturer and the total number of students in each course.
+    """
+    return await get_lecturer_course_students(db, current_lecturer)
+
+
+@router.get("/attendance/{course_code}", response_model=AttendanceResponse)
+async def get_attendance(
+    course_code: str,
+    db: AsyncSession = Depends(get_db),
+    current_lecturer=Depends(get_current_lecturer),
+):
+    return await get_attendance_service(course_code, current_lecturer, db)
 
 
 # @router.get("/me")

@@ -92,20 +92,36 @@ export const getStudentCourse = () =>
 export const getLecturerCourseStats = () =>
     fetchData("/lecturer/course_stats", true);
 
+// API call to fetch student course statistics
+export const getStudentCourseStats = () =>
+    fetchData("/student/course_stats", true);
+
 // API call for getting lecturer and course code
 export const getLecturerCourseCode = () =>
     fetchData("/lecturer/lecturer_courses", true);
+
+// API call to get lecturer courses with total student count
+export const getLecturerCourseStudents = () =>
+    fetchData("/lecturer/lecturer_course_students", true);
 
 // // API calls for qrcode creation
 export const generateQRCode = (data) =>
     handleRequest("/lecturer/generate_qr_code", data, true);
 
-
 // API call for deleting QR code
 export const deleteQRCode = (course_code, lecturer_name) => {
-    return handleRequest(`/delete_qr_code?course_code=${course_code}&lecturer_name=${lecturer_name}`, {}, false);
+    return handleRequest(
+        `/delete_qr_code?course_code=${course_code}&lecturer_name=${lecturer_name}`,
+        {},
+        false,
+    );
 };
 
+// API call to fetch lecturer's attendance records
+export const getLecturerAttendance = async (course_code) => {
+    const encodedCourseCode = encodeURIComponent(course_code); // Encode spaces
+    return fetchData(`/lecturer/attendance/${encodedCourseCode}`, true);
+};
 
 export const logout = async () => {
     try {

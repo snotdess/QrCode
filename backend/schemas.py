@@ -2,7 +2,7 @@
 
 from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Dict
 
 # # Schema for creating a new Lecturer (receiving data from the frontend)
 class LecturerCreate(BaseModel):
@@ -126,3 +126,16 @@ class CourseDetails(BaseModel):
     course_credits: int
     semester: str
     lecturer_name: str
+
+
+
+
+
+class StudentAttendance(BaseModel):
+    matric_number: str
+    full_name: str
+    attendance: Dict[str, str]  # Date as key, status (Present/Absent) as value
+
+class AttendanceResponse(BaseModel):
+    course_name: str
+    attendance: List[StudentAttendance]

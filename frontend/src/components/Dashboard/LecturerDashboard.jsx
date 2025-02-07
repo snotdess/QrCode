@@ -1,4 +1,6 @@
 import { Typography } from "antd";
+import Attendance from "../Attendance";
+import LecturerCourseStats from "../Courses/LecturerCourseStats";
 
 const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
     const { Title } = Typography;
@@ -6,7 +8,7 @@ const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
         <div
             className={`min-h-screen mx-auto px-8 py-2 lg:px-8 lg:py-4   transition-all ${
                 sidebarCollapsed
-                    ? " md:ml-[35px] lg:ml-[60px]"
+                    ? " md:ml-[40px] lg:ml-[50px]"
                     : " md:ml-[220px] lg:ml-[140px]"
             }`}
         >
@@ -14,13 +16,15 @@ const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
                 level={4}
                 className="uppercase  mb-6"
                 style={{
-                    // fontFamily: "Robotto, sans-serif",
-                    fontFamily: "Roboto"
-
+                    fontFamily: "Robtto",
                 }}
             >
                 Welcome, {fullname}
             </Title>
+
+            <LecturerCourseStats sidebarCollapsed={sidebarCollapsed} />
+
+            <Attendance />
         </div>
     );
 };

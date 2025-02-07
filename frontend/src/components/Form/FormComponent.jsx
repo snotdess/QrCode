@@ -1,6 +1,6 @@
 import { Button, Card, Form, Input, Typography } from "antd";
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { handleSubmit } from "../../utils/formhandlers"; // Import functions
 import Loader from "../Loader/Loader";
 
@@ -16,16 +16,6 @@ const FormComponent = ({
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
-    const location = useLocation();
-
-    // Determine the password field based on the current route
-    const isStudentLogin = location.pathname.includes(`/student`);
-    const isLecturerLogin = location.pathname.includes("/lecturer");
-    const passwordFieldName = isStudentLogin
-        ? "student_password"
-        : isLecturerLogin
-        ? "lecturer_password"
-        : null;
 
     const handleRedirect = () => {
         navigate(redirect.path);
@@ -80,8 +70,11 @@ const FormComponent = ({
                         type="primary"
                         className="mt-6 p-[1.3rem] text-center"
                         htmlType="submit"
-                        onLoad={false}
-                        loading={loading}
+                        style={{
+                            fontFamily: "Robotto",
+                        }}
+
+                        // loading={loading}
                     >
                         {loading ? <Loader /> : submitButtonText}
                     </Button>

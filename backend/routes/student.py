@@ -11,8 +11,14 @@ from schemas import (
     AttendanceCreate, EnrollRequest, EnrollResponse, CourseDetails)
 from utils import get_current_student
 from services.student_service import (
-    student_signup_service, student_login_service, change_password_service,
-    enroll_student_service, scan_qr_service, get_student_courses_service)
+    student_signup_service,
+    student_login_service,
+    change_password_service,
+    enroll_student_service,
+    scan_qr_service,
+    get_student_courses_service,
+    get_student_course_stats,
+)
 
 router = APIRouter()
 
@@ -82,12 +88,19 @@ async def scan_qr(
 @router.get("/student_courses", response_model=List[CourseDetails])
 async def get_student_courses(
     db: AsyncSession = Depends(get_db),
-    current_student: Student = Depends(get_current_student) 
+    current_student: Student = Depends(get_current_student)
 ):
     """
     API endpoint to retrieve the courses a student is enrolled in along with course code, name, credits, and lecturer name.
     """
     return await get_student_courses_service(current_student, db)
+
+
+@router.get("/course_stats")
+async def student_course_stats(
+    db: AsyncSession = Depends(get_db), current_student=Depends(get_current_student)
+):
+    return await get_student_course_stats(db, current_student)
 
 
 @router.get("/me")

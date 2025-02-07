@@ -24,7 +24,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
         ...(userRole === "lecturer"
             ? [
                   {
-                      key: "/courses/*",
+                      key: "/courses",
                       label: "Course",
                       icon: <BookOutlined />,
                   },
@@ -38,7 +38,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
         ...(userRole === "student"
             ? [
                   {
-                      key: "/courses/*",
+                      key: "/courses",
                       label: "Course Registration",
                       icon: <ReadOutlined />,
                   },

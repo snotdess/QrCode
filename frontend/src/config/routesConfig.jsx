@@ -24,7 +24,7 @@ export const routes = [
     { path: "/lecturer/signup", element: <Signup userType="lecturer" /> },
     { path: "/student/signup", element: <Signup userType="student" /> },
     { path: "/dashboard", element: <Dashboard /> },
-    { path: "/courses/*", element: <Course /> },
+    { path: "/courses", element: <Course /> },
     { path: "/create_qrcode", element: <QRcode /> },
 ];
 
