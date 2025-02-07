@@ -1,11 +1,13 @@
-import { Typography } from "antd";
+import { Layout, Typography } from "antd";
 import Attendance from "../Attendance";
 import LecturerCourseStats from "../Courses/LecturerCourseStats";
+import LatestQRCodes from "../QRCode/LatestQRCodes";
 
 const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
     const { Title } = Typography;
+    const { Content } = Layout;
     return (
-        <div
+        <Content
             className={`min-h-screen mx-auto px-8 py-2 lg:px-8 lg:py-4   transition-all ${
                 sidebarCollapsed
                     ? " md:ml-[40px] lg:ml-[50px]"
@@ -22,10 +24,34 @@ const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
                 Welcome, {fullname}
             </Title>
 
-            <LecturerCourseStats sidebarCollapsed={sidebarCollapsed} />
+            <div className="grid grid-cols-1 lg:grid-cols-2 my-5">
+                <div className="left">
+                    <Title
+                        level={4}
+                        style={{
+                            fontFamily: "Robtto",
+                        }}
+                    >
+                        Enrolled Student Statistics
+                    </Title>
+                    <LecturerCourseStats sidebarCollapsed={sidebarCollapsed} />
+                </div>
+
+                <div className="right">
+                    <Title
+                        level={4}
+                        style={{
+                            fontFamily: "Robtto",
+                        }}
+                    >
+                        Latest QR Codes
+                    </Title>
+                    <LatestQRCodes />
+                </div>
+            </div>
 
             <Attendance />
-        </div>
+        </Content>
     );
 };
 

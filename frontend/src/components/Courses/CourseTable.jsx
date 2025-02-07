@@ -1,4 +1,4 @@
-import { Button, Table } from "antd";
+import { Table } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -14,8 +14,6 @@ const CourseTable = ({ reload }) => {
     const navigate = useNavigate();
 
     const userRole = localStorage.getItem("userRole");
-
-
 
     const fetchAndSetCourses = async () => {
         setLoading(true);
@@ -86,8 +84,6 @@ const CourseTable = ({ reload }) => {
 
     return (
         <div className=" mt-[3rem] md:mt-0 md:p-[2rem] lg:p-0">
-
-
             {loading ? (
                 <Loader />
             ) : (

@@ -34,28 +34,30 @@ const LecturerCourseStats = ({ sidebarCollapsed }) => {
 
     if (loading) return <Loader />;
     if (error) return <p>Error: {error}</p>;
-    if (courseData.length === 0)
-        return <Empty description="No course data available" />;
 
     return (
         <div
-            className={`grid gap-5 my-[2.5rem] lg:gap-10 w-full md:w-[70%] lg:w-[50%] ${
+            className={`grid gap-5 my-[2.5rem] lg:gap-10 w-full ${
                 sidebarCollapsed ? "grid-cols-2 lg:ml-0" : "grid-cols-2"
             }`}
         >
-            {courseData.map((course, index) => (
-                <SummaryBox
-                    key={index}
-                    title={course.course_name}
-                    // value={`${course.total_students} students`}
-                    value={`${
-                        course.total_students === 1
-                            ? `${course.total_students} Student`
-                            : `${course.total_students} Students`
-                    }`}
-                    color="#1890ff" // You can set dynamic colors if needed
-                />
-            ))}
+            {courseData.length === 0 ? (
+                <Empty description="No course data available" />
+            ) : (
+                courseData.map((course, index) => (
+                    <SummaryBox
+                        key={index}
+                        title={course.course_name}
+                        value={`${
+                            course.total_students === 1 ||
+                            course.total_students === 0
+                                ? `${course.total_students} Student`
+                                : `${course.total_students} Students`
+                        }`}
+                        color="#1890ff"
+                    />
+                ))
+            )}
         </div>
     );
 };

@@ -108,13 +108,42 @@ export const getLecturerCourseStudents = () =>
 export const generateQRCode = (data) =>
     handleRequest("/lecturer/generate_qr_code", data, true);
 
+// API call to get the latest QR code for a course
+// export const getLecturerLatestQRCodes = async () => {
+//     return fetchData("/lecturer/latest_qr_codes", true);
+// };
+
+export const getLecturerLatestQRCodes = async () => {
+    try {
+        const response = await api.get("/lecturer/latest_qr_codes", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 // API call for deleting QR code
-export const deleteQRCode = (course_code, lecturer_name) => {
-    return handleRequest(
-        `/delete_qr_code?course_code=${course_code}&lecturer_name=${lecturer_name}`,
-        {},
-        false,
-    );
+export const deleteQRCode = async (course_name) => {
+    try {
+        const response = await api.delete(
+            `/lecturer/delete_qr_code?course_name=${course_name}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem(
+                        "access_token",
+                    )}`,
+                },
+            },
+        );
+        return response.data;
+    } catch (error) {
+        throw error?.response?.data?.detail;
+    }
 };
 
 // API call to fetch lecturer's attendance records

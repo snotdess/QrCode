@@ -55,10 +55,10 @@ const Summary = ({
 
     return (
         <div
-            className={`grid gap-5 lg:gap-2 ${
+            className={` my-[2.5rem] flex gap-5 lg:gap-10 w-full md:w-[90%] lg:w-[50%]    ${
                 sidebarCollapsed
-                    ? "grid-cols-2 md:ml-[2rem] lg:ml-0"
-                    : "grid-cols-2"
+                    ? " md:ml-[30px] lg:ml-[0px]"
+                    : "md:ml-[30px] lg:ml-[0px]"
             }`}
         >
             {Object.entries(stats).map(([key, value]) => (

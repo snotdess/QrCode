@@ -1,8 +1,11 @@
+import { Layout, Typography } from "antd";
 import Summary from "../Courses/Summary";
 
 const StudentDashboard = ({ fullname, matNo, sidebarCollapsed }) => {
+    const { Content } = Layout;
+
     return (
-        <div
+        <Content
             className={`min-h-screen mx-auto px-8 py-2 lg:px-8 lg:py-4 transition-all ${
                 sidebarCollapsed
                     ? " md:ml-[35px] lg:ml-[60px]"
@@ -15,14 +18,15 @@ const StudentDashboard = ({ fullname, matNo, sidebarCollapsed }) => {
             </p>
 
             {/* Show Summary only for students */}
-            <Summary
-                sidebarCollapsed={sidebarCollapsed}
-                fetchStudentStats={true}
-                showEmptyState={true}
-            />
-        </div>
+            <Typography className="my-[2.5rem]">
+                <Summary
+                    sidebarCollapsed={sidebarCollapsed}
+                    fetchStudentStats={true}
+                    showEmptyState={true}
+                />
+            </Typography>
+        </Content>
     );
 };
 
 export default StudentDashboard;
-

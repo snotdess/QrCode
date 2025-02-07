@@ -1,5 +1,5 @@
 // components/QRCodeForm.js
-import { Button, Form, Space, Select, Input } from "antd";
+import { Button, Form, Input, Select, Space } from "antd";
 import React from "react";
 import { toast } from "react-toastify";
 import useLecturerCourses from "../../hooks/useLecturerCourses";
@@ -12,7 +12,6 @@ const QRCodeForm = ({ onClose }) => {
     const { fetchingLocation, fetchLocation } = useLocation();
     const courses = useLecturerCourses();
     const [form] = Form.useForm();
-
 
     const formItems = [
         {
@@ -59,7 +58,6 @@ const QRCodeForm = ({ onClose }) => {
     const onFinish = async (values) => {
         try {
             await handleQRCodeGeneration(values, setLoading, form, onClose);
-            
         } catch (error) {
             toast.error(`${error}`);
         }

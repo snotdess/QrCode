@@ -67,6 +67,8 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
         setCollapsed(!collapsed);
     };
 
+    //
+
     return (
         <Sider
             collapsible
@@ -108,7 +110,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                         alignContent: "center",
                         gap: "17px",
                         justifyContent: "center",
-                        color: "#ffffff",
+                        color: "#fff",
                     }}
                     className="gap-5 min-h-[70vh]"
                     defaultSelectedKeys={["/dashboard"]}
