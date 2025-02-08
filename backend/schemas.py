@@ -1,8 +1,9 @@
 # #### app/schemas.py
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, HttpUrl
 from datetime import datetime
 from typing import Optional, List, Dict
+
 
 # # Schema for creating a new Lecturer (receiving data from the frontend)
 class LecturerCreate(BaseModel):
@@ -11,24 +12,29 @@ class LecturerCreate(BaseModel):
     lecturer_department: str
     lecturer_password: str = Field(..., min_length=8)
 
+
 # # Schema for Loggin Lecturers (receiving data from the frontend)
 class LecturerLogin(BaseModel):
     lecturer_email: EmailStr
     lecturer_password: str
+
 
 # # Schema for Lecturer Token
 class LecturerToken(BaseModel):
     access_token: str
     token_type: str
     role: str
+    lecturer_id: int
     lecturer_name: str
     lecturer_email: EmailStr
     lecturer_department: str
+
 
 # Schema for changing Lecturer Password (receiving data from the frontend)
 class ChangePassword(BaseModel):
     email: EmailStr
     new_password: str = Field(..., min_length=8)
+
 
 # Schema for Course Creation (receiving data from the frontend)
 class CourseCreate(BaseModel):
@@ -37,6 +43,7 @@ class CourseCreate(BaseModel):
     course_credits: int
     semester: str
 
+
 class CourseResponse(BaseModel):
     course_code: str
     course_name: str
@@ -44,11 +51,13 @@ class CourseResponse(BaseModel):
     semester: str
     creation_date: Optional[datetime]
 
+
 # # Schema for creating a QRCODE (receiving data from the frontend)
 class QRCodeCreate(BaseModel):
     course_code: str
     latitude: float  # Latitude of the lecturer
     longitude: float  # Longitude of the lecturer
+
 
 class QRCodeResponse(BaseModel):
     qr_code_id: int
@@ -58,6 +67,11 @@ class QRCodeResponse(BaseModel):
     longitude: float
     generation_time: datetime
 
+class QRCodeSchema(BaseModel):
+    course_name: str
+    qr_code_link: HttpUrl
+    generation_time: datetime
+
 # Schema for creating a new Student (receiving data from the frontend)
 class StudentCreate(BaseModel):
     matric_number: str
@@ -65,10 +79,12 @@ class StudentCreate(BaseModel):
     student_email: EmailStr
     student_password: str
 
+
 # Schema for Student Logging (receiving data from the frontend)
 class StudentLogin(BaseModel):
     matric_number: str
     student_password: str
+
 
 # Schema for Token (receiving data from the frontend)
 class StudentToken(BaseModel):
@@ -79,12 +95,14 @@ class StudentToken(BaseModel):
     student_fullname: str
     student_email: EmailStr
 
+
 class StudentResponse(BaseModel):
     qr_code_id: int
     course_code: str
     lecturer_id: int
-    matric_number:str
+    matric_number: str
     status: str
+
 
 # Create the schema for the request body
 class EnrollRequest(BaseModel):
@@ -92,11 +110,13 @@ class EnrollRequest(BaseModel):
     course_code: str
     lecturer_name: str
 
+
 class EnrollResponse(BaseModel):
     matric_number: str
     course_code: str
     lecturer_name: str  # Add lecturer_name instead of lecturer_id
     message: str
+
 
 # Schema for Attendance marking (receiving data from the frontend)
 class AttendanceCreate(BaseModel):
@@ -120,6 +140,7 @@ class LecturerCourseResponse(BaseModel):
 class LecturerCoursesListResponse(BaseModel):
     lecturer_courses: List[LecturerCourseResponse]
 
+
 class CourseDetails(BaseModel):
     course_code: str
     course_name: str
@@ -132,6 +153,7 @@ class StudentAttendance(BaseModel):
     matric_number: str
     full_name: str
     attendance: Dict[str, str]  # Date as key, status (Present/Absent) as value
+
 
 class AttendanceResponse(BaseModel):
     course_name: str

@@ -60,3 +60,34 @@ async def get_current_lecturer(token: str = Depends(oauth2_scheme), db: AsyncSes
 
 async def get_current_student(token: str = Depends(oauth2_scheme_student), db: AsyncSession = Depends(get_db)):
     return await get_current_user(token, db, Student, "student_email")
+
+
+async def filter_records(model, db: AsyncSession, **filters):
+    """Reusable function to filter records from a given model."""
+    query = select(model).filter_by(**filters)
+    result = await db.execute(query)
+    return result.scalars().first()
+
+
+async def filter_join_records(primary_model, join_model, db: AsyncSession, join_condition, **filters):
+    """
+    Reusable function to filter records with a join.
+
+    - primary_model: The main table to query.
+    - join_model: The table to join with.
+    - join_condition: The condition for the join.
+    - filters: Filters to apply on the primary model.
+    """
+    query = select(primary_model).join(join_model, join_condition).filter_by(**filters)
+    result = await db.execute(query)
+    return result.scalars().first()
+
+
+async def fetch_lecturer_courses(db: AsyncSession):
+    """Reusable function to get lecturer-course records."""
+    result = await db.execute(
+        select(Lecturer.lecturer_name, Course.course_code, Course.course_name)
+        .join(LecturerCourses, Lecturer.lecturer_id == LecturerCourses.lecturer_id)
+        .join(Course, LecturerCourses.course_code == Course.course_code)
+    )
+    return result.fetchall()

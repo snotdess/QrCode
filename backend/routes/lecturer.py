@@ -16,22 +16,16 @@ from schemas import (
     CourseStats,
     LecturerCoursesListResponse,
     AttendanceResponse,
-    QRCodeDeleteRequest,
 )
+from services.qrcode.qrcode_service import QRCodeService
+from services.lecturer.lecturer_course_service import LecturerCourseService
+
 from utils import get_current_lecturer
 from services.lecturer_service import (
     register_lecturer,
     login_lecturer,
     change_lecturer_password,
-    create_course_for_lecturer,
-    generate_qr_code_service,
-    delete_qr_code_service,
-    get_courses_for_lecturer,
-    get_courses_stats,
-    get_lecturer_courses,
-    get_lecturer_course_students,
     get_attendance_service,
-    get_latest_qr_codes,
 )
 from typing import List
 
@@ -59,6 +53,7 @@ async def lecturer_login(
         access_token=result["token"],
         token_type="bearer",
         role="lecturer",
+        lecturer_id=result["lecturer_id"],
         lecturer_name=result["lecturer_name"],
         lecturer_email=result["lecturer_email"],
         lecturer_department=result["lecturer_department"],
@@ -80,7 +75,52 @@ async def create_course(
     db: AsyncSession = Depends(get_db),
     current_lecturer: Lecturer = Depends(get_current_lecturer),
 ):
-    return await create_course_for_lecturer(course, db, current_lecturer)
+    return await LecturerCourseService.create_course_for_lecturer(
+        course, db, current_lecturer
+    )
+
+# #**Lecturer Courses Info Route**
+@router.get("/course_info", response_model=List[CourseCreate])
+async def get_course_info(
+    db: AsyncSession = Depends(get_db),
+    current_lecturer: Lecturer = Depends(get_current_lecturer),
+):
+    # Call the service to get courses
+    courses = await LecturerCourseService.get_courses_for_lecturer(db, current_lecturer)
+    return courses
+
+
+#  #**Lecturer course statistics**
+@router.get("/course_stats", response_model=CourseStats)
+async def get_course_stats(
+    db: AsyncSession = Depends(get_db),
+    current_lecturer: Lecturer = Depends(get_current_lecturer),
+):
+    # Call on the service to get course stats
+    courses_stats = await LecturerCourseService.get_courses_stats(db, current_lecturer)
+    return courses_stats
+
+#  #**Lecturer course list**
+@router.get("/lecturer_courses", response_model=LecturerCoursesListResponse)
+async def fetch_lecturer_courses(db: AsyncSession = Depends(get_db)):
+    """
+    API route to fetch all lecturers and their registered course codes.
+    """
+    lecturer_courses = await LecturerCourseService.get_lecturer_courses(db)
+    return {"lecturer_courses": lecturer_courses}
+
+#  #**Lecturer course register Students**
+@router.get("/lecturer_course_students")
+async def lecturer_course_students(
+    db: AsyncSession = Depends(get_db),
+    current_lecturer: Lecturer = Depends(get_current_lecturer),
+):
+    """
+    API endpoint to get courses taught by the current lecturer and the total number of students in each course.
+    """
+    return await LecturerCourseService.get_lecturer_course_students(
+        db, current_lecturer
+    )
 
 
 # #**Lecturer QRCODE Creation Route**
@@ -90,7 +130,7 @@ async def generate_qr_code(
     db: AsyncSession = Depends(get_db),
     current_lecturer: Lecturer = Depends(get_current_lecturer),
 ):
-    return await generate_qr_code_service(qr_code_data, db, current_lecturer)
+    return await QRCodeService.generate_qr_code(qr_code_data, db, current_lecturer)
 
 
 @router.get("/latest_qr_codes")
@@ -102,7 +142,7 @@ async def get_lecturer_latest_qr_codes(
     Get the latest QR codes for all courses assigned to the currently logged-in lecturer.
     """
     # lecturer_id = current_lecturer["lecturer_id"]
-    qr_codes = await get_latest_qr_codes(current_lecturer.lecturer_id, db)
+    qr_codes = await QRCodeService.get_latest_qr_codes(current_lecturer.lecturer_id, db)
 
     if not qr_codes:
         raise HTTPException(
@@ -119,48 +159,7 @@ async def delete_qr_code(
     db: AsyncSession = Depends(get_db),
     current_lecturer: Lecturer = Depends(get_current_lecturer),
 ):
-    return await delete_qr_code_service(course_name, db, current_lecturer)
-
-
-@router.get("/course_info", response_model=List[CourseCreate])
-async def get_course_info(
-    db: AsyncSession = Depends(get_db),
-    current_lecturer: Lecturer = Depends(get_current_lecturer),
-):
-    # Call the service to get courses
-    courses = await get_courses_for_lecturer(db, current_lecturer)
-    return courses
-
-
-# Endpoint to get course statistics
-@router.get("/course_stats", response_model=CourseStats)
-async def get_course_stats(
-    db: AsyncSession = Depends(get_db),
-    current_lecturer: Lecturer = Depends(get_current_lecturer),
-):
-    # Call on the service to get course stats
-    courses_stats = await get_courses_stats(db, current_lecturer)
-    return courses_stats
-
-
-@router.get("/lecturer_courses", response_model=LecturerCoursesListResponse)
-async def fetch_lecturer_courses(db: AsyncSession = Depends(get_db)):
-    """
-    API route to fetch all lecturers and their registered course codes.
-    """
-    lecturer_courses = await get_lecturer_courses(db)
-    return {"lecturer_courses": lecturer_courses}
-
-
-@router.get("/lecturer_course_students")
-async def lecturer_course_students(
-    db: AsyncSession = Depends(get_db),
-    current_lecturer: Lecturer = Depends(get_current_lecturer),
-):
-    """
-    API endpoint to get courses taught by the current lecturer and the total number of students in each course.
-    """
-    return await get_lecturer_course_students(db, current_lecturer)
+    return await QRCodeService.delete_qr_code(course_name, db, current_lecturer)
 
 
 @router.get("/attendance/{course_code}", response_model=AttendanceResponse)
