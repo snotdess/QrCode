@@ -45,3 +45,5 @@ const QRcode = () => {
 };
 
 export default QRcode;
+
+

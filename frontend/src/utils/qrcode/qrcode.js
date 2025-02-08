@@ -60,13 +60,9 @@ export const handleQRCodeGeneration = async (
 };
 
 
-
-
-
-
-export const processQRCode = (qrCodeUrl, setScannedData, form, setIsScannerOpen) => {
+export const processQRCode = (qrCodeData, setScannedData, form, closeModal) => {
     try {
-        const url = new URL(qrCodeUrl);
+        const url = new URL(qrCodeData);
         const params = new URLSearchParams(url.search);
         const extractedData = {
             course_code: params.get("course_code"),
@@ -75,13 +71,17 @@ export const processQRCode = (qrCodeUrl, setScannedData, form, setIsScannerOpen)
             lecturer_longitude: parseFloat(params.get("longitude")),
             generated_at: params.get("generated_at"),
         };
+
         setScannedData(extractedData);
         form.setFieldsValue(extractedData);
-        setIsScannerOpen(false);
+
+        if (closeModal) closeModal(false); // Close the camera modal if it exists
     } catch (error) {
         toast.error("Invalid QR code format.");
     }
 };
+
+
 
 export const handleScan = (result, processQRCodeFn) => {
     if (result) {

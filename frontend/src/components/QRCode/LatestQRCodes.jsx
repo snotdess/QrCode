@@ -26,7 +26,7 @@ const LatestQRCodes = () => {
                     toast.info(`No QR Codes found`);
                 }
             } catch (error) {
-                toast.error(`${error?.response?.data?.detail}`);
+                toast.error(`${error}`);
             } finally {
                 setLoading(false);
             }
