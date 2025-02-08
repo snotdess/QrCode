@@ -8,7 +8,10 @@ from models import (
     StudentCourses,
     AttendanceRecords,
     Student,
+    LecturerCourses,
 )
+from config import settings
+from dotenv import load_dotenv
 from utils import get_password_hash, create_access_token, verify_password
 from fastapi import HTTPException
 from datetime import datetime, timedelta
@@ -193,6 +196,16 @@ async def generate_qr_code_service(qr_code_data, db: AsyncSession, current_lectu
             detail="QR Code already generated for this course within the last hour.",
         )
 
+    # Get Base URL from .env
+    # base_url = os.getenv("BASE_URL", "https://defaultfrontend.com/attendance")
+    base_url = settings.BASE_URL
+    qr_code_url = (
+        f"{base_url}?course_code={qr_code_data.course_code}"
+        f"&lecturer_id={current_lecturer.lecturer_id}"
+        f"&latitude={qr_code_data.latitude}"
+        f"&longitude={qr_code_data.longitude}"
+    )
+
     # Create a new QR code
     new_qr_code = QRCode(
         course_code=qr_code_data.course_code,
@@ -200,6 +213,7 @@ async def generate_qr_code_service(qr_code_data, db: AsyncSession, current_lectu
         generation_time=datetime.utcnow(),
         latitude=qr_code_data.latitude,
         longitude=qr_code_data.longitude,
+        url=qr_code_url,  # Store the URL in the database
     )
 
     db.add(new_qr_code)
@@ -209,36 +223,101 @@ async def generate_qr_code_service(qr_code_data, db: AsyncSession, current_lectu
     return new_qr_code
 
 
-async def delete_qr_code_service(
-    course_code: str, lecturer_name: str, db: AsyncSession, current_lecturer
-):
+async def get_latest_qr_codes(lecturer_id: int, db: AsyncSession):
+    """Fetch the latest QR codes for all courses assigned to a lecturer within the last hour."""
+
+    one_hour_ago = datetime.utcnow() - timedelta(hours=1)
+
+    # Get all courses for the lecturer
+    course_query = select(LecturerCourses.course_code).where(
+        LecturerCourses.lecturer_id == lecturer_id
+    )
+    course_results = await db.execute(course_query)
+    lecturer_courses = course_results.scalars().all()
+
+    if not lecturer_courses:
+        raise HTTPException(
+            status_code=404, detail="No courses assigned to this lecturer."
+        )
+
+    # Fetch latest QR codes for those courses
+    query = (
+        select(QRCode)
+        .where(
+            QRCode.course_code.in_(lecturer_courses),
+            QRCode.generation_time >= one_hour_ago,
+        )
+        .order_by(QRCode.generation_time.desc())
+    )
+
+    result = await db.execute(query)
+    qr_codes = result.scalars().all()
+
+    if not qr_codes:
+        raise HTTPException(
+            status_code=404, detail="No QR codes generated in the past hour."
+        )
+
+    # Fetch course names
+    course_names_query = select(Course.course_code, Course.course_name).where(
+        Course.course_code.in_(lecturer_courses)
+    )
+    course_names_result = await db.execute(course_names_query)
+    course_name_mapping = {
+        row.course_code: row.course_name for row in course_names_result.all()
+    }
+
+    # Format response
+    qr_code_list = [
+        {
+            "course_name": course_name_mapping.get(qr.course_code, "Unknown Course"),
+            "qr_code_link": f"https://{settings.BASE_URL}/?course_code={qr.course_code}&lecturer_id={qr.lecturer_id}",
+            "generation_time": qr.generation_time.isoformat(),
+        }
+        for qr in qr_codes
+    ]
+
+    return qr_code_list
+
+
+async def delete_qr_code_service(course_name: str, db: AsyncSession, current_lecturer):
     if not current_lecturer:
         raise HTTPException(
             status_code=403,
             detail="You must be logged in as a lecturer to delete a QR code.",
         )
 
-    # Verify lecturer's name
-    if current_lecturer.lecturer_name != lecturer_name:
-        raise HTTPException(
-            status_code=403,
-            detail="Lecturer name does not match the logged-in lecturer.",
-        )
-
-    # Check if the course exists
-    course_query = select(Course).where(Course.course_code == course_code)
+    # Get the course using course_name
+    course_query = select(Course).where(Course.course_name == course_name)
     course_result = await db.execute(course_query)
     course = course_result.scalars().first()
 
     if not course:
         raise HTTPException(
-            status_code=404, detail=f"Course with code '{course_code}' does not exist."
+            status_code=404, detail=f"Course '{course_name}' does not exist."
+        )
+
+    # Extract course_code from the found course
+    course_code = course.course_code
+
+    # Verify that the lecturer is assigned to the course
+    lecturer_course_query = select(LecturerCourses).where(
+        (LecturerCourses.course_code == course_code)
+        & (LecturerCourses.lecturer_id == current_lecturer.lecturer_id)
+    )
+    lecturer_course_result = await db.execute(lecturer_course_query)
+    lecturer_course = lecturer_course_result.scalars().first()
+
+    if not lecturer_course:
+        raise HTTPException(
+            status_code=403,
+            detail="You are not authorized to delete a QR code for this course.",
         )
 
     # Fetch the QR Code for the given course and lecturer
     qr_code_query = select(QRCode).where(
-        QRCode.course_code == course_code,
-        QRCode.lecturer_id == current_lecturer.lecturer_id,
+        (QRCode.course_code == course_code)
+        & (QRCode.lecturer_id == current_lecturer.lecturer_id)
     )
     qr_code_result = await db.execute(qr_code_query)
     qr_code = qr_code_result.scalars().first()
@@ -246,14 +325,14 @@ async def delete_qr_code_service(
     if not qr_code:
         raise HTTPException(
             status_code=404,
-            detail=f"No QR code found for course '{course_code}' generated by you.",
+            detail=f"No QR code found for course '{course_name}' generated by you.",
         )
 
     # Delete the QR code
     await db.delete(qr_code)
     await db.commit()
 
-    return {"detail": f"QR Code for course '{course_code}' deleted successfully."}
+    return {"detail": f"QR Code for course '{course_name}' deleted successfully."}
 
 
 async def fetch_courses_for_lecturer(db: AsyncSession, lecturer_id: int):

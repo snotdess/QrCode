@@ -57,8 +57,8 @@ const Summary = ({
         <div
             className={` my-[2.5rem] flex gap-5 lg:gap-10 w-full md:w-[90%] lg:w-[50%]    ${
                 sidebarCollapsed
-                    ? " md:ml-[30px] lg:ml-[0px]"
-                    : "md:ml-[30px] lg:ml-[0px]"
+                    ? " md:ml-[5px] lg:ml-[0px]"
+                    : "md:ml-[0px] lg:ml-[0px]"
             }`}
         >
             {Object.entries(stats).map(([key, value]) => (

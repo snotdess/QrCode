@@ -83,7 +83,7 @@ const CourseTable = ({ reload }) => {
     ];
 
     return (
-        <div className=" mt-[3rem] md:mt-0 md:p-[2rem] lg:p-0">
+        <div className=" my-[1.2rem] md:mt-0  lg:p-0">
             {loading ? (
                 <Loader />
             ) : (

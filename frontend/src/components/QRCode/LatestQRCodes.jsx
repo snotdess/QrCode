@@ -1,10 +1,11 @@
+// // components/QRCode/LatestQRCodes.jsx
+
 import { DeleteOutlined, DownloadOutlined } from "@ant-design/icons";
-import { Button, Popconfirm, Table, Typography } from "antd";
+import { Button, Popconfirm, Table } from "antd";
+import { QRCodeCanvas } from "qrcode.react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { deleteQRCode, getLecturerLatestQRCodes } from "../../api/api";
-
-const { Title } = Typography;
 
 const LatestQRCodes = () => {
     const [qrCodes, setQRCodes] = useState([]);
@@ -15,9 +16,12 @@ const LatestQRCodes = () => {
         const fetchQRCodes = async () => {
             try {
                 const data = await getLecturerLatestQRCodes();
-                setQRCodes(data);
+                if (data) {
+                    setQRCodes(data);
+                } else {
+                    setQRCodes([]);
+                }
             } catch (error) {
-                toast.error("Failed to fetch QR Codes");
             } finally {
                 setLoading(false);
             }
@@ -56,9 +60,7 @@ const LatestQRCodes = () => {
             title: "Course Name",
             dataIndex: "course_name",
             key: "course_name",
-            width: "2%",
         },
-
         {
             title: "Download",
             key: "download",
@@ -71,7 +73,6 @@ const LatestQRCodes = () => {
                     Download
                 </Button>
             ),
-            width: "3%",
         },
         {
             title: "Delete",
@@ -86,19 +87,42 @@ const LatestQRCodes = () => {
                     <Button type="primary" danger icon={<DeleteOutlined />} />
                 </Popconfirm>
             ),
-            width: "3%",
         },
     ];
 
     return (
-        <div className="p-5 min-h-screen">
+        <div className="my-[2.5rem]">
+            {/* Render QR codes off-screen for download */}
+            <div
+                style={{
+                    position: "absolute",
+                    left: "-9999px",
+                    visibility: "hidden",
+                }}
+            >
+                {qrCodes.map((record) => (
+                    <QRCodeCanvas
+                        key={record.course_name}
+                        value={record.qr_code_link}
+                        size={100}
+                        level="H"
+                        includeMargin={true}
+                        ref={(canvas) => {
+                            if (canvas) {
+                                canvasRefs.current[record.course_name] = canvas;
+                            }
+                        }}
+                    />
+                ))}
+            </div>
+
             <Table
                 columns={columns}
                 dataSource={qrCodes}
                 loading={loading}
                 rowKey="course_name"
-                className=""
-                pagination={{ pageSize: 2 }}
+                className="mt-6"
+                pagination={{ pageSize: 5 }}
             />
         </div>
     );

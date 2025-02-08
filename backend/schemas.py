@@ -128,9 +128,6 @@ class CourseDetails(BaseModel):
     lecturer_name: str
 
 
-
-
-
 class StudentAttendance(BaseModel):
     matric_number: str
     full_name: str
@@ -139,3 +136,7 @@ class StudentAttendance(BaseModel):
 class AttendanceResponse(BaseModel):
     course_name: str
     attendance: List[StudentAttendance]
+
+
+class QRCodeDeleteRequest(BaseModel):
+    course_code: str

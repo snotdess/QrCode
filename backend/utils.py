@@ -1,5 +1,5 @@
 #### app/utils.py
-from jose import jwt
+from jose import jwt, JWTError
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime, timedelta
 from config import settings
@@ -15,7 +15,7 @@ from fastapi.security import OAuth2PasswordBearer
 # Password hashing utility
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-#Oauth2 scheme for Lecturer and Student
+# Oauth2 scheme for Lecturer and Student
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="lecturers/login")
 oauth2_scheme_student = OAuth2PasswordBearer(tokenUrl="student/login")
 
@@ -60,4 +60,3 @@ async def get_current_lecturer(token: str = Depends(oauth2_scheme), db: AsyncSes
 
 async def get_current_student(token: str = Depends(oauth2_scheme_student), db: AsyncSession = Depends(get_db)):
     return await get_current_user(token, db, Student, "student_email")
-

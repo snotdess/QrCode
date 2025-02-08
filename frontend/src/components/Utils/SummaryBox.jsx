@@ -12,19 +12,20 @@ const SummaryBox = ({ title, value, color }) => {
             }}
         >
             <Title
-                level={5}
                 style={{
                     fontFamily: "Robtto",
                     marginBottom: "8px",
-                    fontSize: "1.03rem",
-                }}
+                    fontSize: "18px"
+
+                } }
+                className=""
             >
-                {title}
+                {title.toUpperCase()}
             </Title>
             <Paragraph
                 style={{
                     fontFamily: "Robtto",
-                    fontSize: "1.2rem",
+                    fontSize: "0.9rem",
                     fontWeight: "bold",
                 }}
             >

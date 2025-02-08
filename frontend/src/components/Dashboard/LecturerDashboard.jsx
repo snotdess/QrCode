@@ -1,4 +1,5 @@
 import { Layout, Typography } from "antd";
+import useDynamicTitleLevel from "../../hooks/useDynamicTitleLevel";
 import Attendance from "../Attendance";
 import LecturerCourseStats from "../Courses/LecturerCourseStats";
 import LatestQRCodes from "../QRCode/LatestQRCodes";
@@ -6,17 +7,20 @@ import LatestQRCodes from "../QRCode/LatestQRCodes";
 const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
     const { Title } = Typography;
     const { Content } = Layout;
+
+    const titleLevel = useDynamicTitleLevel();
+
     return (
         <Content
             className={`min-h-screen mx-auto px-8 py-2 lg:px-8 lg:py-4   transition-all ${
                 sidebarCollapsed
-                    ? " md:ml-[40px] lg:ml-[50px]"
-                    : " md:ml-[220px] lg:ml-[140px]"
+                    ? " ml-[20px] md:ml-[95px] lg:ml-[60px]"
+                    : "md:ml-[220px] lg:ml-[140px]"
             }`}
         >
             <Title
-                level={4}
-                className="uppercase  mb-6"
+                level={titleLevel}
+                className="uppercase  mb-6 "
                 style={{
                     fontFamily: "Robtto",
                 }}
@@ -24,10 +28,10 @@ const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
                 Welcome, {fullname}
             </Title>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 my-5">
+            <div className=" my-[2.5rem]  grid grid-cols-1 lg:grid-cols-2 ">
                 <div className="left">
                     <Title
-                        level={4}
+                        level={5}
                         style={{
                             fontFamily: "Robtto",
                         }}
@@ -39,7 +43,7 @@ const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
 
                 <div className="right">
                     <Title
-                        level={4}
+                        level={5}
                         style={{
                             fontFamily: "Robtto",
                         }}

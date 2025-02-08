@@ -5,30 +5,38 @@ from datetime import datetime
 
 # Student model
 class Student(SQLModel, table=True):
-    matric_number: str = Field(primary_key=True, unique=True, index=True)  # Input by the student
+    matric_number: str = Field(
+        primary_key=True, unique=True, index=True
+    )  # Input by the student
     student_fullname: str
     student_email: str
     student_password: str
 
     # Relationships
     courses: List["StudentCourses"] = Relationship(back_populates="student")
-    attendance_records: List["AttendanceRecords"] = Relationship(back_populates="student")
+    attendance_records: List["AttendanceRecords"] = Relationship(
+        back_populates="student"
+    )
+
 
 # lecturer model
 class Lecturer(SQLModel, table=True):
     lecturer_id: int = Field(primary_key=True, index=True)
-    lecturer_name:str
-    lecturer_email:str
+    lecturer_name: str
+    lecturer_email: str
     lecturer_department: str
-    lecturer_password:str
+    lecturer_password: str
 
     # Relationships
     courses: List["LecturerCourses"] = Relationship(back_populates="lecturer")
     qr_codes: List["QRCode"] = Relationship(back_populates="lecturer")
 
+
 # Course model
 class Course(SQLModel, table=True):
-    course_code: str = Field(primary_key=True, unique=True, index=True)  # Unique course identifier
+    course_code: str = Field(
+        primary_key=True, unique=True, index=True
+    )  # Unique course identifier
     course_name: str
     course_credits: int
     semester: str
@@ -38,7 +46,10 @@ class Course(SQLModel, table=True):
     students: List["StudentCourses"] = Relationship(back_populates="course")
     lecturer: List["LecturerCourses"] = Relationship(back_populates="course")
     qr_codes: List["QRCode"] = Relationship(back_populates="course")
-    attendance_records: List["AttendanceRecords"] = Relationship(back_populates="course")
+    attendance_records: List["AttendanceRecords"] = Relationship(
+        back_populates="course"
+    )
+
 
 # TeacherCourses (Relationship Table for Lecturer and Courses)
 class LecturerCourses(SQLModel, table=True):
@@ -50,6 +61,7 @@ class LecturerCourses(SQLModel, table=True):
     lecturer: Optional[Lecturer] = Relationship(back_populates="courses")
     course: Optional[Course] = Relationship(back_populates="lecturer")
 
+
 # QR Code model
 class QRCode(SQLModel, table=True):
     qr_code_id: int = Field(primary_key=True, index=True)
@@ -58,15 +70,21 @@ class QRCode(SQLModel, table=True):
     generation_time: datetime  # Mandatory field without default factory
     latitude: float  # Latitude of the lecturer
     longitude: float  # Longitude of the lecturer
+    url: str
 
     # Relationships
     lecturer: Optional[Lecturer] = Relationship(back_populates="qr_codes")
     course: Optional[Course] = Relationship(back_populates="qr_codes")
 
+
 # StudentCourses (Relationship Table for Students and Courses)
 class StudentCourses(SQLModel, table=True):
-    matric_number: str = Field(foreign_key="student.matric_number", primary_key=True)  # FK to Student
-    course_code: str = Field(foreign_key="course.course_code", primary_key=True)  # FK to Course
+    matric_number: str = Field(
+        foreign_key="student.matric_number", primary_key=True
+    )  # FK to Student
+    course_code: str = Field(
+        foreign_key="course.course_code", primary_key=True
+    )  # FK to Course
 
     # Relationships
     student: Optional[Student] = Relationship(back_populates="courses")

@@ -1,8 +1,10 @@
 import { Layout, Typography } from "antd";
+import useDynamicTitleLevel from "../../hooks/useDynamicTitleLevel";
 import Summary from "../Courses/Summary";
 
 const StudentDashboard = ({ fullname, matNo, sidebarCollapsed }) => {
     const { Content } = Layout;
+    const titleLevel = useDynamicTitleLevel();
 
     return (
         <Content
@@ -12,7 +14,15 @@ const StudentDashboard = ({ fullname, matNo, sidebarCollapsed }) => {
                     : " md:ml-[220px] lg:ml-[140px]"
             }`}
         >
-            <h1 className="text-2xl font-semibold">Welcome, {fullname}</h1>
+            <Typography.Title
+                style={{
+                    fontFamily: "Robtto",
+                }}
+                level={titleLevel}
+                className="uppercase mb-6"
+            >
+                Welcome, {fullname}
+            </Typography.Title>
             <p className="text-md text-gray-600">
                 Matriculation Number: {matNo}
             </p>
