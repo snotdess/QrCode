@@ -5,6 +5,7 @@ import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     QrcodeOutlined,
+
     ReadOutlined,
 } from "@ant-design/icons";
 import { Image, Layout, Menu } from "antd";
@@ -41,6 +42,11 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                       key: "/courses",
                       label: "Course Registration",
                       icon: <ReadOutlined />,
+                  },
+                  {
+                      key: "/attendance",
+                      label: "Mark Attendance",
+                      icon: <QrcodeOutlined />,
                   },
               ]
             : []),

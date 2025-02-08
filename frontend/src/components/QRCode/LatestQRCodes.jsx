@@ -18,9 +18,15 @@ const LatestQRCodes = () => {
             try {
                 const data = await getLecturerLatestQRCodes();
 
-                setQRCodes(data || []); // Set to an empty array if data is falsy
+                const response = data.data;
+
+                if (response.length > 0) {
+                    setQRCodes(response);
+                } else {
+                    toast.info(`No QR Codes found`);
+                }
             } catch (error) {
-                toast.error(`${error}`);
+                toast.error(`${error?.response?.data?.detail}`);
             } finally {
                 setLoading(false);
             }
@@ -125,7 +131,7 @@ const LatestQRCodes = () => {
                     loading={loading && <Loader />}
                     rowKey="course_name"
                     className="mt-6"
-                    pagination={{ pageSize: 5 }}
+                    pagination={{ pageSize: 2 }}
                 />
             )}
         </div>

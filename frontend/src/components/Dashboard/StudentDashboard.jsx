@@ -1,10 +1,12 @@
 import { Layout, Typography } from "antd";
 import useDynamicHeadingLevel from "../../hooks/typography/useDynamicHeadingLevel";
+import Attendance from "../Form/AttendanceForm";
 import Summary from "../Courses/Summary";
 
 const StudentDashboard = ({ fullname, matNo, sidebarCollapsed }) => {
     const { Content } = Layout;
     const titleLevel = useDynamicHeadingLevel();
+    const {Title}= Typography
 
     return (
         <Content
@@ -14,7 +16,7 @@ const StudentDashboard = ({ fullname, matNo, sidebarCollapsed }) => {
                     : " md:ml-[220px] lg:ml-[140px]"
             }`}
         >
-            <Typography.Title
+            <Title
                 style={{
                     fontFamily: "Robtto",
                 }}
@@ -22,7 +24,7 @@ const StudentDashboard = ({ fullname, matNo, sidebarCollapsed }) => {
                 className="uppercase mb-6"
             >
                 Welcome, {fullname}
-            </Typography.Title>
+            </Title>
             <p className="text-md text-gray-600">
                 Matriculation Number: {matNo}
             </p>
@@ -35,6 +37,8 @@ const StudentDashboard = ({ fullname, matNo, sidebarCollapsed }) => {
                     showEmptyState={true}
                 />
             </Typography>
+
+            {/* <Attendance /> */}
         </Content>
     );
 };

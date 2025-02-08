@@ -1,7 +1,6 @@
 import { Layout, Typography } from "antd";
 
 import useDynamicHeadingLevel from "../../hooks/typography/useDynamicHeadingLevel";
-import Attendance from "../Attendance";
 import LecturerCourseStats from "../Courses/LecturerCourseStats";
 import LatestQRCodes from "../QRCode/LatestQRCodes";
 
@@ -54,8 +53,6 @@ const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
                     <LatestQRCodes />
                 </div>
             </div>
-
-            <Attendance />
         </Content>
     );
 };

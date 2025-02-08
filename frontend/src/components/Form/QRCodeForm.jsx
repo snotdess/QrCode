@@ -21,10 +21,6 @@ const QRCodeForm = ({ onClose }) => {
         }
     };
 
-    const handleGetLocation = () => {
-        fetchLocation(form);
-    };
-
     return (
         <Form
             form={form}
@@ -57,13 +53,25 @@ const QRCodeForm = ({ onClose }) => {
                 <Input placeholder="Longitude" readOnly />
             </Form.Item>
 
-            <Form.Item>
+            <Form.Item label="Get Location">
                 <Button
-                    onClick={handleGetLocation}
+                    type="dashed"
+                    onClick={async () => {
+                        try {
+                            const location = await fetchLocation(); // Await the location
+                            if (location) {
+                                form.setFieldsValue({
+                                    latitude: location.latitude,
+                                    longitude: location.longitude,
+                                });
+                            }
+                        } catch (error) {
+                            message.error("Failed to fetch location.");
+                        }
+                    }}
                     loading={fetchingLocation}
-                    block
                 >
-                    Get Location
+                    {fetchingLocation ? "Fetching..." : "Get Current Location"}
                 </Button>
             </Form.Item>
 

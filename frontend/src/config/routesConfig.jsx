@@ -8,6 +8,8 @@ import Login from "../routes/Auth/Login";
 import Onboarding from "../routes/Onboarding";
 import QRcode from "../routes/QRcode/QRcode";
 import Signup from "../routes/Auth/Signup";
+import Attendance from "../routes/Attendance/Attendance";
+
 
 export const routes = [
     { path: "/", element: <HomePage /> },
@@ -26,6 +28,7 @@ export const routes = [
     { path: "/dashboard", element: <Dashboard /> },
     { path: "/courses", element: <Course /> },
     { path: "/create_qrcode", element: <QRcode /> },
+    {path: "/attendance", element: <Attendance />}
 ];
 
 // Helper function to render routes dynamically
