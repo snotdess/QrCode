@@ -17,14 +17,13 @@ from schemas import (
     LecturerCoursesListResponse,
     AttendanceResponse,
 )
-from services.qrcode.qrcode_service import QRCodeService
+from services.lecturer.auth_service import AuthService
+from services.lecturer.qrcode_service import QRCodeService
 from services.lecturer.lecturer_course_service import LecturerCourseService
 
 from utils import get_current_lecturer
 from services.lecturer_service import (
-    register_lecturer,
-    login_lecturer,
-    change_lecturer_password,
+
     get_attendance_service,
 )
 from typing import List
@@ -36,7 +35,7 @@ router = APIRouter()
 # # **Lecturer Signup Route**
 @router.post("/signup")
 async def lecturer_signup(lecturer: LecturerCreate, db: AsyncSession = Depends(get_db)):
-    response = await register_lecturer(lecturer, db)
+    response = await AuthService.register_lecturer(lecturer, db)
     return response
 
 
@@ -47,7 +46,7 @@ async def lecturer_login(
     db: AsyncSession = Depends(get_db),
 ) -> LecturerToken:
 
-    result = await login_lecturer(lecturer, db)
+    result = await AuthService.login_lecturer(lecturer, db)
 
     return LecturerToken(
         access_token=result["token"],
@@ -65,7 +64,7 @@ async def lecturer_login(
 async def change_password(
     data: ChangePassword, db: AsyncSession = Depends(get_db)
 ) -> dict[str, str]:
-    return await change_lecturer_password(data, db)
+    return await AuthService.change_lecturer_password(data, db)
 
 
 # #**Lecturer Courses Creation Route**

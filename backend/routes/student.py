@@ -18,10 +18,9 @@ from schemas import (
     CourseDetails,
 )
 from utils import get_current_student
+from services.student.auth_service import AuthService
+from services.student.course_service import CourseService
 from services.student_service import (
-    student_signup_service,
-    student_login_service,
-    change_password_service,
     enroll_student_service,
     scan_qr_service,
     get_student_courses_service,
@@ -37,8 +36,7 @@ async def student_signup(student: StudentCreate, db: AsyncSession = Depends(get_
     """
     API endpoint for student signup.
     """
-    return await student_signup_service(student, db)
-
+    return await AuthService.student_signup(student, db)
 
 # **Student Login Route**
 @router.post("/login", response_model=StudentToken)
@@ -46,7 +44,7 @@ async def student_login(student: StudentLogin, db: AsyncSession = Depends(get_db
     """
     API endpoint for student login.
     """
-    result = await student_login_service(student, db)
+    result = await AuthService.student_login(student, db)
 
     return StudentToken(
         access_token=result["token"],
@@ -57,14 +55,13 @@ async def student_login(student: StudentLogin, db: AsyncSession = Depends(get_db
         student_email=result["student_email"],
     )
 
-
 # **Student Change Password Route**
 @router.put("/change-password", status_code=200)
 async def change_password(data: ChangePassword, db: AsyncSession = Depends(get_db)):
     """
     API endpoint to change the password for a student.
     """
-    return await change_password_service(data, db)
+    return await AuthService.change_password(data, db)
 
 
 # **Student Enroll Course Route**
@@ -75,8 +72,27 @@ async def enroll_student(
     """
     API endpoint to enroll a student in a course with a specific lecturer.
     """
-    enrollment_response = await enroll_student_service(enrollment_data, db)
+    enrollment_response = await CourseService.enroll_student(enrollment_data, db)
     return enrollment_response
+
+
+# **Get Student's Enrolled Courses Route**
+@router.get("/student_courses", response_model=List[CourseDetails])
+async def get_student_courses(
+    db: AsyncSession = Depends(get_db),
+    current_student: Student = Depends(get_current_student),
+):
+    """
+    API endpoint to retrieve the courses a student is enrolled in along with course code, name, credits, and lecturer name.
+    """
+    return await CourseService.get_student_courses(current_student, db)
+
+
+@router.get("/course_stats")
+async def student_course_stats(
+    db: AsyncSession = Depends(get_db), current_student=Depends(get_current_student)
+):
+    return await CourseService.get_student_course_stats(db, current_student)
 
 
 # **Scan QR Code for Attendance Route**
@@ -90,25 +106,6 @@ async def scan_qr(
     API endpoint to mark attendance via QR code scanning.
     """
     return await scan_qr_service(attendance_data, db)
-
-
-# **Get Student's Enrolled Courses Route**
-@router.get("/student_courses", response_model=List[CourseDetails])
-async def get_student_courses(
-    db: AsyncSession = Depends(get_db),
-    current_student: Student = Depends(get_current_student),
-):
-    """
-    API endpoint to retrieve the courses a student is enrolled in along with course code, name, credits, and lecturer name.
-    """
-    return await get_student_courses_service(current_student, db)
-
-
-@router.get("/course_stats")
-async def student_course_stats(
-    db: AsyncSession = Depends(get_db), current_student=Depends(get_current_student)
-):
-    return await get_student_course_stats(db, current_student)
 
 
 @router.get("/me")

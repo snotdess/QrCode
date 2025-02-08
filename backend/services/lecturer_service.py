@@ -9,83 +9,10 @@ from models import (
     Student,
     LecturerCourses,
 )
-from utils import get_password_hash, create_access_token, verify_password
 from fastapi import HTTPException
 from typing import Dict
 
 
-async def register_lecturer(lecturer_data, db: AsyncSession):
-    query = select(Lecturer).where(
-        Lecturer.lecturer_email == lecturer_data.lecturer_email
-    )
-    result = await db.execute(query)
-    existing_lecturer = result.scalars().first()
-
-    if existing_lecturer:
-        raise HTTPException(status_code=400, detail="Email already registered.")
-
-    hashed_password = get_password_hash(lecturer_data.lecturer_password)
-    new_lecturer = Lecturer(
-        lecturer_name=lecturer_data.lecturer_name,
-        lecturer_email=lecturer_data.lecturer_email,
-        lecturer_department=lecturer_data.lecturer_department,
-        lecturer_password=hashed_password,
-    )
-    db.add(new_lecturer)
-    await db.commit()
-    await db.refresh(new_lecturer)
-
-    return {
-        "message": "Lecturer successfully registered.",
-        "lecturer_email": new_lecturer.lecturer_email,
-    }
-
-async def login_lecturer(lecturer_data, db: AsyncSession):
-    # Query to find lecturer by email
-    query = select(Lecturer).where(
-        Lecturer.lecturer_email == lecturer_data.lecturer_email
-    )
-    result = await db.execute(query)
-    db_lecturer = result.scalars().first()
-
-    # Raise exception if lecturer not found
-    if not db_lecturer:
-        raise HTTPException(status_code=404, detail="Lecturer not found.")
-
-    # Raise exception if the password is incorrect
-    if not verify_password(
-        lecturer_data.lecturer_password, db_lecturer.lecturer_password
-    ):
-        raise HTTPException(status_code=401, detail="Incorrect password.")
-
-    # Generate token if authentication is successful
-    token = create_access_token(data={"sub": db_lecturer.lecturer_email})
-
-    return {
-        "token": token,
-        "lecturer_id": db_lecturer.lecturer_id,
-        "lecturer_name": db_lecturer.lecturer_name,
-        "lecturer_email": db_lecturer.lecturer_email,
-        "lecturer_department": db_lecturer.lecturer_department,
-    }
-
-
-async def change_lecturer_password(data, db: AsyncSession):
-    query = select(Lecturer).where(Lecturer.lecturer_email == data.email)
-    result = await db.execute(query)
-    lecturer = result.scalars().first()
-
-    if not lecturer:
-        raise HTTPException(
-            status_code=404, detail="Lecturer with this email does not exist"
-        )
-
-    lecturer.lecturer_password = get_password_hash(data.new_password)
-    db.add(lecturer)
-    await db.commit()
-    await db.refresh(lecturer)
-
-    return {"message": "Password updated successfully"}
 
 
 async def get_attendance_service(course_code: str, current_lecturer, db: AsyncSession):

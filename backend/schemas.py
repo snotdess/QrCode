@@ -124,6 +124,7 @@ class AttendanceCreate(BaseModel):
     course_code: str  # Course code
     latitude: float  # Latitude of the student
     longitude: float  # Longitude of the student
+    lecturer_id: int
 
 
 class CourseStats(BaseModel):
