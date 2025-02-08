@@ -1,10 +1,10 @@
 import { Layout, Typography } from "antd";
-import useDynamicTitleLevel from "../../hooks/useDynamicTitleLevel";
+import useDynamicHeadingLevel from "../../hooks/typography/useDynamicHeadingLevel";
 import Summary from "../Courses/Summary";
 
 const StudentDashboard = ({ fullname, matNo, sidebarCollapsed }) => {
     const { Content } = Layout;
-    const titleLevel = useDynamicTitleLevel();
+    const titleLevel = useDynamicHeadingLevel();
 
     return (
         <Content

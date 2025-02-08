@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { FaUser, FaUserShield } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader/Loader";
-import ChoiceCard from "../components/Utils/ChoiceCard";
+import ChoiceCard from "../components/Card/ChoiceCard";
 
 const Onboarding = () => {
     const { Title, Paragraph } = Typography;

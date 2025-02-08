@@ -2,7 +2,7 @@ import { Empty } from "antd";
 import React, { useEffect, useState } from "react";
 import { getLecturerCourseStudents } from "../../api/api"; // Import API function
 import Loader from "../Loader/Loader";
-import SummaryBox from "../Utils/SummaryBox"; // Import SummaryBox component
+import SummaryBox from "../Stats/SummaryBox"; // Import SummaryBox component
 
 const LecturerCourseStats = ({ sidebarCollapsed }) => {
     const [courseData, setCourseData] = useState([]);

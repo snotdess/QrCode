@@ -91,7 +91,7 @@ import Footer from "./components/Footer/Footer";
 import Navbar from "./components/Navbar/Navbar";
 import Sidebar from "./components/Sidebar/SideBar";
 import { renderRoutes, routes } from "./config/routesConfig";
-import useUserInfo from "./hooks/useUserInfo";
+import useUserInfo from "./hooks/userInfo/useUserInfo";
 import NotFound from "./routes/NotFound";
 
 const App = () => {

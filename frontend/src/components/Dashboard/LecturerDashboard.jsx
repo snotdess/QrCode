@@ -1,5 +1,6 @@
 import { Layout, Typography } from "antd";
-import useDynamicTitleLevel from "../../hooks/useDynamicTitleLevel";
+
+import useDynamicHeadingLevel from "../../hooks/typography/useDynamicHeadingLevel";
 import Attendance from "../Attendance";
 import LecturerCourseStats from "../Courses/LecturerCourseStats";
 import LatestQRCodes from "../QRCode/LatestQRCodes";
@@ -8,7 +9,7 @@ const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
     const { Title } = Typography;
     const { Content } = Layout;
 
-    const titleLevel = useDynamicTitleLevel();
+    const titleLevel = useDynamicHeadingLevel();
 
     return (
         <Content
@@ -28,8 +29,8 @@ const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
                 Welcome, {fullname}
             </Title>
 
-            <div className=" my-[2.5rem]  grid grid-cols-1 lg:grid-cols-2 ">
-                <div className="left">
+            <div className=" my-[2.5rem] grid grid-cols-1 lg:grid-cols-2 ">
+                <div className="left ">
                     <Title
                         level={5}
                         style={{

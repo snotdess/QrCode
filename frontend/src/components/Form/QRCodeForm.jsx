@@ -1,11 +1,11 @@
 // // components/QRCode/QRCodeForm.jsx
 
-import React, { useState } from "react";
 import { Button, Form, Input, Select, Space } from "antd";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
+import useLocation from "../../hooks/location/useLocation";
 import useLecturerCourses from "../../hooks/useLecturerCourses";
-import useLocation from "../../hooks/useLocation";
-import { handleQRCodeGeneration } from "../../utils/qrcode";
+import { handleQRCodeGeneration } from "../../utils/qrcode/qrcode";
 
 const QRCodeForm = ({ onClose }) => {
     const [loading, setLoading] = useState(false);

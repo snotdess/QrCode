@@ -1,9 +1,9 @@
 import { Image } from "antd";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import FormComponent from "../components/Form/FormComponent";
-import Loader from "../components/Loader/Loader";
-import { handleLogin } from "../utils/auth"; 
+import FormComponent from "../../components/Form/FormComponent";
+import Loader from "../../components/Loader/Loader";
+import { handleLogin } from "../../utils/auth/auth";
 
 const Login = ({
     userType = "student",

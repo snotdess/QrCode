@@ -1,11 +1,11 @@
-import React, { useState } from "react";
 import { Layout, Typography } from "antd";
-import CourseTable from "../../components/Courses/CourseTable";
+import React, { useState } from "react";
 import RegisterCourse from "../../components/Courses/RegisterCourse";
 import Summary from "../../components/Courses/Summary";
-import useAuth from "../../hooks/useAuth";
-import useUserInfo from "../../hooks/useUserInfo";
-import useDynamicTitleLevel from "../../hooks/useDynamicTitleLevel";
+import CourseTable from "../../components/Table/CourseTable";
+import useAuth from "../../hooks/auth/useAuth";
+import useDynamicHeadingLevel from "../../hooks/typography/useDynamicHeadingLevel";
+import useUserInfo from "../../hooks/userInfo/useUserInfo";
 
 const { Content } = Layout;
 const { Title } = Typography;
@@ -14,7 +14,7 @@ const Course = ({ sidebarCollapsed }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [reload, setReload] = useState(false);
     const { userRole } = useUserInfo();
-    const titleLevel = useDynamicTitleLevel();
+    const titleLevel = useDynamicHeadingLevel();
 
     useAuth();
 

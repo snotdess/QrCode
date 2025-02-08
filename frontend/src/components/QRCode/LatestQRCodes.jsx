@@ -1,11 +1,12 @@
 // // components/QRCode/LatestQRCodes.jsx
 
 import { DeleteOutlined, DownloadOutlined } from "@ant-design/icons";
-import { Button, Popconfirm, Table } from "antd";
+import { Button, Empty, Popconfirm, Table } from "antd";
 import { QRCodeCanvas } from "qrcode.react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { deleteQRCode, getLecturerLatestQRCodes } from "../../api/api";
+import Loader from "../Loader/Loader";
 
 const LatestQRCodes = () => {
     const [qrCodes, setQRCodes] = useState([]);
@@ -16,12 +17,10 @@ const LatestQRCodes = () => {
         const fetchQRCodes = async () => {
             try {
                 const data = await getLecturerLatestQRCodes();
-                if (data) {
-                    setQRCodes(data);
-                } else {
-                    setQRCodes([]);
-                }
+
+                setQRCodes(data || []); // Set to an empty array if data is falsy
             } catch (error) {
+                toast.error(`${error}`);
             } finally {
                 setLoading(false);
             }
@@ -104,7 +103,7 @@ const LatestQRCodes = () => {
                     <QRCodeCanvas
                         key={record.course_name}
                         value={record.qr_code_link}
-                        size={100}
+                        size={300}
                         level="H"
                         includeMargin={true}
                         ref={(canvas) => {
@@ -116,14 +115,19 @@ const LatestQRCodes = () => {
                 ))}
             </div>
 
-            <Table
-                columns={columns}
-                dataSource={qrCodes}
-                loading={loading}
-                rowKey="course_name"
-                className="mt-6"
-                pagination={{ pageSize: 5 }}
-            />
+            {/* Show Empty component when no QR codes exist */}
+            {qrCodes?.length === 0 && !loading ? (
+                <Empty description="Empty" />
+            ) : (
+                <Table
+                    columns={columns}
+                    dataSource={qrCodes}
+                    loading={loading && <Loader />}
+                    rowKey="course_name"
+                    className="mt-6"
+                    pagination={{ pageSize: 5 }}
+                />
+            )}
         </div>
     );
 };

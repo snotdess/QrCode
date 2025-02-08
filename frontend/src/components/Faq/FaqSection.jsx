@@ -1,6 +1,6 @@
 import { Collapse, Typography } from "antd";
 import React from "react";
-import { faqData } from "../../utils/faq";
+import { faqData } from "../../services/faq";
 
 const FaqSection = () => {
     const { Panel } = Collapse;

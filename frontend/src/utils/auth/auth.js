@@ -4,8 +4,8 @@ import {
     Lecturersignup,
     Studentlogin,
     Studentsignup,
-} from "../api/api";
-import { validateLecturerEmail, validateStudentEmail } from "./emailValidator";
+} from "../../api/api";
+import { validateLecturerEmail, validateStudentEmail } from "../email/emailValidator";
 
 export const handleSignup = async (
     userType,
@@ -84,6 +84,8 @@ export const handleLogin = async (
               }));
 
         localStorage.setItem("access_token", response.access_token);
+        localStorage.setItem("lecturer_id", response.lecturer_id);
+
         localStorage.setItem(
             "fullname",
             isStudent ? response.student_fullname : response.lecturer_name,

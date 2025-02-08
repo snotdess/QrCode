@@ -1,6 +1,6 @@
 // hooks/useLocation.js
 import { useState } from "react";
-import { getLocation } from "../utils/location";
+import { getLocation } from "../../utils/location/location";
 
 const useLocation = () => {
     const [fetchingLocation, setFetchingLocation] = useState(false);

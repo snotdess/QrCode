@@ -1,5 +1,3 @@
-
-
 import { Button, Form, Modal } from "antd";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -8,8 +6,8 @@ import {
     createStudentCourse,
     getLecturerCourseCode,
 } from "../../api/api";
-import useAuth from "../../hooks/useAuth";
-import CourseFormFields from "./CourseFormFields"; // Import the modularized form fields
+import useAuth from "../../hooks/auth/useAuth";
+import CourseFormFields from "../Form/CourseFormFields"; // Import the modularized form fields
 
 const RegisterCourse = ({
     userRole,

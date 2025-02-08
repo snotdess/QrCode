@@ -2,7 +2,7 @@ import { Image, Modal } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import QRCodeForm from "../components/QRCode/QRCodeForm";
+import QRCodeForm from "../../components/Form/QRCodeForm";
 
 const QRcode = () => {
     const [visible, setVisible] = useState(true);

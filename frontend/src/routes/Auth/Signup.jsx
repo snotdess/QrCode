@@ -1,10 +1,9 @@
-
 import { Image } from "antd";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import FormComponent from "../components/Form/FormComponent";
-import Loader from "../components/Loader/Loader";
-import { handleSignup } from "../utils/auth"; // Import the new function
+import FormComponent from "../../components/Form/FormComponent";
+import Loader from "../../components/Loader/Loader";
+import { handleSignup } from "../../utils/auth/auth"; // Import the new function
 
 const Signup = ({ userType }) => {
     const navigate = useNavigate();

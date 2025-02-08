@@ -1,11 +1,10 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LecturerDashboard from "../../components/Dashboard/LecturerDashboard";
 import StudentDashboard from "../../components/Dashboard/StudentDashboard";
 import Loader from "../../components/Loader/Loader";
-import useAuth from "../../hooks/useAuth";
-import useUserInfo from "../../hooks/useUserInfo";
+import useAuth from "../../hooks/auth/useAuth";
+import useUserInfo from "../../hooks/userInfo/useUserInfo";
 
 const Dashboard = ({ sidebarCollapsed }) => {
     const [dashboardComponent, setDashboardComponent] = useState(null);

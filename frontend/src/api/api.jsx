@@ -121,9 +121,13 @@ export const getLecturerLatestQRCodes = async () => {
             },
         });
 
-        return response.data;
+        if (response) {
+            return response.data;
+        } else {
+            return [];
+        }
     } catch (error) {
-        console.error(error);
+        throw error?.response?.data.detail;
     }
 };
 

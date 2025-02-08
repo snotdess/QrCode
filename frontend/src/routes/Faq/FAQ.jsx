@@ -1,5 +1,5 @@
 import React from "react";
-import FaqSection from "../components/Faq/FaqSection";
+import FaqSection from "../../components/Faq/FaqSection";
 
 const FAQ = () => {
     return (

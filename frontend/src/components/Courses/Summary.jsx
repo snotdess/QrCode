@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getLecturerCourseStats, getStudentCourseStats } from "../../api/api";
 import Loader from "../Loader/Loader";
-import SummaryBox from "../Utils/SummaryBox";
+import SummaryBox from "../Stats/SummaryBox";
 
 const Summary = ({
     sidebarCollapsed,

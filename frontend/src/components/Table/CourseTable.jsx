@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { fetchLecturerCourses, fetchStudentCourses } from "../../utils/course";
-import { getCourseTableHeaders } from "../../utils/courseTable";
+import { getCourseTableHeaders } from "../../utils/course";
 import Loader from "../Loader/Loader";
 
 const CourseTable = ({ reload }) => {
