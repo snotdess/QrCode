@@ -1,8 +1,7 @@
-
-
 import { Button, Form, Input, message } from "antd";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { scanQRCodeAttendance } from "../../api/api";
 import useLocation from "../../hooks/location/useLocation";
 import QRCodeScanner from "../QRCode/QRCodeScanner";
 
@@ -15,7 +14,24 @@ const AttendanceForm = ({ onSuccess, onCancel }) => {
     const submitAttendance = async () => {
         try {
             const values = form.getFieldsValue(true);
-            console.log("Form Values:", values);
+
+            if (!scannedData) {
+                toast.error("Please scan a valid QR code.");
+                return;
+            }
+
+            const requestData = {
+                matric_number: values.matric_number,
+                course_code: scannedData.course_code, // Use scanned QR data
+                latitude: values.student_latitude,
+                longitude: values.student_longitude,
+                lecturer_id: scannedData.lecturer_id,
+            };
+
+            console.log(requestData);
+
+            await scanQRCodeAttendance(requestData);
+
             toast.success("Attendance marked successfully!");
 
             // Reset form and scanned data after a short delay
@@ -31,7 +47,7 @@ const AttendanceForm = ({ onSuccess, onCancel }) => {
                 }, 1000); // 1s delay before closing
             }
         } catch (error) {
-            toast.error("Error submitting attendance.");
+            toast.error(error || "Error submitting attendance.");
         }
     };
 
@@ -39,10 +55,17 @@ const AttendanceForm = ({ onSuccess, onCancel }) => {
         try {
             const location = await fetchLocation();
             if (location) {
-                form.setFieldsValue({
-                    student_latitude: location.latitude,
-                    student_longitude: location.longitude,
-                });
+                const latitude = parseFloat(location.latitude);
+                const longitude = parseFloat(location.longitude);
+
+                if (!isNaN(latitude) && !isNaN(longitude)) {
+                    form.setFieldsValue({
+                        student_latitude: latitude.toFixed(2),
+                        student_longitude: longitude.toFixed(2),
+                    });
+                } else {
+                    message.error("Invalid location data received.");
+                }
             }
         } catch (error) {
             message.error("Failed to fetch location.");

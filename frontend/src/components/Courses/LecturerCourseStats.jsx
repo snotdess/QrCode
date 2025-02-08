@@ -1,3 +1,5 @@
+
+
 import { Empty } from "antd";
 import React, { useEffect, useState } from "react";
 import { getLecturerCourseStudents } from "../../api/api"; // Import API function
@@ -47,7 +49,7 @@ const LecturerCourseStats = ({ sidebarCollapsed }) => {
                 courseData.map((course, index) => (
                     <SummaryBox
                         key={index}
-                        title={course.course_name}
+                        title={`${index + 1}. ${course.course_name}`} // Adding S/N
                         value={`${
                             course.total_students === 1 ||
                             course.total_students === 0

@@ -1,11 +1,9 @@
-
-
 import { CameraOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, Descriptions, Modal, Upload } from "antd";
 import jsQR from "jsqr";
 import React, { useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { processQRCode } from "../../utils/qrcode/qrcode";
+import { processQRCode, handleImageUpload } from "../../utils/qrcode/qrcode";
 
 const { Item } = Descriptions;
 
@@ -26,7 +24,9 @@ const QRCodeScanner = ({ scannedData, setScannedData, form }) => {
     const captureAndProcessImage = () => {
         if (!videoRef.current || !canvasRef.current) return;
 
-        const context = canvasRef.current.getContext("2d");
+        const context = canvasRef.current.getContext("2d", {
+            willReadFrequently: true,
+        });
         canvasRef.current.width = videoRef.current.videoWidth;
         canvasRef.current.height = videoRef.current.videoHeight;
         context.drawImage(videoRef.current, 0, 0);

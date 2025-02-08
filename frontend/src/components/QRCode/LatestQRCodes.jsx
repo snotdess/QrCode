@@ -1,5 +1,3 @@
-// // components/QRCode/LatestQRCodes.jsx
-
 import { DeleteOutlined, DownloadOutlined } from "@ant-design/icons";
 import { Button, Empty, Popconfirm, Table } from "antd";
 import { QRCodeCanvas } from "qrcode.react";
@@ -13,20 +11,23 @@ const LatestQRCodes = () => {
     const [loading, setLoading] = useState(true);
     const canvasRefs = useRef({});
 
+    if (loading) {
+        <Loader />;
+    }
+
     useEffect(() => {
         const fetchQRCodes = async () => {
             try {
                 const data = await getLecturerLatestQRCodes();
-
-                const response = data.data;
+                const response = data?.data || [];
 
                 if (response.length > 0) {
                     setQRCodes(response);
                 } else {
-                    toast.info(`No QR Codes found`);
+                    toast.info(`No QR Codes found.`);
                 }
             } catch (error) {
-                toast.error(`${error}`);
+                toast.error(`Error fetching QR codes: ${error.message}`);
             } finally {
                 setLoading(false);
             }
@@ -37,7 +38,7 @@ const LatestQRCodes = () => {
 
     const downloadQRCode = (courseName) => {
         const canvas = canvasRefs.current[courseName];
-        if (canvas) {
+        if (canvas && canvas.toDataURL) {
             const dataURL = canvas.toDataURL("image/png");
             const link = document.createElement("a");
             link.href = dataURL;
@@ -45,6 +46,8 @@ const LatestQRCodes = () => {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        } else {
+            toast.error("QR Code download failed.");
         }
     };
 
@@ -54,13 +57,19 @@ const LatestQRCodes = () => {
             setQRCodes((prevQRCodes) =>
                 prevQRCodes.filter((qr) => qr.course_name !== courseName),
             );
-            toast.success("QR Code deleted successfully");
+            toast.success(`QR Code for ${courseName} deleted successfully.`);
         } catch (error) {
-            toast.error("Failed to delete QR Code");
+            toast.error(`Failed to delete QR Code: ${error.message}`);
         }
     };
 
     const columns = [
+        {
+            title: "S/N",
+            dataIndex: "sn",
+            key: "sn",
+            render: (_, __, index) => index + 1,
+        },
         {
             title: "Course Name",
             dataIndex: "course_name",
@@ -84,7 +93,7 @@ const LatestQRCodes = () => {
             key: "action",
             render: (_, record) => (
                 <Popconfirm
-                    title="Are you sure you want to delete this QR code?"
+                    title={`Delete QR Code for ${record.course_name}?`}
                     onConfirm={() => handleDelete(record.course_name)}
                     okText="Yes"
                     cancelText="No"
@@ -113,7 +122,7 @@ const LatestQRCodes = () => {
                         level="H"
                         includeMargin={true}
                         ref={(canvas) => {
-                            if (canvas) {
+                            if (canvas && canvas.toDataURL) {
                                 canvasRefs.current[record.course_name] = canvas;
                             }
                         }}
@@ -123,15 +132,15 @@ const LatestQRCodes = () => {
 
             {/* Show Empty component when no QR codes exist */}
             {qrCodes?.length === 0 && !loading ? (
-                <Empty description="Empty" />
+                <Empty description="No QR Codes Available" />
             ) : (
                 <Table
                     columns={columns}
-                    dataSource={qrCodes}
-                    loading={loading && <Loader />}
+                    dataSource={Array.isArray(qrCodes) ? qrCodes : []}
+                    loading={loading}
                     rowKey="course_name"
                     className="mt-6"
-                    pagination={{ pageSize: 2 }}
+                    pagination={{ pageSize: 5 }}
                 />
             )}
         </div>

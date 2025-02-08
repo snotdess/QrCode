@@ -113,21 +113,6 @@ export const getLecturerLatestQRCodes = async () => {
     return fetchData("/lecturer/latest_qr_codes", false);
 };
 
-// export const getLecturerLatestQRCodes = async () => {
-//     try {
-//         const response = await api.get("/lecturer/latest_qr_codes", {
-//             headers: {
-//                 Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-//             },
-//         });
-
-
-//         return response;
-//     } catch (error) {
-//         throw error;
-//     }
-// };
-
 // API call for deleting QR code
 export const deleteQRCode = async (course_name) => {
     try {
@@ -152,6 +137,10 @@ export const getLecturerAttendance = async (course_code) => {
     const encodedCourseCode = encodeURIComponent(course_code); // Encode spaces
     return fetchData(`/lecturer/attendance/${encodedCourseCode}`, true);
 };
+
+export const scanQRCodeAttendance = (data) =>
+    handleRequest("/student/scan-qr", data, true);
+
 
 export const logout = async () => {
     try {

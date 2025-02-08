@@ -59,14 +59,19 @@ const QRCodeForm = ({ onClose }) => {
                     onClick={async () => {
                         try {
                             const location = await fetchLocation(); // Await the location
+
                             if (location) {
                                 form.setFieldsValue({
-                                    latitude: location.latitude,
-                                    longitude: location.longitude,
+                                    latitude: parseFloat(
+                                        location.latitude,
+                                    ).toFixed(2),
+                                    longitude: parseFloat(
+                                        location.longitude,
+                                    ).toFixed(2),
                                 });
                             }
                         } catch (error) {
-                            message.error("Failed to fetch location.");
+                            toast.error("Failed to fetch location.");
                         }
                     }}
                     loading={fetchingLocation}
