@@ -36,7 +36,9 @@ const Course = ({ sidebarCollapsed }) => {
         >
             <Title
                 level={titleLevel}
-                className="uppercase mb-6"
+                className={`uppercase mb-6 ${
+                    sidebarCollapsed && "ml-[45px] md:ml-0"
+                }`}
                 style={{ fontWeight: 650, fontFamily: "Robtto" }}
             >
                 {userRole !== "lecturer" ? "Student " : "Lecturer"} Course
@@ -47,23 +49,25 @@ const Course = ({ sidebarCollapsed }) => {
                 <Summary sidebarCollapsed={sidebarCollapsed} reload={reload} />
             </div>
 
-            <div className="my-2">
-                <button
-                    onClick={handleClick}
-                    className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                >
-                    Register Course
-                </button>
+            <div className={`${sidebarCollapsed && " ml-[45px] md:ml-0"}`}>
+                <div className="my-2">
+                    <button
+                        onClick={handleClick}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                    >
+                        Register Course
+                    </button>
+                </div>
+
+                <CourseTable reload={reload} />
+
+                <RegisterCourse
+                    userRole={userRole}
+                    isModalVisible={isModalVisible}
+                    setIsModalVisible={setIsModalVisible}
+                    onCourseRegistered={handleCourseRegistered}
+                />
             </div>
-
-            <CourseTable reload={reload} />
-
-            <RegisterCourse
-                userRole={userRole}
-                isModalVisible={isModalVisible}
-                setIsModalVisible={setIsModalVisible}
-                onCourseRegistered={handleCourseRegistered}
-            />
         </Content>
     );
 };

@@ -1,5 +1,3 @@
-
-
 import { Empty } from "antd";
 import React, { useEffect, useState } from "react";
 import { getLecturerCourseStudents } from "../../api/api"; // Import API function
@@ -40,24 +38,30 @@ const LecturerCourseStats = ({ sidebarCollapsed }) => {
     return (
         <div
             className={`grid gap-5 my-[2.5rem] lg:gap-10 w-full ${
-                sidebarCollapsed ? "grid-cols-2 lg:ml-0" : "grid-cols-2"
+                sidebarCollapsed
+                    ? " md:grid-cols-2 sm:grid-cols-1"
+                    : " md:grid-cols-2 sm:grid-cols-1"
             }`}
         >
             {courseData.length === 0 ? (
                 <Empty description="No course data available" />
             ) : (
                 courseData.map((course, index) => (
-                    <SummaryBox
+                    <div
                         key={index}
-                        title={`${index + 1}. ${course.course_name}`} // Adding S/N
-                        value={`${
-                            course.total_students === 1 ||
-                            course.total_students === 0
-                                ? `${course.total_students} Student`
-                                : `${course.total_students} Students`
-                        }`}
-                        color="#1890ff"
-                    />
+                        className={`${sidebarCollapsed && "md:ml-0 ml-[5px]"}`}
+                    >
+                        <SummaryBox
+                            title={`${course.course_name}`}
+                            value={`${
+                                course.total_students === 1 ||
+                                course.total_students === 0
+                                    ? `${course.total_students} Student`
+                                    : `${course.total_students} Students`
+                            }`}
+                            color="#1890ff"
+                        />
+                    </div>
                 ))
             )}
         </div>

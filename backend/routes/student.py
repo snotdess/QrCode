@@ -21,10 +21,7 @@ from utils import get_current_student
 from services.student.auth_service import AuthService
 from services.student.course_service import CourseService
 from services.student_service import (
-    enroll_student_service,
     scan_qr_service,
-    get_student_courses_service,
-    get_student_course_stats,
 )
 
 router = APIRouter()
@@ -37,6 +34,7 @@ async def student_signup(student: StudentCreate, db: AsyncSession = Depends(get_
     API endpoint for student signup.
     """
     return await AuthService.student_signup(student, db)
+
 
 # **Student Login Route**
 @router.post("/login", response_model=StudentToken)
@@ -54,6 +52,7 @@ async def student_login(student: StudentLogin, db: AsyncSession = Depends(get_db
         student_fullname=result["student_fullname"],
         student_email=result["student_email"],
     )
+
 
 # **Student Change Password Route**
 @router.put("/change-password", status_code=200)

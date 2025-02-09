@@ -20,7 +20,7 @@ const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
         >
             <Title
                 level={titleLevel}
-                className="uppercase  mb-6 "
+                className="uppercase mb-6 ml-5 md:ml-0 "
                 style={{
                     fontFamily: "Robtto",
                 }}
@@ -29,7 +29,7 @@ const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
             </Title>
 
             <div className=" my-[2.5rem] grid grid-cols-1 lg:grid-cols-2 ">
-                <div className="left ">
+                <div className={`${sidebarCollapsed && "md:ml-0 ml-[20px]"}`}>
                     <Title
                         level={5}
                         style={{
@@ -41,7 +41,7 @@ const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
                     <LecturerCourseStats sidebarCollapsed={sidebarCollapsed} />
                 </div>
 
-                <div className="right">
+                <div className="mb-6 ml-5 md:ml-0 ">
                     <Title
                         level={5}
                         style={{

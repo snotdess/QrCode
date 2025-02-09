@@ -55,7 +55,7 @@ const Summary = ({
 
     return (
         <div
-            className={` my-[2.5rem] flex gap-5 lg:gap-10 w-full md:w-[90%] lg:w-[50%]    ${
+            className={` my-[2.5rem] flex flex-col items-center md:flex-row gap-5 lg:gap-10 w-full md:w-[90%] lg:w-[50%]    ${
                 sidebarCollapsed
                     ? " md:ml-[5px] lg:ml-[0px]"
                     : "md:ml-[0px] lg:ml-[0px]"
@@ -64,7 +64,11 @@ const Summary = ({
             {Object.entries(stats).map(([key, value]) => (
                 <div
                     key={key}
-                    className="text-black w-full md:w-[70%] lg:w-[50%]"
+                    className={`${
+                        sidebarCollapsed
+                            ? "w-[80%] md:w-[70%] lg:w-[50%] ml-[35px] md:ml-0"
+                            : "w-[80%] md:w-[70%] lg:w-[50%]"
+                    }`}
                 >
                     <SummaryBox
                         title={key.replace(/_/g, " ").toUpperCase()}

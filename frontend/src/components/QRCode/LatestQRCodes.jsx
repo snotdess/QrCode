@@ -27,7 +27,7 @@ const LatestQRCodes = () => {
                     toast.info(`No QR Codes found.`);
                 }
             } catch (error) {
-                toast.error(`Error fetching QR codes: ${error.message}`);
+                toast.error(`${error}`);
             } finally {
                 setLoading(false);
             }
@@ -59,7 +59,7 @@ const LatestQRCodes = () => {
             );
             toast.success(`QR Code for ${courseName} deleted successfully.`);
         } catch (error) {
-            toast.error(`Failed to delete QR Code: ${error.message}`);
+            toast.error(`Failed to delete QR Code: ${error}`);
         }
     };
 
@@ -114,9 +114,9 @@ const LatestQRCodes = () => {
                     visibility: "hidden",
                 }}
             >
-                {qrCodes.map((record) => (
+                {qrCodes.map((record, index) => (
                     <QRCodeCanvas
-                        key={record.course_name}
+                        key={`${record.course_name}-${index}`} // Ensure uniqueness
                         value={record.qr_code_link}
                         size={300}
                         level="H"

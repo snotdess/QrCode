@@ -83,11 +83,3 @@ async def filter_join_records(primary_model, join_model, db: AsyncSession, join_
     return result.scalars().first()
 
 
-async def fetch_lecturer_courses(db: AsyncSession):
-    """Reusable function to get lecturer-course records."""
-    result = await db.execute(
-        select(Lecturer.lecturer_name, Course.course_code, Course.course_name)
-        .join(LecturerCourses, Lecturer.lecturer_id == LecturerCourses.lecturer_id)
-        .join(Course, LecturerCourses.course_code == Course.course_code)
-    )
-    return result.fetchall()

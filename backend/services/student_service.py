@@ -73,7 +73,7 @@ async def scan_qr_service(attendance_data: AttendanceCreate, db: AsyncSession):
         select(AttendanceRecords).where(
             (AttendanceRecords.matric_number == attendance_data.matric_number)
             & (AttendanceRecords.course_code == attendance_data.course_code)
-            & (AttendanceRecords.date >= one_hour_ago)  # Attendance within last hour
+            & (AttendanceRecords.date >= one_hour_ago)
         )
     )
     existing_attendance = existing_attendance.scalars().first()

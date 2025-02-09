@@ -145,7 +145,7 @@ async def get_lecturer_latest_qr_codes(
 
     if not qr_codes:
         raise HTTPException(
-            status_code=404, detail="No QR Codes found in the last hour."
+            status_code=200, detail="No QR Codes found in the last hour."
         )
 
     return qr_codes
