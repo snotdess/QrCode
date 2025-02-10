@@ -5,8 +5,6 @@ import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     QrcodeOutlined,
-
-    ReadOutlined,
 } from "@ant-design/icons";
 import { Image, Layout, Menu } from "antd";
 import React from "react";
@@ -39,9 +37,9 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
         ...(userRole === "student"
             ? [
                   {
-                      key: "/courses",
-                      label: "Course Registration",
-                      icon: <ReadOutlined />,
+                      key: "/selected_courses",
+                      label: "Selected Course",
+                      icon: <BookOutlined />,
                   },
                   {
                       key: "/attendance",
@@ -80,9 +78,9 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
             collapsible
             collapsed={collapsed}
             onCollapse={setCollapsed}
-            width={ 260 }
+            width={260}
             breakpoint="xl"
-            collapsedWidth={ 85}
+            collapsedWidth={85}
             className="min-h-screen z-[100] fixed left-0 top-0 bottom-0 overflow-auto
     flex flex-col justify-between bg-[#0039a6]"
         >

@@ -41,8 +41,7 @@ const Course = ({ sidebarCollapsed }) => {
                 }`}
                 style={{ fontWeight: 650, fontFamily: "Robtto" }}
             >
-                {userRole !== "lecturer" ? "Student " : "Lecturer"} Course
-                Information
+                Lecturer Course Information
             </Title>
 
             <div className="my-[2.5rem]">
@@ -50,23 +49,26 @@ const Course = ({ sidebarCollapsed }) => {
             </div>
 
             <div className={`${sidebarCollapsed && " ml-[45px] md:ml-0"}`}>
-                <div className="my-2">
-                    <button
-                        onClick={handleClick}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                    >
-                        Register Course
-                    </button>
-                </div>
+                {userRole != "student" && (
+                    <div className="">
+                        <div className="my-2">
+                            <button
+                                onClick={handleClick}
+                                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                            >
+                                Register Course
+                            </button>
+                        </div>
+                        <CourseTable />
 
-                <CourseTable reload={reload} />
-
-                <RegisterCourse
-                    userRole={userRole}
-                    isModalVisible={isModalVisible}
-                    setIsModalVisible={setIsModalVisible}
-                    onCourseRegistered={handleCourseRegistered}
-                />
+                        <RegisterCourse
+                            userRole={userRole}
+                            isModalVisible={isModalVisible}
+                            setIsModalVisible={setIsModalVisible}
+                            onCourseRegistered={handleCourseRegistered}
+                        />
+                    </div>
+                )}
             </div>
         </Content>
     );

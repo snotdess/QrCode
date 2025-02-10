@@ -61,6 +61,8 @@ const fetchData = async (endpoint, isDataNeeded = true) => {
     }
 };
 
+/* Authentication */
+
 // Exposed functions for lectuer signup
 export const Lecturersignup = (data) => handleAuth("/lecturer/signup", data);
 
@@ -72,6 +74,8 @@ export const Lecturerlogin = (data) => handleAuth("/lecturer/login", data);
 
 // Exposed functions for student login
 export const Studentlogin = (data) => handleAuth("/student/login", data);
+
+/* Course Route */
 
 // API calls for lecturer course creation
 export const createLectureCourse = (data) =>
@@ -86,7 +90,7 @@ export const getLecturerCourse = () => fetchData("/lecturer/course_info", true);
 
 // API calls for lecturer fetching course info
 export const getStudentCourse = () =>
-    fetchData("/student/student_courses", false); // Returns full response
+    fetchData("/student/student_courses", false);
 
 // API call for getting course stats
 export const getLecturerCourseStats = () =>
@@ -104,6 +108,8 @@ export const getLecturerCourseCode = () =>
 export const getLecturerCourseStudents = () =>
     fetchData("/lecturer/lecturer_course_students", true);
 
+/* QrCode Route */
+
 // // API calls for qrcode creation
 export const generateQRCode = (data) =>
     handleRequest("/lecturer/generate_qr_code", data, true);
@@ -112,6 +118,10 @@ export const generateQRCode = (data) =>
 export const getLecturerLatestQRCodes = async () => {
     return fetchData("/lecturer/latest_qr_codes", false);
 };
+
+// API call to scan the QR code for a course
+export const scanQRCodeAttendance = (data) =>
+    handleRequest("/student/scan-qr", data, true);
 
 // API call for deleting QR code
 export const deleteQRCode = async (course_name) => {
@@ -132,15 +142,18 @@ export const deleteQRCode = async (course_name) => {
     }
 };
 
+/* Attendance Records */
+
 // API call to fetch lecturer's attendance records
 export const getLecturerAttendance = async (course_code) => {
     const encodedCourseCode = encodeURIComponent(course_code); // Encode spaces
     return fetchData(`/lecturer/attendance/${encodedCourseCode}`, true);
 };
 
-export const scanQRCodeAttendance = (data) =>
-    handleRequest("/student/scan-qr", data, true);
-
+// API call to fetch student's attendance record
+export const getStudentAttendanceRecord = async () => {
+    return fetchData("/student/attendance_details", false);
+};
 
 export const logout = async () => {
     try {

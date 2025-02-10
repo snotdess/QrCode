@@ -25,7 +25,6 @@ export const fetchStudentCourses = async () => {
     }
 };
 
-
 export const getCourseTableHeaders = (userRole) => {
     // Base columns for all users
     const baseHeaders = [
@@ -61,13 +60,22 @@ export const getCourseTableHeaders = (userRole) => {
 
     // Add the Lecturer Name column if userRole is "student"
     if (userRole === "student") {
-        baseHeaders.push({
-            title: "Lecturer Name",
-            dataIndex: "lecturer_name", // Ensure the backend returns this field
-            key: "lecturer_name",
-            width: "15%",
-            responsive: ["xs", "sm", "md", "lg"], // Visible on all screen sizes
-        });
+        baseHeaders.push(
+            {
+                title: "Lecturer Name",
+                dataIndex: "lecturer_name", // Ensure the backend returns this field
+                key: "lecturer_name",
+                width: "15%",
+                responsive: ["xs", "sm", "md", "lg"], // Visible on all screen sizes
+            },
+            {
+                title: "Attendance Score",
+                dataIndex: "attendance_score", // Ensure backend returns this field
+                key: "attendance_score",
+                width: "10%",
+                responsive: ["xs", "sm", "md", "lg"], // Visible on all screen sizes
+            },
+        );
     }
 
     return baseHeaders;

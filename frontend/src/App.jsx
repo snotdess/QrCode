@@ -33,6 +33,7 @@ const App = () => {
         "/student/signup",
         "/dashboard",
         "/courses",
+        "/selected_courses",
         "/create_qrcode",
         "/attendance",
     ];
@@ -47,7 +48,8 @@ const App = () => {
         location.pathname.startsWith("/courses") ||
         location.pathname === "/dashboard" ||
         location.pathname === "/create_qrcode" ||
-        location.pathname === "/attendance";
+        location.pathname === "/attendance" ||
+        location.pathname === "/selected_courses";
 
     // Check if current route is a 404 (not found) page
     const isNotFoundPage = !routes.some(

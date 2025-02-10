@@ -1,14 +1,13 @@
-import { Table } from "antd";
+import { Layout } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import {
-    fetchLecturerCourses,
-    getCourseTableHeaders,
-} from "../../utils/course";
-import Loader from "../Loader/Loader";
+import Loader from "../../components/Loader/Loader";
+import SelectedCourseTable from "../../components/Table/SelectedCourseTable";
+import { fetchStudentCourses } from "../../utils/course";
 
-const CourseTable = ({ reload }) => {
+const CourseList = ({ reload, sidebarCollapsed }) => {
+    const { Content } = Layout;
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 8 });
@@ -21,8 +20,8 @@ const CourseTable = ({ reload }) => {
         setLoading(true);
         try {
             let coursesData = [];
-            if (userRole === "lecturer") {
-                coursesData = await fetchLecturerCourses();
+            if (userRole === "student") {
+                coursesData = await fetchStudentCourses();
             } else {
                 toast.error("User not allowed.");
                 navigate("/onboarding");
@@ -64,49 +63,34 @@ const CourseTable = ({ reload }) => {
 
         // Listen for window resize events
         window.addEventListener("resize", handleResize);
-
         return () => window.removeEventListener("resize", handleResize);
-    }, [] );
+    }, []);
 
-    
-
-    const columns = [
-        {
-            title: "S/N",
-            key: "sn",
-            render: (_text, _record, index) => {
-                return (
-                    (pagination.current - 1) * pagination.pageSize + index + 1
-                );
-            },
-            width: "5%",
-        },
-        ...getCourseTableHeaders(userRole),
-    ];
+    const handleTableChange = (page, pageSize) => {
+        setPagination({ current: page, pageSize });
+    };
 
     return (
-        <div className=" my-[1.2rem] md:mt-0  lg:p-0">
+        <Content
+            className={`min-h-screen mx-auto px-8 py-2 lg:px-8 lg:py-4 transition-all ${
+                sidebarCollapsed
+                    ? "md:ml-[95px] lg:ml-[60px]"
+                    : "md:ml-[220px] lg:ml-[140px]"
+            }`}
+            //    className="my-[1.2rem] md:mt-0 lg:p-0"
+        >
             {loading ? (
                 <Loader />
             ) : (
-                <Table
-                    style={{ whiteSpace: "nowrap", marginBottom: "24px" }}
-                    columns={columns}
-                    dataSource={courses}
-                    rowKey="course_code"
-                    pagination={{
-                        ...pagination,
-                        onChange: (page, pageSize) => {
-                            setPagination({ current: page, pageSize });
-                        },
-                        pageSizeOptions: ["5", "8", "10"], // Customize page size options
-                    }}
-                    bordered
-                    scroll={{ x: true }}
+                <SelectedCourseTable
+                    courses={courses}
+                    pagination={pagination}
+                    handleTableChange={handleTableChange}
+                    userRole={userRole}
                 />
             )}
-        </div>
+        </Content>
     );
 };
 
-export default CourseTable;
+export default CourseList;
