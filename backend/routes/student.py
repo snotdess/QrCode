@@ -20,9 +20,7 @@ from schemas import (
 from utils import get_current_student
 from services.student.auth_service import AuthService
 from services.student.course_service import CourseService
-from services.student_service import (
-    scan_qr_service,
-)
+from services.student_service import scan_qr_service, get_student_attendance_details
 
 router = APIRouter()
 
@@ -105,6 +103,17 @@ async def scan_qr(
     API endpoint to mark attendance via QR code scanning.
     """
     return await scan_qr_service(attendance_data, db)
+
+
+@router.get("/attendance_details")
+async def attendance_details(
+    db: AsyncSession = Depends(get_db),
+    current_student: Student = Depends(get_current_student),
+):
+    """
+    Get the attendance details of the currently logged-in student.
+    """
+    return await get_student_attendance_details(db, current_student)
 
 
 @router.get("/me")

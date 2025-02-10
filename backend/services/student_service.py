@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, func
+from typing import List
 from fastapi import HTTPException
 from models import (
     Student,
@@ -7,8 +8,10 @@ from models import (
     StudentCourses,
     QRCode,
     AttendanceRecords,
+    LecturerCourses,
+    Lecturer,
 )
-from schemas import AttendanceCreate
+from schemas import AttendanceCreate, StudentAttendanceRecord
 from datetime import datetime, timedelta
 from geopy.distance import geodesic
 
@@ -110,3 +113,104 @@ async def scan_qr_service(attendance_data: AttendanceCreate, db: AsyncSession):
     await db.commit()
 
     return {"message": "Attendance marked successfully"}
+
+
+async def get_student_attendance_details(
+    db: AsyncSession, current_student: Student
+) -> List[StudentAttendanceRecord]:
+    # Query total QR code generations per course (total attendance sessions)
+    total_qr_stmt = select(
+        QRCode.course_code, func.count().label("total_sessions")
+    ).group_by(QRCode.course_code)
+    total_qr_result = await db.execute(total_qr_stmt)
+    total_sessions = dict(total_qr_result.all())  # {course_code: total_sessions}
+
+    # Query student's attendance count per course
+    student_attendance_stmt = (
+        select(
+            AttendanceRecords.course_code,
+            Course.course_name,
+            Course.semester,
+            Course.course_credits,
+            Lecturer.lecturer_name,
+            func.count().label("attended_sessions"),
+        )
+        .join(Course, Course.course_code == AttendanceRecords.course_code)
+        .join(LecturerCourses, LecturerCourses.course_code == Course.course_code)
+        .join(Lecturer, Lecturer.lecturer_id == LecturerCourses.lecturer_id)
+        .where(AttendanceRecords.matric_number == current_student.matric_number)
+        .group_by(
+            AttendanceRecords.course_code,
+            Course.course_name,
+            Course.semester,
+            Course.course_credits,
+            Lecturer.lecturer_name,
+        )
+    )
+
+    student_attendance_result = await db.execute(student_attendance_stmt)
+    attendance_records = student_attendance_result.all()
+
+    # Calculate attendance percentage
+    attendance_data = []
+    for record in attendance_records:
+        total_sessions_count = total_sessions.get(
+            record.course_code, 1
+        )  # Avoid division by zero
+        attendance_percentage = (record.attended_sessions / total_sessions_count) * 100
+
+        attendance_data.append(
+            StudentAttendanceRecord(
+                matric_number=current_student.matric_number,
+                course_name=record.course_name,
+                course_code=record.course_code,
+                lecturer_name=record.lecturer_name,
+                course_credits=record.course_credits,
+                semester=record.semester,
+                attendance_score=round(
+                    attendance_percentage, 2
+                ),  # Round for cleaner output
+            )
+        )
+
+    return attendance_data
+
+
+# async def get_student_attendance_details(
+#     db: AsyncSession, current_student: Student
+# ) -> List[StudentAttendanceRecord]:
+#     # Fetch attendance records for the student
+#     stmt = (
+#         select(
+#             AttendanceRecords.course_code,
+#             Course.course_name,
+#             Course.semester,
+#             Lecturer.lecturer_name,
+#         )
+#         .join(Course, Course.course_code == AttendanceRecords.course_code)
+#         .join(LecturerCourses, LecturerCourses.course_code == Course.course_code)
+#         .join(Lecturer, Lecturer.lecturer_id == LecturerCourses.lecturer_id)
+#         .where(AttendanceRecords.matric_number == current_student.matric_number)
+#     )
+
+#     result = await db.execute(stmt)
+#     attendance_records = result.all()
+
+#     # Calculate attendance score (counting records and multiplying by 100)
+#     attendance_data = {}
+#     for record in attendance_records:
+#         course_code = record.course_code
+#         if course_code not in attendance_data:
+#             attendance_data[course_code] = StudentAttendanceRecord(
+#                 matric_number=current_student.matric_number,
+#                 course_name=record.course_name,
+#                 course_code=course_code,
+#                 lecturer_name=record.lecturer_name,
+#                 semester=record.semester,
+#                 attendance_score=0,
+#             )
+#         attendance_data[
+#             course_code
+#         ].attendance_score += 100  # Multiply by 100 for each record
+
+#     return list(attendance_data.values())

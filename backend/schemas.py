@@ -156,6 +156,17 @@ class StudentAttendance(BaseModel):
     attendance: Dict[str, str]  # Date as key, status (Present/Absent) as value
 
 
+
+class StudentAttendanceRecord(BaseModel):
+    matric_number: str
+    course_name: str
+    course_code: str
+    lecturer_name: str
+    course_credits:int
+    semester: str
+    attendance_score: int
+
+
 class AttendanceResponse(BaseModel):
     course_name: str
     attendance: List[StudentAttendance]
