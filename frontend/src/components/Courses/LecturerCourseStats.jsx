@@ -37,7 +37,7 @@ const LecturerCourseStats = ({ sidebarCollapsed }) => {
 
     return (
         <div
-            className={`grid gap-5 my-[2.5rem] lg:gap-10 w-full ${
+            className={`grid gap-5 my-[2.5rem] w-full lg:w-[90%] ${
                 sidebarCollapsed
                     ? " md:grid-cols-2 sm:grid-cols-1"
                     : " md:grid-cols-2 sm:grid-cols-1"
@@ -47,10 +47,7 @@ const LecturerCourseStats = ({ sidebarCollapsed }) => {
                 <Empty description="No course data available" />
             ) : (
                 courseData.map((course, index) => (
-                    <div
-                        key={index}
-                        className={`${sidebarCollapsed && "md:ml-0 ml-[5px]"}`}
-                    >
+                    <div key={index}>
                         <SummaryBox
                             title={`${course.course_name}`}
                             value={`${

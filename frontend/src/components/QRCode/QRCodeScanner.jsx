@@ -1,3 +1,5 @@
+// QRCodeScanner.jsx
+
 import { CameraOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, Descriptions, Modal, Upload } from "antd";
 import jsQR from "jsqr";

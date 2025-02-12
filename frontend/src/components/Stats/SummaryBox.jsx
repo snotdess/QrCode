@@ -1,3 +1,5 @@
+// SummaryBox.jsx
+
 import { Card, Typography } from "antd";
 import React from "react";
 import useDynamicSubtitleLevel from "../../hooks/typography/useDynamicSubtitleLevel";
@@ -25,7 +27,7 @@ const SummaryBox = ({ title, value, color }) => {
 
     return (
         <Card
-            className="flex flex-col w-full lg:w-[80%] h-[120px] md:h-[140px] items-start justify-center"
+            className="flex flex-col items-start justify-center h-[140px]"
             style={{
                 borderColor: color,
             }}

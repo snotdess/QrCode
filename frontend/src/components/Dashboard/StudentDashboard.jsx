@@ -25,13 +25,13 @@ const StudentDashboard = ({ fullname, sidebarCollapsed }) => {
 
     return (
         <Content
-            className={`min-h-screen mx-auto px-8 py-2 lg:px-8 lg:py-4 transition-all ${
+            className={`min-h-screen mx-auto px-8 py-2 lg:px-4 lg:py-4 transition-all ${
                 sidebarCollapsed
-                    ? " md:ml-[35px] lg:ml-[60px]"
-                    : " md:ml-[220px] lg:ml-[140px]"
+                    ? " ml-[45px] md:ml-[55px] lg:ml-[45px]"
+                    : "md:ml-[220px] lg:ml-[180px]"
             }`}
         >
-            <div className={`mb-6 ${sidebarCollapsed && "ml-[45px] md:ml-0"}`}>
+            <div>
                 <Title
                     style={{
                         fontFamily: "Robtto",

@@ -1,6 +1,7 @@
 import { Form, Input, Select } from "antd";
 import React from "react";
-import { commonFields } from "../../utils/course";
+import { commonFields } from "../../utils/table/tableHeaders";
+
 
 const CourseFormFields = ({ userRole, courses, loading }) => {
     const { Item } = Form;

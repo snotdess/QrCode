@@ -92,7 +92,7 @@ async def student_course_stats(
     return await CourseService.get_student_course_stats(db, current_student)
 
 
-# **Scan QR Code for Attendance Route**
+
 @router.post("/scan-qr")
 async def scan_qr(
     attendance_data: AttendanceCreate,
@@ -102,7 +102,20 @@ async def scan_qr(
     """
     API endpoint to mark attendance via QR code scanning.
     """
-    return await scan_qr_service(attendance_data, db)
+    return await scan_qr_service(attendance_data, db, current_student)
+
+
+# # **Scan QR Code for Attendance Route**
+# @router.post("/scan-qr")
+# async def scan_qr(
+#     attendance_data: AttendanceCreate,
+#     db: AsyncSession = Depends(get_db),
+#     current_student: Student = Depends(get_current_student),
+# ):
+#     """
+#     API endpoint to mark attendance via QR code scanning.
+#     """
+#     return await scan_qr_service(attendance_data, db)
 
 
 @router.get("/attendance_details")

@@ -1,30 +1,9 @@
-import { toast } from "react-toastify";
-import { getLecturerCourse, getStudentCourse } from "../api/api"; // Import API functions
+// tableHeaders.js
 
-// Fetch courses for lecturers
-export const fetchLecturerCourses = async () => {
-    try {
-        const response = await getLecturerCourse();
-        return response; // Return the courses fetched from the API
-    } catch (error) {
-        toast.error(f`${error.response}`);
-        return []; // Return an empty array in case of error
-    }
-};
-
-export const fetchStudentCourses = async () => {
-    try {
-        const response = await getStudentCourse();
-        return response.data; // Return the courses fetched from the API
-    } catch (error) {
-        // toast.error("Failed to load courses. Please try again.");
-        toast.error(f`${error.response}`);
-        console.log(error);
-
-        return []; // Return an empty array in case of error
-    }
-};
-
+/**
+ * Generates table headers for the course table based on the user's role.
+ * Includes additional columns (e.g., Lecturer Name, Attendance Score) for students.
+ */
 export const getCourseTableHeaders = (userRole) => {
     // Base columns for all users
     const baseHeaders = [
@@ -81,6 +60,10 @@ export const getCourseTableHeaders = (userRole) => {
     return baseHeaders;
 };
 
+/**
+ * Defines common form fields for lecturers and students.
+ * Includes fields like Course Code, Course Name, Credits, and Matric Number.
+ */
 export const commonFields = {
     lecturer: [
         {

@@ -45,11 +45,29 @@ const QRCodeForm = ({ onClose }) => {
                 </Select>
             </Form.Item>
 
-            <Form.Item label="Latitude" name="latitude">
+            <Form.Item
+                label="Latitude"
+                name="latitude"
+                rules={[
+                    {
+                        required: true,
+                        message: "Please Generate your current latitude.",
+                    },
+                ]}
+            >
                 <Input placeholder="Latitude" readOnly />
             </Form.Item>
 
-            <Form.Item label="Longitude" name="longitude">
+            <Form.Item
+                label="Longitude"
+                name="longitude"
+                rules={[
+                    {
+                        required: true,
+                        message: "Please Generate your current longitude.",
+                    },
+                ]}
+            >
                 <Input placeholder="Longitude" readOnly />
             </Form.Item>
 

@@ -164,7 +164,7 @@ class StudentAttendanceRecord(BaseModel):
     lecturer_name: str
     course_credits:int
     semester: str
-    attendance_score: int
+    attendance_score: float
 
 
 class AttendanceResponse(BaseModel):

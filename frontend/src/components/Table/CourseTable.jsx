@@ -2,10 +2,8 @@ import { Table } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import {
-    fetchLecturerCourses,
-    getCourseTableHeaders,
-} from "../../utils/course";
+import { fetchLecturerCourses } from "../../utils/course/course";
+import { getCourseTableHeaders } from "../../utils/table/tableHeaders";
 import Loader from "../Loader/Loader";
 
 const CourseTable = ({ reload }) => {
@@ -66,9 +64,7 @@ const CourseTable = ({ reload }) => {
         window.addEventListener("resize", handleResize);
 
         return () => window.removeEventListener("resize", handleResize);
-    }, [] );
-
-    
+    }, []);
 
     const columns = [
         {

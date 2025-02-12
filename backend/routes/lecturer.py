@@ -20,10 +20,8 @@ from schemas import (
 from services.lecturer.auth_service import AuthService
 from services.lecturer.qrcode_service import QRCodeService
 from services.lecturer.lecturer_course_service import LecturerCourseService
-
 from utils import get_current_lecturer
 from services.lecturer_service import (
-
     get_attendance_service,
 )
 from typing import List
@@ -88,7 +86,6 @@ async def get_course_info(
     courses = await LecturerCourseService.get_courses_for_lecturer(db, current_lecturer)
     return courses
 
-
 #  #**Lecturer course statistics**
 @router.get("/course_stats", response_model=CourseStats)
 async def get_course_stats(
@@ -107,6 +104,7 @@ async def fetch_lecturer_courses(db: AsyncSession = Depends(get_db)):
     """
     lecturer_courses = await LecturerCourseService.get_lecturer_courses(db)
     return {"lecturer_courses": lecturer_courses}
+
 
 #  #**Lecturer course register Students**
 @router.get("/lecturer_course_students")

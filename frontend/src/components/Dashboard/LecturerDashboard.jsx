@@ -1,8 +1,8 @@
 import { Layout, Typography } from "antd";
-
 import useDynamicHeadingLevel from "../../hooks/typography/useDynamicHeadingLevel";
 import LecturerCourseStats from "../Courses/LecturerCourseStats";
 import LatestQRCodes from "../QRCode/LatestQRCodes";
+import LecturerAttendanceComponent from "../Attendance/LecturerAttendanceComponent";
 
 const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
     const { Title } = Typography;
@@ -14,13 +14,13 @@ const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
         <Content
             className={`min-h-screen mx-auto px-8 py-2 lg:px-8 lg:py-4   transition-all ${
                 sidebarCollapsed
-                    ? " ml-[20px] md:ml-[95px] lg:ml-[60px]"
-                    : "md:ml-[220px] lg:ml-[140px]"
+                    ? " ml-[45px] md:ml-[55px] lg:ml-[45px]"
+                    : "md:ml-[220px] lg:ml-[180px]"
             }`}
         >
             <Title
                 level={titleLevel}
-                className="uppercase mb-6 ml-5 md:ml-0 "
+                className="uppercase "
                 style={{
                     fontFamily: "Robtto",
                 }}
@@ -29,7 +29,7 @@ const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
             </Title>
 
             <div className=" my-[2.5rem] grid grid-cols-1 lg:grid-cols-2 ">
-                <div className={`${sidebarCollapsed && "md:ml-0 ml-[20px]"}`}>
+                <div>
                     <Title
                         level={5}
                         style={{
@@ -53,6 +53,8 @@ const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
                     <LatestQRCodes />
                 </div>
             </div>
+
+            <LecturerAttendanceComponent/>
         </Content>
     );
 };

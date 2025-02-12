@@ -55,21 +55,10 @@ const Summary = ({
 
     return (
         <div
-            className={` my-[2.5rem] flex flex-col items-center md:flex-row gap-5 lg:gap-10 w-full md:w-[90%] lg:w-[50%]    ${
-                sidebarCollapsed
-                    ? " md:ml-[5px] lg:ml-[0px]"
-                    : "md:ml-[0px] lg:ml-[0px]"
-            }`}
+            className={`grid grid-cols-1 md:grid-cols-2 h-[12%]  gap-5 w-full ${sidebarCollapsed ? "md:w-[85%] lg:w-[45%]" : "md:w-[85% lg:w-[60%]"} `}
         >
             {Object.entries(stats).map(([key, value]) => (
-                <div
-                    key={key}
-                    className={`${
-                        sidebarCollapsed
-                            ? "w-[80%] md:w-[70%] lg:w-[50%] ml-[35px] md:ml-0"
-                            : "w-[80%] md:w-[70%] lg:w-[50%]"
-                    }`}
-                >
+                <div key={key}>
                     <SummaryBox
                         title={key.replace(/_/g, " ").toUpperCase()}
                         value={value}

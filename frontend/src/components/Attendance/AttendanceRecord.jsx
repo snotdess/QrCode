@@ -3,17 +3,16 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { getStudentAttendanceRecord } from "../../api/api";
 import useDynamicSubtitleLevel from "../../hooks/typography/useDynamicSubtitleLevel";
-import { getCourseTableHeaders } from "../../utils/course";
 import AttendanceTable from "../Table/AttendanceTable";
+import { getCourseTableHeaders } from "../../utils/table/tableHeaders";
 
-
-const AttendanceRecord = ( { fullname } ) => {
-    const {Content}= Layout
+const AttendanceRecord = ({ fullname }) => {
+    const { Content } = Layout;
     const subtitle = useDynamicSubtitleLevel();
     const { Title } = Typography;
     const [attendance, setAttendance] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [pagination, setPagination] = useState({ current: 1, pageSize: 8 });
+    const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
 
     // Fetch attendance records from the API
     const fetchAttendanceRecord = async () => {
@@ -37,8 +36,6 @@ const AttendanceRecord = ( { fullname } ) => {
             const width = window.innerWidth;
             if (width >= 1024) {
                 setPagination((prev) => ({ ...prev, pageSize: 10 }));
-            } else if (width >= 768) {
-                setPagination((prev) => ({ ...prev, pageSize: 8 }));
             } else {
                 setPagination((prev) => ({ ...prev, pageSize: 5 }));
             }

@@ -1,7 +1,17 @@
-import { toast } from "react-toastify";
-import { generateQRCode } from "../../api/api";
-import jsQR from "jsqr";
+// src/utils/qrcode/qrcode.js
 
+import jsQR from "jsqr";
+import { toast } from "react-toastify";
+import {
+    deleteQRCode,
+    generateQRCode,
+    getLecturerLatestQRCodes,
+} from "../../api/api";
+
+/**
+ * Generates a QR code URL with location and timestamp data, then submits it to the server.
+ * Handles loading states, form reset, and error notifications.
+ */
 export const handleQRCodeGeneration = async (
     values,
     setLoading,
@@ -59,7 +69,9 @@ export const handleQRCodeGeneration = async (
     }
 };
 
-
+/**
+ * Processes scanned QR code data, extracts relevant information, and updates the form and state.
+ */
 export const processQRCode = (qrCodeData, setScannedData, form, closeModal) => {
     try {
         const url = new URL(qrCodeData);
@@ -81,14 +93,18 @@ export const processQRCode = (qrCodeData, setScannedData, form, closeModal) => {
     }
 };
 
-
-
+/**
+ * Handles the QR code scan result and triggers the processing function.
+ */
 export const handleScan = (result, processQRCodeFn) => {
     if (result) {
         processQRCodeFn(result);
     }
 };
 
+/**
+ * Processes an uploaded image to detect and decode a QR code.
+ */
 export const handleImageUpload = async (file, processQRCodeFn) => {
     const reader = new FileReader();
     reader.onload = () => {
@@ -99,8 +115,17 @@ export const handleImageUpload = async (file, processQRCodeFn) => {
             canvas.height = image.height;
             const context = canvas.getContext("2d");
             context.drawImage(image, 0, 0, image.width, image.height);
-            const imageData = context.getImageData(0, 0, image.width, image.height);
-            const code = jsQR(imageData.data, imageData.width, imageData.height);
+            const imageData = context.getImageData(
+                0,
+                0,
+                image.width,
+                image.height,
+            );
+            const code = jsQR(
+                imageData.data,
+                imageData.width,
+                imageData.height,
+            );
             if (code) {
                 processQRCodeFn(code.data);
             } else {
@@ -111,4 +136,56 @@ export const handleImageUpload = async (file, processQRCodeFn) => {
     };
     reader.readAsDataURL(file);
     return Upload.LIST_IGNORE;
+};
+
+/**
+ * Fetches the lecturer's latest QR codes and updates the state.
+ */
+export const fetchQRCodes = async ({ setQRCodes, setLoading }) => {
+    try {
+        const data = await getLecturerLatestQRCodes();
+
+        const response = data?.data || [];
+
+        if (response.length > 0) {
+            setQRCodes(response);
+        }
+    } catch (error) {
+        toast.error(`${error}`);
+    } finally {
+        setLoading(false);
+    }
+};
+
+/**
+ * Downloads the QR code image for a given course.
+ */
+export const downloadQRCode = (courseName, canvasRefs) => {
+    const canvas = canvasRefs.current[courseName];
+    if (canvas && canvas.toDataURL) {
+        const dataURL = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = dataURL;
+        link.download = `${courseName}_QRCode.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } else {
+        toast.error("QR Code download failed.");
+    }
+};
+
+/**
+ * Deletes a QR code for a specific course and updates the state.
+ */
+export const handleDelete = async (courseName, setQRCodes) => {
+    try {
+        await deleteQRCode(courseName);
+        setQRCodes((prevQRCodes) =>
+            prevQRCodes.filter((qr) => qr.course_name !== courseName),
+        );
+        toast.success(`QR Code for ${courseName} deleted successfully.`);
+    } catch (error) {
+        toast.error(`Failed to delete QR Code: ${error}`);
+    }
 };

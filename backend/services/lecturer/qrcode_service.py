@@ -1,67 +1,43 @@
-from datetime import datetime, timedelta
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
+from sqlalchemy import select
 from models import QRCode, Course, LecturerCourses
 from schemas import QRCodeSchema
-from config import settings
 from utils import filter_records
+from util.qrcode_utils import build_qr_code_url, get_current_utc_time, get_start_of_current_hour, check_recent_qr_code
+from util.lecturer_utils import get_course_by_identifier, validate_lecturer_course, validate_lecturer
+
+
+# --------------------
+# QRCodeService Class
+# --------------------
 
 class QRCodeService:
     @staticmethod
     async def generate_qr_code(qr_code_data, db: AsyncSession, current_lecturer):
-        if not current_lecturer:
-            raise HTTPException(
-                status_code=403,
-                detail="You must be logged in as a lecturer to generate a QR code.",
-            )
+        # Validate that the current user is a lecturer.
+        await validate_lecturer(current_lecturer)
 
-        course = await filter_records(Course, db, course_code=qr_code_data.course_code)
-        if not course:
-            raise HTTPException(
-                status_code=404,
-                detail=f"Course with code '{qr_code_data.course_code}' does not exist.",
-            )
+        # Retrieve course using its course_code and verify lecturer assignment.
+        course = await get_course_by_identifier(db, qr_code_data.course_code, "course_code")
+        await validate_lecturer_course(db, course.course_code, current_lecturer.lecturer_id)
 
-        lecturer_course = await filter_records(
-            LecturerCourses,
-            db,
+        # Check for an existing QR code generated within the last hour.
+        await check_recent_qr_code(db, course.course_code, current_lecturer.lecturer_id)
+
+        generation_time = get_current_utc_time()
+        qr_code_url = build_qr_code_url(
             course_code=qr_code_data.course_code,
             lecturer_id=current_lecturer.lecturer_id,
-        )
-        if not lecturer_course:
-            raise HTTPException(
-                status_code=403,
-                detail="You are not authorized to generate a QR code for this course.",
-            )
-
-        one_hour_ago = datetime.utcnow() - timedelta(hours=1)
-        existing_qr_code = await filter_records(
-            QRCode,
-            db,
-            course_code=qr_code_data.course_code,
-            lecturer_id=current_lecturer.lecturer_id,
-        )
-        if existing_qr_code and existing_qr_code.generation_time >= one_hour_ago:
-            raise HTTPException(
-                status_code=400,
-                detail="QR Code already generated for this course within the last hour.",
-            )
-
-        base_url = settings.BASE_URL.strip("/")
-        generation_timestamp = datetime.utcnow().isoformat()
-        qr_code_url = (
-            f"{base_url}/?course_code={qr_code_data.course_code}"
-            f"&lecturer_id={current_lecturer.lecturer_id}"
-            f"&latitude={qr_code_data.latitude}"
-            f"&longitude={qr_code_data.longitude}"
-            f"&generated_at={generation_timestamp}"
+            latitude=qr_code_data.latitude,
+            longitude=qr_code_data.longitude,
+            generated_at=generation_time.isoformat()
         )
 
         new_qr_code = QRCode(
             course_code=qr_code_data.course_code,
             lecturer_id=current_lecturer.lecturer_id,
-            generation_time=datetime.utcnow(),
+            generation_time=generation_time,
             latitude=qr_code_data.latitude,
             longitude=qr_code_data.longitude,
             url=qr_code_url,
@@ -70,13 +46,13 @@ class QRCodeService:
         db.add(new_qr_code)
         await db.commit()
         await db.refresh(new_qr_code)
-
         return new_qr_code
 
     @staticmethod
     async def get_latest_qr_codes(lecturer_id: int, db: AsyncSession):
-        one_hour_ago = datetime.utcnow() - timedelta(hours=1)
+        start_of_current_hour = get_start_of_current_hour()
 
+        # Retrieve course codes assigned to the lecturer.
         course_results = await db.execute(
             select(LecturerCourses.course_code).where(
                 LecturerCourses.lecturer_id == lecturer_id
@@ -89,11 +65,12 @@ class QRCodeService:
                 status_code=404, detail="No courses assigned to this lecturer."
             )
 
+        # Retrieve QR codes generated within the current hour.
         qr_code_result = await db.execute(
             select(QRCode)
             .where(
                 QRCode.course_code.in_(lecturer_courses),
-                QRCode.generation_time >= one_hour_ago,
+                QRCode.generation_time >= start_of_current_hour,
             )
             .order_by(QRCode.generation_time.desc())
         )
@@ -102,6 +79,7 @@ class QRCodeService:
         if not qr_codes:
             return []
 
+        # Retrieve course names for the lecturer's courses.
         course_names_result = await db.execute(
             select(Course.course_code, Course.course_name).where(
                 Course.course_code.in_(lecturer_courses)
@@ -111,17 +89,16 @@ class QRCodeService:
             row.course_code: row.course_name for row in course_names_result.all()
         }
 
-        base_url = settings.BASE_URL.strip("/")
-
+        # Construct and return the response.
         return [
             QRCodeSchema(
                 course_name=course_name_mapping.get(qr.course_code, "Unknown Course"),
-                qr_code_link=(
-                    f"https://{base_url}/?course_code={qr.course_code}"
-                    f"&lecturer_id={qr.lecturer_id}"
-                    f"&latitude={qr.latitude}"
-                    f"&longitude={qr.longitude}"
-                    f"&generated_at={qr.generation_time.isoformat()}"
+                qr_code_link=build_qr_code_url(
+                    course_code=qr.course_code,
+                    lecturer_id=qr.lecturer_id,
+                    latitude=qr.latitude,
+                    longitude=qr.longitude,
+                    generated_at=qr.generation_time.isoformat()
                 ),
                 generation_time=qr.generation_time,
             )
@@ -130,30 +107,13 @@ class QRCodeService:
 
     @staticmethod
     async def delete_qr_code(course_name: str, db: AsyncSession, current_lecturer):
-        if not current_lecturer:
-            raise HTTPException(
-                status_code=403,
-                detail="You must be logged in as a lecturer to delete a QR code.",
-            )
+        await validate_lecturer(current_lecturer)
 
-        course = await filter_records(Course, db, course_name=course_name)
-        if not course:
-            raise HTTPException(
-                status_code=404, detail=f"Course '{course_name}' does not exist."
-            )
+        # Retrieve the course using its name and verify lecturer assignment.
+        course = await get_course_by_identifier(db, course_name, "course_name")
+        await validate_lecturer_course(db, course.course_code, current_lecturer.lecturer_id)
 
-        lecturer_course = await filter_records(
-            LecturerCourses,
-            db,
-            course_code=course.course_code,
-            lecturer_id=current_lecturer.lecturer_id,
-        )
-        if not lecturer_course:
-            raise HTTPException(
-                status_code=403,
-                detail="You are not authorized to delete a QR code for this course.",
-            )
-
+        # Find the QR code associated with the course and lecturer.
         qr_code = await filter_records(
             QRCode,
             db,
@@ -163,7 +123,7 @@ class QRCodeService:
         if not qr_code:
             raise HTTPException(
                 status_code=404,
-                detail=f"No QR code found for course '{course_name}' generated by you.",
+                detail=f"No QR code found for course '{course_name}' generated by you."
             )
 
         await db.delete(qr_code)

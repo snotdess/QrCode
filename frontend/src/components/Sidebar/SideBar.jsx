@@ -38,7 +38,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
             ? [
                   {
                       key: "/selected_courses",
-                      label: "Selected Course",
+                      label: "Selected Courses",
                       icon: <BookOutlined />,
                   },
                   {

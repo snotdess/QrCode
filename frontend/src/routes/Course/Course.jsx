@@ -30,15 +30,13 @@ const Course = ({ sidebarCollapsed }) => {
         <Content
             className={`min-h-screen mx-auto px-8 py-2 lg:px-8 lg:py-4 transition-all ${
                 sidebarCollapsed
-                    ? "md:ml-[95px] lg:ml-[60px]"
-                    : "md:ml-[220px] lg:ml-[140px]"
+                    ? " ml-[45px] md:ml-[55px] lg:ml-[45px]"
+                    : "md:ml-[220px] lg:ml-[220px]"
             }`}
         >
             <Title
                 level={titleLevel}
-                className={`uppercase mb-6 ${
-                    sidebarCollapsed && "ml-[45px] md:ml-0"
-                }`}
+                className="uppercase mb-6"
                 style={{ fontWeight: 650, fontFamily: "Robtto" }}
             >
                 Lecturer Course Information
@@ -48,7 +46,7 @@ const Course = ({ sidebarCollapsed }) => {
                 <Summary sidebarCollapsed={sidebarCollapsed} reload={reload} />
             </div>
 
-            <div className={`${sidebarCollapsed && " ml-[45px] md:ml-0"}`}>
+            <div>
                 {userRole != "student" && (
                     <div className="">
                         <div className="my-2">
