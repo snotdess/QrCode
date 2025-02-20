@@ -2,12 +2,10 @@
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from database import get_db
-
-# from sqlalchemy import select, func
-from models import Student
+from backend.database import get_db
 from typing import List
-from schemas import (
+from backend.models import Student
+from backend.schemas import (
     StudentCreate,
     StudentLogin,
     ChangePassword,
@@ -17,10 +15,13 @@ from schemas import (
     EnrollResponse,
     CourseDetails,
 )
-from utils import get_current_student
-from services.student.auth_service import AuthService
-from services.student.course_service import CourseService
-from services.student_service import scan_qr_service, get_student_attendance_details
+from backend.util.auth_utils import get_current_student
+from backend.services.student.auth_service import AuthService
+from backend.services.student.course_service import CourseService
+from backend.services.student_service import (
+    scan_qr_service,
+    get_student_attendance_details,
+)
 
 router = APIRouter()
 
@@ -90,7 +91,6 @@ async def student_course_stats(
     db: AsyncSession = Depends(get_db), current_student=Depends(get_current_student)
 ):
     return await CourseService.get_student_course_stats(db, current_student)
-
 
 
 @router.post("/scan-qr")

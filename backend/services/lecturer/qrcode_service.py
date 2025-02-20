@@ -1,11 +1,20 @@
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from models import QRCode, Course, LecturerCourses
-from schemas import QRCodeSchema
-from utils import filter_records
-from util.qrcode_utils import build_qr_code_url, get_current_utc_time, get_start_of_current_hour, check_recent_qr_code
-from util.lecturer_utils import get_course_by_identifier, validate_lecturer_course, validate_lecturer
+from backend.models import QRCode, Course, LecturerCourses
+from backend.schemas import QRCodeSchema
+from backend.utils import filter_records
+from backend.util.qrcode_utils import (
+    build_qr_code_url,
+    get_current_utc_time,
+    get_start_of_current_hour,
+    check_recent_qr_code,
+)
+from backend.util.lecturer_utils import (
+    get_course_by_identifier,
+    validate_lecturer_course,
+    validate_lecturer,
+)
 
 
 # --------------------
@@ -62,7 +71,7 @@ class QRCodeService:
 
         if not lecturer_courses:
             raise HTTPException(
-                status_code=404, detail="No courses assigned to this lecturer."
+                status_code=204, detail="No courses assigned to this lecturer."
             )
 
         # Retrieve QR codes generated within the current hour.

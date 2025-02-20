@@ -29,6 +29,8 @@ class LecturerToken(BaseModel):
     lecturer_email: EmailStr
     lecturer_department: str
 
+class Response(BaseModel):
+    message :str
 
 # Schema for changing Lecturer Password (receiving data from the frontend)
 class ChangePassword(BaseModel):

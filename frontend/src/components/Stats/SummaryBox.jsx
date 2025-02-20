@@ -1,10 +1,9 @@
 // SummaryBox.jsx
 
-import { Card, Typography } from "antd";
+import { Card } from "antd";
 import React from "react";
 import useDynamicSubtitleLevel from "../../hooks/typography/useDynamicSubtitleLevel";
-
-const { Title, Paragraph } = Typography;
+import { CustomParagraph, CustomSubtitle } from "../CustomTypography";
 
 const SummaryBox = ({ title, value, color }) => {
     const subtitleLevel = useDynamicSubtitleLevel();
@@ -27,29 +26,26 @@ const SummaryBox = ({ title, value, color }) => {
 
     return (
         <Card
-            className="flex flex-col items-start justify-center h-[140px]"
+            className="flex flex-col items-start justify-center md:h-[140px]"
             style={{
                 borderColor: color,
             }}
         >
-            <Title
+            <CustomSubtitle
                 level={subtitleLevel}
                 style={{
-                    fontFamily: "Robotto",
                     marginBottom: "8px",
                 }}
             >
                 {formattedTitle}
-            </Title>
-            <Paragraph
+            </CustomSubtitle>
+            <CustomParagraph
                 style={{
-                    fontFamily: "Robotto",
                     fontSize: "0.9rem",
-                    fontWeight: "bold",
                 }}
             >
                 {value}
-            </Paragraph>
+            </CustomParagraph>
         </Card>
     );
 };

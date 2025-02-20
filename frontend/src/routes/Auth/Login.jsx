@@ -51,7 +51,10 @@ const Login = ({
           ];
 
     return (
-        <div className="flex items-center justify-center min-h-screen">
+        <div
+            className="flex items-center justify-center min-h-screen"
+           
+        >
             <div className="lg:flex-[55%]">
                 <FormComponent
                     title={`${isStudent ? "Student" : "Lecturer"} Login`}

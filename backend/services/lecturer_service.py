@@ -1,22 +1,19 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
-from models import (
-    Lecturer,
+from sqlmodel import select, func
+from sqlmodel.ext.asyncio.session import AsyncSession
+from backend.models import (
     Course,
     LecturerCourses,
     StudentCourses,
     AttendanceRecords,
     Student,
-    LecturerCourses,
 )
+from backend.errors.course_errors import UnauthorizedLecturerCourseError
 from fastapi import HTTPException
 from typing import Dict
 
 
-
-
 async def get_attendance_service(course_code: str, current_lecturer, db: AsyncSession):
-    # Find the course by course_code instead of course_name
+    # Find the course by course_code
     course_query = select(Course).where(
         func.trim(Course.course_code) == func.trim(course_code)
     )
@@ -27,7 +24,7 @@ async def get_attendance_service(course_code: str, current_lecturer, db: AsyncSe
         return {
             "course_name": course_code,
             "attendance": [],
-        }  # ✅ Return empty response instead of message
+        }
 
     # Check if the lecturer is assigned to the course
     lecturer_course_query = select(LecturerCourses).where(
@@ -38,9 +35,7 @@ async def get_attendance_service(course_code: str, current_lecturer, db: AsyncSe
     lecturer_course = lecturer_course_result.scalars().first()
 
     if not lecturer_course:
-        raise HTTPException(
-            status_code=403, detail="You are not assigned to this course."
-        )
+        UnauthorizedLecturerCourseError()
 
     # Find students enrolled in the course
     student_query = (
@@ -55,7 +50,7 @@ async def get_attendance_service(course_code: str, current_lecturer, db: AsyncSe
         return {
             "course_name": course.course_name,
             "attendance": [],
-        }  # ✅ Fix missing response structure
+        }
 
     # Get the last 5 attendance dates
     date_query = (
@@ -68,7 +63,7 @@ async def get_attendance_service(course_code: str, current_lecturer, db: AsyncSe
     recent_dates = [record[0].strftime("%Y-%m-%d") for record in date_result.fetchall()]
 
     if not recent_dates:
-        return {"course_name": course.course_name, "attendance": []}  # ✅ Fix
+        return {"course_name": course.course_name, "attendance": []}
 
     # Fetch attendance records for students
     attendance_query = select(
@@ -80,7 +75,7 @@ async def get_attendance_service(course_code: str, current_lecturer, db: AsyncSe
     attendance_records = attendance_result.fetchall()
 
     if not attendance_records:
-        return {"course_name": course.course_name, "attendance": []}  # ✅ Fix
+        return {"course_name": course.course_name, "attendance": []}
 
     # Organize attendance data
     attendance_dict: Dict[str, Dict] = {
@@ -104,4 +99,4 @@ async def get_attendance_service(course_code: str, current_lecturer, db: AsyncSe
     return {
         "course_name": course.course_name,
         "attendance": list(attendance_dict.values()),
-    }  # ✅ Ensure correct structure
+    }

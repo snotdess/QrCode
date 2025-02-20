@@ -8,6 +8,7 @@ export const useLecturerAttendance = (courseCode) => {
 
     useEffect(() => {
         if (!courseCode) return;
+
         const fetchAttendance = async () => {
             setLoading(true);
             setError(null);

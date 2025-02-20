@@ -2,7 +2,7 @@ import { Button, Layout, Typography } from "antd";
 import { useState } from "react";
 import useDynamicHeadingLevel from "../../hooks/typography/useDynamicHeadingLevel";
 import useUserInfo from "../../hooks/userInfo/useUserInfo";
-import AttendanceRecord from "../Attendance/AttendanceRecord";
+import StudentAttendance from "../Attendance/StudentAttendance";
 import RegisterCourse from "../Courses/RegisterCourse";
 import Summary from "../Courses/Summary";
 
@@ -32,13 +32,7 @@ const StudentDashboard = ({ fullname, sidebarCollapsed }) => {
             }`}
         >
             <div>
-                <Title
-                    style={{
-                        fontFamily: "Robtto",
-                    }}
-                    level={titleLevel}
-                    className="uppercase mb-6"
-                >
+                <Title level={titleLevel} className="uppercase mb-6">
                     Welcome, {fullname}
                 </Title>
             </div>
@@ -51,9 +45,7 @@ const StudentDashboard = ({ fullname, sidebarCollapsed }) => {
                     showEmptyState={true}
                 />
             </Typography>
-            <div
-            // className="absolute lg:right-[9.2rem]"
-            >
+            <div>
                 <Button
                     htmlType="submit"
                     onClick={handleClick}
@@ -65,8 +57,7 @@ const StudentDashboard = ({ fullname, sidebarCollapsed }) => {
             </div>
 
             {/* <Attendance /> */}
-
-            <AttendanceRecord fullname={fullname} />
+            <StudentAttendance />
 
             <RegisterCourse
                 userRole={userRole}

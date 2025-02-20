@@ -1,4 +1,4 @@
-import { Table } from "antd";
+import { Empty, Table } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -13,6 +13,7 @@ const CourseTable = ({ reload }) => {
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
+    const customFontFamily = "Roboto, sans-serif";
     const userRole = localStorage.getItem("userRole");
 
     const fetchAndSetCourses = async () => {
@@ -42,9 +43,8 @@ const CourseTable = ({ reload }) => {
 
     useEffect(() => {
         fetchAndSetCourses();
-    }, [pagination, reload]); // Depend on reload to trigger re-fetch
+    }, [pagination, reload]);
 
-    // Adjust pagination pageSize based on screen size
     useEffect(() => {
         const handleResize = () => {
             const width = window.innerWidth;
@@ -57,18 +57,14 @@ const CourseTable = ({ reload }) => {
             }
         };
 
-        // Initial resize check
         handleResize();
-
-        // Listen for window resize events
         window.addEventListener("resize", handleResize);
-
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
     const columns = [
         {
-            title: "S/N",
+            title: <span style={{ fontFamily: customFontFamily }}>S/N</span>,
             key: "sn",
             render: (_text, _record, index) => {
                 return (
@@ -77,16 +73,33 @@ const CourseTable = ({ reload }) => {
             },
             width: "5%",
         },
-        ...getCourseTableHeaders(userRole),
+        ...getCourseTableHeaders(userRole).map((column) => ({
+            ...column,
+            title: (
+                <span style={{ fontFamily: customFontFamily }}>
+                    {column.title}
+                </span>
+            ),
+            render: (text) => (
+                <span style={{ fontFamily: customFontFamily }}>{text}</span>
+            ),
+        })),
     ];
 
     return (
-        <div className=" my-[1.2rem] md:mt-0  lg:p-0">
+        <div
+            className="my-[1.2rem] md:mt-0 lg:p-0"
+            style={{ fontFamily: customFontFamily }}
+        >
             {loading ? (
                 <Loader />
-            ) : (
+            ) : courses.length > 0 ? (
                 <Table
-                    style={{ whiteSpace: "nowrap", marginBottom: "24px" }}
+                    style={{
+                        whiteSpace: "nowrap",
+                        marginBottom: "24px",
+                        fontFamily: customFontFamily,
+                    }}
                     columns={columns}
                     dataSource={courses}
                     rowKey="course_code"
@@ -95,10 +108,18 @@ const CourseTable = ({ reload }) => {
                         onChange: (page, pageSize) => {
                             setPagination({ current: page, pageSize });
                         },
-                        pageSizeOptions: ["5", "8", "10"], // Customize page size options
+                        pageSizeOptions: ["5", "8", "10"],
                     }}
                     bordered
                     scroll={{ x: true }}
+                />
+            ) : (
+                <Empty
+                    description={
+                        <span style={{ fontFamily: customFontFamily }}>
+                            No course data available
+                        </span>
+                    }
                 />
             )}
         </div>

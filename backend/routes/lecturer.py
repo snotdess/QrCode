@@ -2,9 +2,9 @@
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from database import get_db
-from models import Lecturer
-from schemas import (
+from backend.database import get_db
+from backend.models import Lecturer
+from backend.schemas import (
     LecturerCreate,
     LecturerLogin,
     LecturerToken,
@@ -17,11 +17,11 @@ from schemas import (
     LecturerCoursesListResponse,
     AttendanceResponse,
 )
-from services.lecturer.auth_service import AuthService
-from services.lecturer.qrcode_service import QRCodeService
-from services.lecturer.lecturer_course_service import LecturerCourseService
-from utils import get_current_lecturer
-from services.lecturer_service import (
+from backend.services.lecturer.auth_service import AuthService
+from backend.services.lecturer.qrcode_service import QRCodeService
+from backend.services.lecturer.lecturer_course_service import LecturerCourseService
+from backend.util.auth_utils import get_current_lecturer
+from backend.services.lecturer_service import (
     get_attendance_service,
 )
 from typing import List
@@ -143,7 +143,7 @@ async def get_lecturer_latest_qr_codes(
 
     if not qr_codes:
         raise HTTPException(
-            status_code=200, detail="No QR Codes found in the last hour."
+            status_code=204, detail="No QR Codes found in the last hour."
         )
 
     return qr_codes

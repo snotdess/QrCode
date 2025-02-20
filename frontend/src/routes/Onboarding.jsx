@@ -2,11 +2,11 @@ import { Image, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import { FaUser, FaUserShield } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import Loader from "../components/Loader/Loader";
 import ChoiceCard from "../components/Card/ChoiceCard";
+import { CustomParagraph, CustomTitle } from "../components/CustomTypography";
+import Loader from "../components/Loader/Loader";
 
 const Onboarding = () => {
-    const { Title, Paragraph } = Typography;
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
 
@@ -38,24 +38,13 @@ const Onboarding = () => {
             {/* Left Section */}
             <div className="left w-full md:w-1/2 flex flex-col justify-center px-8 py-6">
                 <Typography className="mb-5">
-                    <Title
-                        level={1}
-                        style={{
-                            fontFamily: "Robotto",
-                        }}
-                        className="text-gray-800 font-bold mb-6  md:text-left"
-                    >
+                    <CustomTitle className="mb-6  md:text-left">
                         Get Started
-                    </Title>
+                    </CustomTitle>
 
-                    <Paragraph
-                        style={{
-                            fontFamily: "Robotto",
-                        }}
-                        className="text-gray-800 text-[1.05rem] font-semibold whitespace-nowrap md:text-left"
-                    >
+                    <CustomParagraph className="text-gray-800 text-[1.05rem] font-semibold whitespace-nowrap md:text-left">
                         Select the option that best suits you
-                    </Paragraph>
+                    </CustomParagraph>
                 </Typography>
 
                 <div className="cursor-pointer grid grid-cols-1 lg:grid-cols-2 gap-4 ">
@@ -78,12 +67,12 @@ const Onboarding = () => {
                     />
                 </div>
 
-                <span
-                    className="mt-[2.7rem] md:mt-4 text-sm absolute cursor-pointer left-[55%] top-[80%]"
+                <CustomParagraph
+                    className="mt-[2.7rem] text-[0.75rem] md:mt-4 text-sm absolute cursor-pointer left-[55%] top-[80%]"
                     onClick={handleBackToHome}
                 >
                     Home
-                </span>
+                </CustomParagraph>
             </div>
 
             {/* Right Section */}

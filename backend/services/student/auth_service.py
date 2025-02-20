@@ -1,8 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 from fastapi import HTTPException
-from models import Student
-from utils import (
+from backend.models import Student
+from backend.util.auth_utils import (
     get_password_hash,
     create_access_token,
     verify_password,

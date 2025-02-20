@@ -60,13 +60,7 @@ const CourseList = ({ reload, sidebarCollapsed }) => {
             }`}
         >
             <div className="">
-                <Title
-                    style={{
-                        fontFamily: "Robtto",
-                    }}
-                    className=" uppercase"
-                    level={titleLevel}
-                >
+                <Title className=" uppercase" level={titleLevel}>
                     Selected Course List
                 </Title>
             </div>

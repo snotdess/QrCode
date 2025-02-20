@@ -1,81 +1,31 @@
-import { Button, Form, Input, message } from "antd";
+import { Button, Form, Input } from "antd";
 import { useState } from "react";
-import { toast } from "react-toastify";
-import { scanQRCodeAttendance } from "../../api/api";
 import useLocation from "../../hooks/location/useLocation";
+import {
+    handleGetLocation,
+    submitAttendance,
+} from "../../utils/attendanceHandler";
 import QRCodeScanner from "../QRCode/QRCodeScanner";
 
 const AttendanceForm = ({ onSuccess, onCancel }) => {
     const [form] = Form.useForm();
     const { fetchingLocation, fetchLocation } = useLocation();
     const [scannedData, setScannedData] = useState(null);
-    const [isScannerOpen, setIsScannerOpen] = useState(false); // This state is now properly used
+    const [isScannerOpen, setIsScannerOpen] = useState(false);
 
-    const submitAttendance = async () => {
-        try {
-            const values = form.getFieldsValue(true);
-
-            if (!scannedData) {
-                toast.error("Please scan a valid QR code.");
-                return;
-            }
-
-            const requestData = {
-                matric_number: values.matric_number,
-                course_code: scannedData.course_code, // Use scanned QR data
-                latitude: values.student_latitude,
-                longitude: values.student_longitude,
-                lecturer_id: scannedData.lecturer_id,
-            };
-
-            console.log(requestData);
-
-            await scanQRCodeAttendance(requestData);
-
-            toast.success("Attendance marked successfully!");
-
-            // Reset form and scanned data after a short delay
-            setTimeout(() => {
-                form.resetFields();
-                setScannedData(null);
-            }, 250);
-
-            // Close modal and redirect to dashboard
-            if (onSuccess) {
-                setTimeout(() => {
-                    onSuccess();
-                }, 1000); // 1s delay before closing
-            }
-        } catch (error) {
-            toast.error(error || "Error submitting attendance.");
-        }
-    };
-
-    const handleGetLocation = async () => {
-        try {
-            const location = await fetchLocation();
-            if (location) {
-                const latitude = parseFloat(location.latitude);
-                const longitude = parseFloat(location.longitude);
-
-                if (!isNaN(latitude) && !isNaN(longitude)) {
-                    form.setFieldsValue({
-                        student_latitude: latitude.toFixed(2),
-                        student_longitude: longitude.toFixed(2),
-                    });
-                } else {
-                    message.error("Invalid location data received.");
-                }
-            }
-        } catch (error) {
-            message.error("Failed to fetch location.");
-        }
-    };
+    const customFont = { fontFamily: "Roboto, sans-serif" };
 
     return (
-        <Form form={form} layout="vertical" onFinish={submitAttendance}>
+        <Form
+            form={form}
+            layout="vertical"
+            onFinish={() =>
+                submitAttendance(form, scannedData, onSuccess, setScannedData)
+            }
+            style={customFont}
+        >
             <Form.Item
-                label="Matric Number"
+                label={<span style={customFont}>Matric Number</span>}
                 name="matric_number"
                 rules={[
                     {
@@ -84,46 +34,80 @@ const AttendanceForm = ({ onSuccess, onCancel }) => {
                     },
                 ]}
             >
-                <Input placeholder="Enter your matric number" />
+                <Input
+                    placeholder="Enter your matric number"
+                    style={customFont}
+                />
             </Form.Item>
 
-            {/* QR Code Scanner Component with Proper Props */}
-            <Form.Item label="QR Code">
+            {/* QR Code Scanner Component */}
+            <Form.Item label={<span style={customFont}>QR Code</span>}>
                 <QRCodeScanner
                     scannedData={scannedData}
                     setScannedData={setScannedData}
                     form={form}
-                    isScannerOpen={isScannerOpen} // Pass state correctly
-                    setIsScannerOpen={setIsScannerOpen} // Pass function correctly
+                    isScannerOpen={isScannerOpen}
+                    setIsScannerOpen={setIsScannerOpen}
                 />
             </Form.Item>
 
-            <Form.Item label="Get Location">
+            <Form.Item label={<span style={customFont}>Get Location</span>}>
                 <Button
                     type="dashed"
-                    onClick={handleGetLocation}
+                    onClick={() => handleGetLocation(fetchLocation, form)}
                     loading={fetchingLocation}
+                    style={customFont}
                 >
                     {fetchingLocation ? "Fetching..." : "Get Current Location"}
                 </Button>
             </Form.Item>
 
-            <Form.Item label="Student Latitude" name="student_latitude">
-                <Input disabled style={{ backgroundColor: "#fff" }} />
+            <Form.Item
+                label={<span style={customFont}>Student Latitude</span>}
+                name="student_latitude"
+                rules={[
+                    {
+                        required: true,
+                        message: "Please get your current latitude",
+                    },
+                ]}
+            >
+                <Input
+                    disabled
+                    style={{ backgroundColor: "#fff", ...customFont }}
+                />
             </Form.Item>
-            <Form.Item label="Student Longitude" name="student_longitude">
-                <Input disabled style={{ backgroundColor: "#fff" }} />
+
+            <Form.Item
+                label={<span style={customFont}>Student Longitude</span>}
+                name="student_longitude"
+                rules={[
+                    {
+                        required: true,
+                        message: "Please get your current longitude",
+                    },
+                ]}
+            >
+                <Input
+                    disabled
+                    style={{ backgroundColor: "#fff", ...customFont }}
+                />
             </Form.Item>
 
             <div className="flex items-center justify-between">
                 <Form.Item>
-                    <Button onClick={onCancel} type="primary" danger>
+                    <Button
+                        onClick={onCancel}
+                        type="primary"
+                        danger
+                        style={customFont}
+                    >
                         Cancel
                     </Button>
                 </Form.Item>
 
                 <Form.Item>
-                    <Button type="primary" htmlType="submit">
+                    <Button type="primary" htmlType="submit" style={customFont}>
                         Submit Attendance
                     </Button>
                 </Form.Item>

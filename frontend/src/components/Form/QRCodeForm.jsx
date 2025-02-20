@@ -1,5 +1,3 @@
-// // components/QRCode/QRCodeForm.jsx
-
 import { Button, Form, Input, Select, Space } from "antd";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
@@ -10,8 +8,10 @@ import { handleQRCodeGeneration } from "../../utils/qrcode/qrcode";
 const QRCodeForm = ({ onClose }) => {
     const [loading, setLoading] = useState(false);
     const { fetchingLocation, fetchLocation } = useLocation();
-    const courses = useLecturerCourses();
+    const { courses } = useLecturerCourses();
     const [form] = Form.useForm();
+
+    const customFontStyle = { fontFamily: "Roboto, sans-serif" };
 
     const onFinish = async (values) => {
         try {
@@ -19,6 +19,7 @@ const QRCodeForm = ({ onClose }) => {
         } catch (error) {
             toast.error(`${error}`);
         }
+        console.log(courses);
     };
 
     return (
@@ -27,17 +28,19 @@ const QRCodeForm = ({ onClose }) => {
             layout="vertical"
             onFinish={onFinish}
             initialValues={{ course_code: undefined }}
+            style={customFontStyle}
         >
             <Form.Item
-                label="Course Code"
+                label={<span style={customFontStyle}>Course Code</span>}
                 name="course_code"
                 rules={[{ required: true, message: "Please select a course." }]}
             >
-                <Select placeholder="Select a course">
-                    {courses.map((course) => (
+                <Select placeholder="Select a course" style={customFontStyle}>
+                    {courses?.map((course) => (
                         <Select.Option
                             key={course.course_code}
                             value={course.course_code}
+                            style={customFontStyle}
                         >
                             {course.course_code}
                         </Select.Option>
@@ -46,7 +49,7 @@ const QRCodeForm = ({ onClose }) => {
             </Form.Item>
 
             <Form.Item
-                label="Latitude"
+                label={<span style={customFontStyle}>Latitude</span>}
                 name="latitude"
                 rules={[
                     {
@@ -55,11 +58,15 @@ const QRCodeForm = ({ onClose }) => {
                     },
                 ]}
             >
-                <Input placeholder="Latitude" readOnly />
+                <Input
+                    placeholder="Latitude"
+                    readOnly
+                    style={customFontStyle}
+                />
             </Form.Item>
 
             <Form.Item
-                label="Longitude"
+                label={<span style={customFontStyle}>Longitude</span>}
                 name="longitude"
                 rules={[
                     {
@@ -68,16 +75,21 @@ const QRCodeForm = ({ onClose }) => {
                     },
                 ]}
             >
-                <Input placeholder="Longitude" readOnly />
+                <Input
+                    placeholder="Longitude"
+                    readOnly
+                    style={customFontStyle}
+                />
             </Form.Item>
 
-            <Form.Item label="Get Location">
+            <Form.Item
+                label={<span style={customFontStyle}>Get Location</span>}
+            >
                 <Button
                     type="dashed"
                     onClick={async () => {
                         try {
-                            const location = await fetchLocation(); // Await the location
-
+                            const location = await fetchLocation();
                             if (location) {
                                 form.setFieldsValue({
                                     latitude: parseFloat(
@@ -93,6 +105,7 @@ const QRCodeForm = ({ onClose }) => {
                         }
                     }}
                     loading={fetchingLocation}
+                    style={customFontStyle}
                 >
                     {fetchingLocation ? "Fetching..." : "Get Current Location"}
                 </Button>
@@ -105,6 +118,7 @@ const QRCodeForm = ({ onClose }) => {
                         htmlType="submit"
                         loading={loading}
                         className="rounded-md text-white py-4 px-4"
+                        style={customFontStyle}
                     >
                         Generate QR Code
                     </Button>
@@ -113,6 +127,7 @@ const QRCodeForm = ({ onClose }) => {
                         onClick={onClose}
                         danger
                         className="py-4 px-4 rounded-md"
+                        style={customFontStyle}
                     >
                         Cancel
                     </Button>

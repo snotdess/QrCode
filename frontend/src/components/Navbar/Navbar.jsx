@@ -1,11 +1,12 @@
 import { MenuOutlined, XOutlined } from "@ant-design/icons";
-import { Button, Image, Typography } from "antd";
+import { Image } from "antd";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { CustomButton, CustomParagraph } from "../CustomTypography";
 
 const Navbar = () => {
-    const { Paragraph } = Typography;
     const navigate = useNavigate();
+    const customFontFamily = "Roboto, sans-serif";
 
     const reDirect = () => {
         navigate("/onboarding");
@@ -17,34 +18,43 @@ const Navbar = () => {
         setOpen((prev) => !prev);
     };
     return (
-        <nav className="flex items-center justify-between">
+        <nav className="flex items-center justify-between lg:ml-[1.5rem] lg:mr-[1.5rem]">
             <Link to={"/"} className="flex items-center justify-center">
                 <Image src="/logo2.jpg" width={50} className="rounded-3xl" />
 
-                <Paragraph
-                    className="flex mt-2 items-center justify-center ml-2"
-                    style={{
-                        fontFamily: "Robotto, sans-serif",
-                    }}
-                >
+                <CustomParagraph className="flex mt-3 items-center justify-center ml-2">
                     Geo
                     <span className="text-blue-600 font-bold">QR</span>
-                </Paragraph>
+                </CustomParagraph>
             </Link>
 
             <section className=" hidden md:flex gap-9">
-                <Link to={"/"}>Home</Link>
-                <Link to={"/faq"}>FAQ</Link>
+                <Link
+                    style={{
+                        fontFamily: customFontFamily,
+                    }}
+                    to={"/"}
+                >
+                    Home
+                </Link>
+                <Link
+                    style={{
+                        fontFamily: customFontFamily,
+                    }}
+                    to={"/faq"}
+                >
+                    FAQ
+                </Link>
             </section>
             <section className="right">
-                <Button
-                    onClick={reDirect}
-                    className="my-[1.5rem] py-[0.5rem] shadow-lg h-[2.5rem] hidden md:block outline-none hover:border-b-[#32de84] text-white"
-                    variant="solid"
+                <CustomButton
                     type="primary"
+                    className="my-[1.2rem] py-[0.3rem] shadow-lg h-[2.5rem] hidden md:block outline-none hover:border-b-[#32de84] text-white"
+                    onClick={ reDirect }
+
                 >
                     Try It Now
-                </Button>
+                </CustomButton>
             </section>
 
             <section className=" cursor-pointer md:hidden" onClick={menu}>
@@ -68,14 +78,13 @@ const Navbar = () => {
                 >
                     <Link to={"/"}>Home</Link>
                     <Link to={"/faq"}>FAQ</Link>
-                    <Button
+                    <CustomButton
+                        type="primary"
+                        className="my-[0.9rem] py-[0rem] shadow-lg h-[2.5rem] md:hidden outline-none hover:border-b-[#32de84] text-white"
                         onClick={reDirect}
-                        className="flex items-start shadow-lg"
-                        variant="solid"
-                        color="primary"
                     >
                         Try It Now
-                    </Button>
+                    </CustomButton>
                 </div>
             )}
         </nav>

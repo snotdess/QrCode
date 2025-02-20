@@ -1,11 +1,10 @@
-import { Layout, Typography } from "antd";
+import { Layout } from "antd";
 import useDynamicHeadingLevel from "../../hooks/typography/useDynamicHeadingLevel";
+import AttendanceRecord from "../Attendance/AttendanceRecord";
 import LecturerCourseStats from "../Courses/LecturerCourseStats";
+import { CustomSubtitle, CustomTitle } from "../CustomTypography";
 import LatestQRCodes from "../QRCode/LatestQRCodes";
-import LecturerAttendanceComponent from "../Attendance/LecturerAttendanceComponent";
-
 const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
-    const { Title } = Typography;
     const { Content } = Layout;
 
     const titleLevel = useDynamicHeadingLevel();
@@ -18,43 +17,25 @@ const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
                     : "md:ml-[220px] lg:ml-[180px]"
             }`}
         >
-            <Title
-                level={titleLevel}
-                className="uppercase "
-                style={{
-                    fontFamily: "Robtto",
-                }}
-            >
+            <CustomTitle level={titleLevel} className="uppercase ">
                 Welcome, {fullname}
-            </Title>
+            </CustomTitle>
 
-            <div className=" my-[2.5rem] grid grid-cols-1 lg:grid-cols-2 ">
-                <div>
-                    <Title
-                        level={5}
-                        style={{
-                            fontFamily: "Robtto",
-                        }}
-                    >
+            <div className=" my-[2.5rem] flex flex-col justify-between lg:flex-row ">
+                <div className="flex-[56.33%]">
+                    <CustomSubtitle level={5}>
                         Enrolled Student Statistics
-                    </Title>
+                    </CustomSubtitle>
                     <LecturerCourseStats sidebarCollapsed={sidebarCollapsed} />
                 </div>
 
-                <div className="mb-6 ml-5 md:ml-0 ">
-                    <Title
-                        level={5}
-                        style={{
-                            fontFamily: "Robtto",
-                        }}
-                    >
-                        Latest QR Codes
-                    </Title>
+                <div className="mb-6 ml-5 md:ml-0 flex-[43.33%] ">
+                    <CustomSubtitle level={5}>Latest QR Codes</CustomSubtitle>
                     <LatestQRCodes />
                 </div>
             </div>
 
-            <LecturerAttendanceComponent/>
+            <AttendanceRecord />
         </Content>
     );
 };

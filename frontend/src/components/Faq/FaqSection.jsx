@@ -1,20 +1,21 @@
-import { Collapse, Typography } from "antd";
 import React from "react";
+import { Collapse } from "antd";
 import { faqData } from "../../services/faq";
+import { CustomPanel, CustomParagraph, CustomTitle } from "../CustomTypography";
 
 const FaqSection = () => {
-    const { Panel } = Collapse;
-    const { Title } = Typography;
     return (
         <div className="min-h-screen">
-            <Title level={3} className="text-center mb-6">
+            <CustomTitle className="text-center mb-6">
                 Frequently Asked Questions
-            </Title>
+            </CustomTitle>
             <Collapse accordion className="max-w-[800px] mx-auto">
                 {faqData.map((faq, index) => (
-                    <Panel header={faq.question} key={index}>
-                        <p className="text-[0.95rem] leading-6">{faq.answer}</p>
-                    </Panel>
+                    <CustomPanel header={faq.question} key={index}>
+                        <CustomParagraph className="text-[0.95rem] leading-6">
+                            {faq.answer}
+                        </CustomParagraph>
+                    </CustomPanel>
                 ))}
             </Collapse>
         </div>

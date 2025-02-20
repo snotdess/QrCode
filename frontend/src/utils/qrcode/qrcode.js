@@ -149,6 +149,8 @@ export const fetchQRCodes = async ({ setQRCodes, setLoading }) => {
 
         if (response.length > 0) {
             setQRCodes(response);
+        } else {
+            toast.info("No Qrcode within the hour");
         }
     } catch (error) {
         toast.error(`${error}`);

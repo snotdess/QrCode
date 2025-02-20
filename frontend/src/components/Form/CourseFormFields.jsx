@@ -1,10 +1,12 @@
+
+
 import { Form, Input, Select } from "antd";
 import React from "react";
 import { commonFields } from "../../utils/table/tableHeaders";
 
-
 const CourseFormFields = ({ userRole, courses, loading }) => {
     const { Item } = Form;
+    const customFontFamily = "Roboto, sans-serif";
 
     if (userRole === "lecturer" || userRole === "student") {
         return (
@@ -13,7 +15,11 @@ const CourseFormFields = ({ userRole, courses, loading }) => {
                     ({ label, name, placeholder, type }) => (
                         <Item
                             key={name}
-                            label={label}
+                            label={
+                                <span style={{ fontFamily: customFontFamily }}>
+                                    {label}
+                                </span>
+                            }
                             name={name}
                             rules={[
                                 {
@@ -25,13 +31,18 @@ const CourseFormFields = ({ userRole, courses, loading }) => {
                             <Input
                                 type={type || "text"}
                                 placeholder={placeholder}
+                                style={{ fontFamily: customFontFamily }}
                             />
                         </Item>
                     ),
                 )}
                 {userRole === "student" && (
                     <Item
-                        label="Select Course"
+                        label={
+                            <span style={{ fontFamily: customFontFamily }}>
+                                Select Course
+                            </span>
+                        }
                         name="course"
                         rules={[
                             {
@@ -53,6 +64,7 @@ const CourseFormFields = ({ userRole, courses, loading }) => {
                                     label: `${course_code} ${course_name} by ${lecturer_name}`,
                                 }),
                             )}
+                            style={{ fontFamily: customFontFamily }}
                         />
                     </Item>
                 )}

@@ -1,10 +1,14 @@
-import { Button, Image, Typography } from "antd";
+import { Image } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import {
+    CustomButton,
+    CustomParagraph,
+    CustomSubtitle,
+    CustomTitle,
+} from "../CustomTypography";
 
 const HeroSection = () => {
-    const { Title, Paragraph } = Typography;
-
     const navigate = useNavigate();
 
     const reDirect = () => {
@@ -12,36 +16,25 @@ const HeroSection = () => {
     };
     return (
         <section className=" min-h-[90vh] md:min-h-screen flex items-center justify-center md:justify-between">
-            <section className="mt-2">
-                <Title
-                    level={1}
-                    className="mb-8"
-                    style={{
-                        fontFamily: "Robotto, sans-serif",
-                    }}
-                >
+            <section className="">
+                <CustomTitle className="">
                     Streamline Attendance Tracking
-                    <span className="text-blue-600 my-[1rem] block">
+                    <CustomSubtitle className={"my-[0.8rem]"} color={"blue"}>
                         Using QR-Code
-                    </span>
-                    Enabled System!{" "}
-                </Title>
-                <Paragraph
-                    className="mt-[1.5rem] text-[0.85rem]"
-                    style={{
-                        fontFamily: "Robotto, sans-serif",
-                    }}
-                >
+                    </CustomSubtitle>
+                    Enabled System!
+                </CustomTitle>
+                <CustomParagraph>
                     Capture and Track Student attendance!
-                </Paragraph>
-                <Button
-                    onClick={reDirect}
-                    className="mt-[1.5rem] py-[1.5rem] shadow-lg outline-none hover:border-b-[#32de84] text-white"
-                    variant="solid"
+                </CustomParagraph>
+
+                <CustomButton
                     type="primary"
+                    className="py-[1.5rem] shadow-lg outline-none hover:border-b-[#32de84] "
+                    onClick={reDirect}
                 >
                     Get Started
-                </Button>
+                </CustomButton>
             </section>
 
             <section className="hidden md:flex md:w-[50%] lg:w-[50%] items-center justify-center">

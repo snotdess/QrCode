@@ -1,5 +1,3 @@
-// AttendanceTable.jsx
-
 import { Table } from "antd";
 import React from "react";
 import Loader from "../Loader/Loader";
@@ -11,9 +9,12 @@ const AttendanceTable = ({
     onTableChange,
     columns,
 }) => {
+    // Define custom font style
+    const customFontStyle = { fontFamily: "Roboto, sans-serif" };
+
     // Define the S/N column
     const snColumn = {
-        title: "S/N",
+        title: <span style={customFontStyle}>S/N</span>,
         key: "sn",
         width: "5%",
         render: (text, record, index) =>
@@ -37,10 +38,12 @@ const AttendanceTable = ({
         if (column.dataIndex === "attendance_score") {
             return {
                 ...column,
+                title: <span style={customFontStyle}>{column.title}</span>,
                 render: (score) => (
                     <span
                         style={{
                             color: getScoreColor(score),
+                            ...customFontStyle,
                         }}
                     >
                         {score}%
@@ -48,7 +51,11 @@ const AttendanceTable = ({
                 ),
             };
         }
-        return column;
+        return {
+            ...column,
+            title: <span style={customFontStyle}>{column.title}</span>,
+            render: (text) => <span style={customFontStyle}>{text}</span>,
+        };
     });
 
     // Combine S/N column with the modified columns
@@ -59,7 +66,7 @@ const AttendanceTable = ({
             className="whitespace-pre"
             columns={tableColumns}
             dataSource={attendance}
-            rowKey="course_code"
+            rowKey="matric_number"
             loading={loading ? <Loader /> : false}
             pagination={{
                 current: pagination.current,
@@ -71,6 +78,7 @@ const AttendanceTable = ({
             }}
             bordered
             scroll={{ x: true }}
+            style={customFontStyle} // Apply custom font to the whole table
         />
     );
 };

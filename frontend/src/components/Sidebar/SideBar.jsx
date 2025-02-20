@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const { Sider } = Layout;
+const customFontFamily = "Roboto, sans-serif";
 
 const Sidebar = ({ collapsed, setCollapsed }) => {
     const navigate = useNavigate();
@@ -71,8 +72,6 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
         setCollapsed(!collapsed);
     };
 
-    //
-
     return (
         <Sider
             collapsible
@@ -81,8 +80,8 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
             width={260}
             breakpoint="xl"
             collapsedWidth={85}
-            className="min-h-screen z-[100] fixed left-0 top-0 bottom-0 overflow-auto
-    flex flex-col justify-between bg-[#0039a6]"
+            className="min-h-screen z-[100] fixed left-0 top-0 bottom-0 overflow-auto flex flex-col justify-between bg-[#0039a6]"
+            style={{ fontFamily: customFontFamily }}
         >
             <div className="h-[64px] flex items-center justify-center">
                 {collapsed ? (
@@ -98,24 +97,26 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                             width={50}
                             className="rounded-3xl"
                         />
-                        GEO-QR
+                        <span style={{ fontFamily: customFontFamily }}>
+                            GEO-QR
+                        </span>
                     </div>
                 )}
             </div>
 
             <div>
                 <Menu
-                    theme=""
                     mode="inline"
+                    theme=""
                     style={{
                         flex: 1,
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
-                        alignContent: "center",
                         gap: "17px",
                         justifyContent: "center",
                         color: "#fff",
+                        fontFamily: customFontFamily,
                     }}
                     className="gap-5 min-h-[70vh]"
                     defaultSelectedKeys={["/dashboard"]}
@@ -123,7 +124,11 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                     items={menuItems.map((item) => ({
                         key: item.key,
                         icon: item.icon,
-                        label: item.label,
+                        label: (
+                            <span style={{ fontFamily: customFontFamily }}>
+                                {item.label}
+                            </span>
+                        ),
                     }))}
                 />
             </div>
@@ -136,8 +141,9 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                     transform: "translateX(-50%)",
                     cursor: "pointer",
                     fontSize: "20px",
+                    fontFamily: customFontFamily,
                 }}
-                onClick={() => handleCollapse}
+                onClick={handleCollapse}
             >
                 {collapsed ? (
                     <MenuUnfoldOutlined

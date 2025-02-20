@@ -1,14 +1,19 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
-from fastapi import HTTPException
-from models import (
+from backend.models import (
     Student,
     Course,
     StudentCourses,
     LecturerCourses,
     Lecturer,
 )
-from utils import filter_records
+from backend.utils import filter_records
+from backend.errors.auth_errors import StudentNotFoundError, LecturerNotFoundError
+from backend.errors.course_errors import (
+    CourseNotFoundError,
+    UnauthorizedLecturerCourseError,
+    StudentEnrolledError
+)
 
 
 class CourseService:
@@ -25,11 +30,11 @@ class CourseService:
         )
 
         if not student:
-            raise HTTPException(status_code=404, detail="Student not found")
+            StudentNotFoundError()
         if not course:
-            raise HTTPException(status_code=404, detail="Course not found")
+            CourseNotFoundError()
         if not lecturer:
-            raise HTTPException(status_code=404, detail="Lecturer not found")
+            LecturerNotFoundError()
 
         lecturer_course = await filter_records(
             LecturerCourses,
@@ -39,10 +44,7 @@ class CourseService:
         )
 
         if not lecturer_course:
-            raise HTTPException(
-                status_code=400,
-                detail="The selected lecturer is not associated with the course",
-            )
+            UnauthorizedLecturerCourseError()
 
         if await filter_records(
             StudentCourses,
@@ -50,10 +52,7 @@ class CourseService:
             matric_number=enrollment_data.matric_number,
             course_code=enrollment_data.course_code,
         ):
-            raise HTTPException(
-                status_code=400,
-                detail="Student is already enrolled in this selected course",
-            )
+            StudentEnrolledError()
 
         new_enrollment = StudentCourses(
             matric_number=enrollment_data.matric_number,
@@ -88,9 +87,7 @@ class CourseService:
         courses = result.fetchall()
 
         if not courses:
-            raise HTTPException(
-                status_code=404, detail="No courses found for the student."
-            )
+            CourseNotFoundError()
 
         return [
             {

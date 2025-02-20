@@ -4,9 +4,12 @@ import { DeleteOutlined, DownloadOutlined } from "@ant-design/icons";
 import { Button, Empty, Popconfirm, Table } from "antd";
 import { QRCodeCanvas } from "qrcode.react";
 import { useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
+import {
+    downloadQRCode,
+    fetchQRCodes,
+    handleDelete,
+} from "../../utils/qrcode/qrcode";
 import Loader from "../Loader/Loader";
-import { fetchQRCodes, downloadQRCode, handleDelete } from "../../utils/qrcode/qrcode";
 
 const LatestQRCodes = () => {
     const [qrCodes, setQRCodes] = useState([]);

@@ -1,5 +1,7 @@
 import { Card, Typography } from "antd";
 import React from "react";
+import { CustomParagraph, CustomSubtitle, CustomTitle } from "../CustomTypography";
+
 
 const { Title, Paragraph } = Typography;
 
@@ -12,24 +14,11 @@ const ChoiceCard = ({ icon, title, paragraph, onClick, className }) => {
             <span>{icon}</span>
 
             <Typography className="mt-2 md:mt-5">
-                <Title
-                    level={4}
-                    style={{
-                        fontFamily: "Robotto",
-                    }}
-                    className="text-gray-800 "
-                >
+                <CustomSubtitle>
                     {title}
-                </Title>
+                </CustomSubtitle>
 
-                <Paragraph
-                    style={{
-                        fontFamily: "Robotto",
-                    }}
-                    className=" text-[0.95rem]"
-                >
-                    {paragraph}
-                </Paragraph>
+                <CustomParagraph>{paragraph}</CustomParagraph>
             </Typography>
         </Card>
     );

@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create Axios instance
 const api = axios.create({
-    baseURL: "http://127.0.0.1:8000", // Replace with your backend base URL
+    baseURL: "http://127.0.0.1:8000/", // Replace with your backend base URL
     headers: {
         "Content-Type": "application/json",
     },
@@ -146,7 +146,7 @@ export const deleteQRCode = async (course_name) => {
 
 // API call to fetch lecturer's attendance records
 export const getLecturerAttendance = async (course_code) => {
-    const encodedCourseCode = encodeURIComponent(course_code); // Encode spaces
+    const encodedCourseCode = encodeURIComponent( course_code ); // Encode spaces
     return fetchData(`/lecturer/attendance/${encodedCourseCode}`, true);
 };
 

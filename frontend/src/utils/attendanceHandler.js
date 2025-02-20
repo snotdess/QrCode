@@ -1,0 +1,70 @@
+import { toast } from "react-toastify";
+import { message } from "antd";
+import { scanQRCodeAttendance } from "../api/api";
+
+
+// Function to handle attendance submission
+export const submitAttendance = async (
+    form,
+    scannedData,
+    onSuccess,
+    setScannedData,
+) => {
+    try {
+        const values = form.getFieldsValue(true);
+
+        if (!scannedData) {
+            toast.error("Please scan a valid QR code.");
+            return;
+        }
+
+        const requestData = {
+            matric_number: values.matric_number,
+            course_code: scannedData.course_code,
+            latitude: values.student_latitude,
+            longitude: values.student_longitude,
+            lecturer_id: scannedData.lecturer_id,
+        };
+
+        await scanQRCodeAttendance(requestData);
+
+        toast.success("Attendance marked successfully!");
+
+        // Reset form and scanned data after a short delay
+        setTimeout(() => {
+            form.resetFields();
+            setScannedData(null);
+        }, 250);
+
+        // Close modal and redirect to dashboard
+        if (onSuccess) {
+            setTimeout(() => {
+                onSuccess();
+            }, 1000);
+        }
+    } catch (error) {
+        toast.error(error || "Error submitting attendance.");
+    }
+};
+
+// Function to handle location fetching
+export const handleGetLocation = async (fetchLocation, form) => {
+    try {
+        const location = await fetchLocation();
+        if (location) {
+            const latitude = parseFloat(location.latitude);
+            const longitude = parseFloat(location.longitude);
+
+            if (!isNaN(latitude) && !isNaN(longitude)) {
+                form.setFieldsValue({
+                    student_latitude: latitude.toFixed(2),
+                    student_longitude: longitude.toFixed(2),
+                });
+            } else {
+                message.error("Invalid location data received.");
+            }
+        }
+    } catch (error) {
+        message.error("Failed to fetch location.");
+    }
+};

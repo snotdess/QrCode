@@ -56,3 +56,39 @@ export const fetchAndSetCourses = async ({
         setLoading(false);
     }
 };
+
+
+import * as XLSX from "xlsx";
+
+export const exportAttendance = (attendanceData, courseCode) => {
+    if (!attendanceData?.attendance) return;
+
+    const uniqueDates = [
+        ...new Set(
+            attendanceData.attendance.flatMap((student) =>
+                Object.keys(student.attendance),
+            ),
+        ),
+    ].sort(); // Ensure dates are sorted in ascending order
+
+    const exportData = attendanceData.attendance.map((student, index) => {
+        let row = {
+            "S/N": index + 1,
+            "Full Name": student.full_name,
+            "Matric Number": student.matric_number,
+        };
+        uniqueDates.forEach((date) => {
+            row[date] = student.attendance[date] === "Present" ? 1 : 0; // Convert Present to 1, Absent to 0
+        });
+        return row;
+    });
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Attendance");
+
+    const fileName = `${
+        attendanceData.course_name || courseCode
+    }_attendance.xlsx`;
+    XLSX.writeFile(wb, fileName);
+};

@@ -102,9 +102,10 @@ const QRCodeScanner = ({ scannedData, setScannedData, form }) => {
                     title="Scanned Data"
                     bordered
                     column={1}
-                    style={{ marginTop: "20px" }}
+                    style={ { marginTop: "20px" } }
+
                 >
-                    <Item label="Course Code">{scannedData.course_code}</Item>
+                    <Item label="Course Code" >{scannedData.course_code}</Item>
                     <Item label="Generated Time">
                         {scannedData.generated_at}
                     </Item>

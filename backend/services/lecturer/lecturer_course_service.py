@@ -1,19 +1,21 @@
-# lecturer_course_service.py
-
 from datetime import datetime
 from typing import List
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import func
-from fastapi import HTTPException
-from models import Lecturer, Course, LecturerCourses, StudentCourses
-from utils import filter_records
-from util.lecturer_utils import validate_lecturer, count_lecturer_courses
-
+from backend.models import Lecturer, Course, LecturerCourses, StudentCourses
+from backend.utils import filter_records
+from backend.util.lecturer_utils import validate_lecturer, count_lecturer_courses
+from backend.errors.course_errors import (
+    MaxCourseLimitReachedError,
+    LecturerCourseAlreadyAssociatedError,
+    CourseNotFoundError,
+)
 
 # --------------------
 # LecturerCourseService Class
 # --------------------
+
 
 class LecturerCourseService:
     @staticmethod
@@ -26,7 +28,7 @@ class LecturerCourseService:
         # Enforce a maximum course limit (here 2) for the lecturer.
         course_count = await count_lecturer_courses(db, current_lecturer.lecturer_id)
         if course_count >= 2:
-            raise HTTPException(status_code=400, detail="Max Course Limit Reached.")
+            raise MaxCourseLimitReachedError()
 
         # Check if the course exists. If not, create a new course.
         existing_course = await filter_records(
@@ -54,9 +56,7 @@ class LecturerCourseService:
             lecturer_id=current_lecturer.lecturer_id,
         )
         if lecturer_course:
-            raise HTTPException(
-                status_code=400, detail="Lecturer already associated with this course."
-            )
+            raise LecturerCourseAlreadyAssociatedError()
 
         # Create the association between the lecturer and the course.
         new_lecturer_course = LecturerCourses(
@@ -132,7 +132,7 @@ class LecturerCourseService:
             db, current_lecturer.lecturer_id
         )
         if not courses:
-            return {"message": "No courses found for the lecturer."}
+            CourseNotFoundError()
 
         # Build the result list with student counts for each course.
         course_students = []

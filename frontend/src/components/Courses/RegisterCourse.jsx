@@ -42,6 +42,9 @@ const RegisterCourse = ({
     }, [isModalVisible, userRole]);
 
     const handleSubmit = async (values) => {
+        if (!values) {
+            toast.info("Fill all data");
+        }
         try {
             const formData = { ...values };
 
