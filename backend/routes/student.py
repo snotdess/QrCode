@@ -18,13 +18,10 @@ from backend.schemas import (
 from backend.util.auth_utils import get_current_student
 from backend.services.student.auth_service import AuthService
 from backend.services.student.course_service import CourseService
-from backend.services.student_service import (
-    scan_qr_service,
-    get_student_attendance_details,
-)
+from backend.services.student.attendance_service import AttendanceService
+
 
 router = APIRouter()
-
 
 # **Student Signup Route**
 @router.post("/signup")
@@ -102,20 +99,7 @@ async def scan_qr(
     """
     API endpoint to mark attendance via QR code scanning.
     """
-    return await scan_qr_service(attendance_data, db, current_student)
-
-
-# # **Scan QR Code for Attendance Route**
-# @router.post("/scan-qr")
-# async def scan_qr(
-#     attendance_data: AttendanceCreate,
-#     db: AsyncSession = Depends(get_db),
-#     current_student: Student = Depends(get_current_student),
-# ):
-#     """
-#     API endpoint to mark attendance via QR code scanning.
-#     """
-#     return await scan_qr_service(attendance_data, db)
+    return await AttendanceService.scan_qr_service(attendance_data, db, current_student)
 
 
 @router.get("/attendance_details")
@@ -126,7 +110,7 @@ async def attendance_details(
     """
     Get the attendance details of the currently logged-in student.
     """
-    return await get_student_attendance_details(db, current_student)
+    return await AttendanceService.get_student_attendance_details(db, current_student)
 
 
 @router.get("/me")

@@ -1,31 +1,18 @@
 from backend.config import settings
 from datetime import datetime, timedelta
 from sqlalchemy.ext.asyncio import AsyncSession
-from backend.utils import filter_records
-from backend.models import (
-    Student,
-    Course,
-    StudentCourses,
-    QRCode,
-    AttendanceRecords,
-)
-from sqlalchemy import select, func
+from sqlalchemy import select
+from fastapi import HTTPException
 from geopy.distance import geodesic
-from backend.errors.auth_errors import StudentNotFoundError
-from backend.errors.qr_code_errors import HourlyQRCodeError, QRCodeNotFoundError
-from backend.errors.course_errors import CourseNotFoundError, StudentEnrolledError
+from datetime import datetime, timedelta
+from backend.models import Student, Course, QRCode, StudentCourses
+from backend.utils import filter_records
+from backend.errors.qr_code_errors import HourlyQRCodeError
 
 
-# --------------------
-# Helper Functions
-# --------------------
-
-
-def is_within_timeframe(qr_time: datetime) -> bool:
-    """
-    Check if the QR code was generated within the last hour.
-    """
-    return datetime.utcnow() - qr_time <= timedelta(hours=1)
+# # --------------------
+# # Helper Functions
+# # --------------------
 
 
 def build_qr_code_url(course_code, lecturer_id, latitude, longitude, generated_at):
@@ -69,31 +56,40 @@ async def check_recent_qr_code(
 
 
 def is_within_timeframe(qr_time: datetime) -> bool:
-    """Check if the QR code was generated within the last hour."""
     return datetime.utcnow() - qr_time <= timedelta(hours=1)
 
+def validate_geolocation(
+    student_lat: float,
+    student_long: float,
+    qr_lat: float,
+    qr_long: float,
+    max_distance: float = 50,
+):
+    student_location = (round(student_lat, 2), round(student_long, 2))
+    lecturer_location = (round(qr_lat, 2), round(qr_long, 2))
+    distance = geodesic(student_location, lecturer_location).meters
+    if distance > max_distance:
+        raise HTTPException(
+            status_code=403, detail="Student is not within the valid location range"
+        )
 
-async def get_student(db: AsyncSession, matric_number: str) -> Student:
+async def fetch_student(db: AsyncSession, matric_number: str):
     result = await db.execute(
         select(Student).where(Student.matric_number == matric_number)
     )
     student = result.scalars().first()
     if not student:
-        raise StudentNotFoundError()
+        raise HTTPException(status_code=403, detail="Student not found")
     return student
 
-
-async def get_course(db: AsyncSession, course_code: str) -> Course:
+async def fetch_course(db: AsyncSession, course_code: str):
     result = await db.execute(select(Course).where(Course.course_code == course_code))
     course = result.scalars().first()
     if not course:
-        raise CourseNotFoundError()
+        raise HTTPException(status_code=403, detail="Course not found")
     return course
 
-
-async def check_enrollment(
-    db: AsyncSession, matric_number: str, course_code: str
-) -> StudentCourses:
+async def validate_enrollment(db: AsyncSession, matric_number: str, course_code: str):
     result = await db.execute(
         select(StudentCourses).where(
             (StudentCourses.matric_number == matric_number)
@@ -102,13 +98,11 @@ async def check_enrollment(
     )
     enrollment = result.scalars().first()
     if not enrollment:
-        raise StudentEnrolledError()
-    return enrollment
+        raise HTTPException(
+            status_code=403, detail="Student is not enrolled in this course"
+        )
 
-
-async def get_latest_qr_code(
-    db: AsyncSession, course_code: str, lecturer_id: int
-) -> QRCode:
+async def fetch_latest_qr_code(db: AsyncSession, course_code: str, lecturer_id: str):
     result = await db.execute(
         select(QRCode)
         .where(
@@ -118,50 +112,5 @@ async def get_latest_qr_code(
     )
     qr_code = result.scalars().first()
     if not qr_code:
-        QRCodeNotFoundError()
+        raise HTTPException(status_code=403, detail="QR code not found for this course")
     return qr_code
-
-
-async def get_existing_attendance(
-    db: AsyncSession,
-    matric_number: str,
-    course_code: str,
-    session_start: datetime,
-    session_end: datetime,
-):
-    result = await db.execute(
-        select(AttendanceRecords).where(
-            (AttendanceRecords.matric_number == matric_number)
-            & (AttendanceRecords.course_code == course_code)
-            & (AttendanceRecords.date >= session_start)
-            & (AttendanceRecords.date < session_end)
-        )
-    )
-    return result.scalars().first()
-
-
-async def mark_absence(
-    db: AsyncSession, matric_number: str, course_code: str, now: datetime
-) -> None:
-    absence = AttendanceRecords(
-        matric_number=matric_number,
-        course_code=course_code,
-        status="Absent",
-        geo_location="",  # Optionally set a default geolocation
-        date=now,
-    )
-    db.add(absence)
-    await db.commit()
-
-
-def is_within_distance(
-    student_lat: float,
-    student_lon: float,
-    qr_lat: float,
-    qr_lon: float,
-    max_distance: float = 50,
-) -> bool:
-    student_location = (round(student_lat, 2), round(student_lon, 2))
-    lecturer_location = (round(qr_lat, 2), round(qr_lon, 2))
-    distance = geodesic(student_location, lecturer_location).meters
-    return distance <= max_distance

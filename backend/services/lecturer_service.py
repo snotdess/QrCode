@@ -8,7 +8,6 @@ from backend.models import (
     Student,
 )
 from backend.errors.course_errors import UnauthorizedLecturerCourseError
-from fastapi import HTTPException
 from typing import Dict
 
 
