@@ -52,7 +52,7 @@ const Course = ({ sidebarCollapsed }) => {
                                 Register Course
                             </button>
                         </div>
-                        <CourseTable />
+                        <CourseTable reload={reload} />
 
                         <RegisterCourse
                             userRole={userRole}

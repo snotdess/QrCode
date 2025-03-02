@@ -7,7 +7,6 @@ from backend.models import Lecturer, Course, LecturerCourses, StudentCourses
 from backend.utils import filter_records
 from backend.util.lecturer_utils import validate_lecturer, count_lecturer_courses
 from backend.errors.course_errors import (
-    MaxCourseLimitReachedError,
     LecturerCourseAlreadyAssociatedError,
     CourseNotFoundError,
 )
@@ -24,11 +23,6 @@ class LecturerCourseService:
     ):
         # Validate that the user is logged in as a lecturer.
         await validate_lecturer(current_lecturer)
-
-        # Enforce a maximum course limit (here 2) for the lecturer.
-        course_count = await count_lecturer_courses(db, current_lecturer.lecturer_id)
-        if course_count >= 2:
-            raise MaxCourseLimitReachedError()
 
         # Check if the course exists. If not, create a new course.
         existing_course = await filter_records(

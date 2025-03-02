@@ -4,14 +4,9 @@ class CustomCourseError(HTTPException):
     def __init__(self, status_code, detail = None):
         super().__init__(status_code, detail)
 
-class MaxCourseLimitReachedError(CustomCourseError):
-    def __init__(self):
-        super().__init__(400, "Max Course Limit Reached.")
-
 class LecturerCourseAlreadyAssociatedError(CustomCourseError):
     def __init__(self):
         super().__init__(400, "Lecturer already associated with this course.")
-
 
 class CourseNotFoundError(CustomCourseError):
     def __init__(self):
@@ -31,5 +26,3 @@ class LecturerNotLoggedInError(CustomCourseError):
 class StudentEnrolledError(CustomCourseError):
     def __init__(self):
         super().__init__(403, "Student is not enrolled in this course.")
-
-
