@@ -20,7 +20,10 @@ const HeroSection = () => {
                 <CustomTitle className="">
                     Streamline Attendance Tracking
                     <CustomSubtitle className={"my-[0.8rem]"} color={"blue"}>
-                        Using QR-Code
+                        <span style={ {
+                            fontFamily: "Roboto, sans-serif",
+                            fontSize: "1.4rem",
+                        }}>Using QR-Code</span>
                     </CustomSubtitle>
                     Enabled System!
                 </CustomTitle>
