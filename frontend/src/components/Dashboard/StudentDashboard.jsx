@@ -1,14 +1,16 @@
 import { Button, Layout, Typography } from "antd";
 import { useState } from "react";
 import useDynamicHeadingLevel from "../../hooks/typography/useDynamicHeadingLevel";
+import useDynamicSubtitleLevel from "../../hooks/typography/useDynamicSubtitleLevel";
 import useUserInfo from "../../hooks/userInfo/useUserInfo";
 import StudentAttendance from "../Attendance/StudentAttendance";
 import RegisterCourse from "../Courses/RegisterCourse";
 import Summary from "../Courses/Summary";
 
-const StudentDashboard = ({ fullname, sidebarCollapsed }) => {
+const StudentDashboard = ({ fullname, matNo, sidebarCollapsed }) => {
     const { Content } = Layout;
     const titleLevel = useDynamicHeadingLevel();
+    const subtitleLevel = useDynamicSubtitleLevel();
     const { Title } = Typography;
 
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -23,6 +25,19 @@ const StudentDashboard = ({ fullname, sidebarCollapsed }) => {
         setReload((prevState) => !prevState);
     };
 
+    // Split fullname into surname and first name
+    const nameParts = fullname.split(" ");
+    const surname = nameParts[0] || "";
+    const firstName = nameParts.slice(1).join(" ") || "";
+
+    // Determine greeting based on time
+    const getGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour < 12) return "Good Morning";
+        if (hour < 18) return "Good Afternoon";
+        return "Good Evening";
+    };
+
     return (
         <Content
             className={`min-h-screen mx-auto px-8 py-2 lg:px-4 lg:py-4 transition-all ${
@@ -32,9 +47,12 @@ const StudentDashboard = ({ fullname, sidebarCollapsed }) => {
             }`}
         >
             <div>
-                <Title level={titleLevel} className="uppercase mb-6">
-                    Welcome, {fullname}
+                <Title level={titleLevel} className="mb-6 uppercase">
+                    {getGreeting()}
                 </Title>
+                <Title className="uppercase" level={subtitleLevel}>Surname: {surname}</Title>
+                <Title className="uppercase" level={subtitleLevel}>Firstname: {firstName}</Title>
+                <Title level={subtitleLevel}>Matric Number: {matNo}</Title>
             </div>
 
             {/* Show Summary only for students */}

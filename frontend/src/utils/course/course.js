@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
 import { getLecturerCourse, getStudentCourse } from "../../api/api"; // Import API functions
+import * as XLSX from "xlsx"
 
 // Fetch courses for lecturers
 export const fetchLecturerCourses = async () => {
@@ -58,18 +59,20 @@ export const fetchAndSetCourses = async ({
 };
 
 
-import * as XLSX from "xlsx";
-
+// Export attendance data to Excel
 export const exportAttendance = (attendanceData, courseCode) => {
     if (!attendanceData?.attendance) return;
 
+    // Get unique dates and sort them in ascending order
     const uniqueDates = [
         ...new Set(
             attendanceData.attendance.flatMap((student) =>
                 Object.keys(student.attendance),
             ),
         ),
-    ].sort(); // Ensure dates are sorted in ascending order
+    ].sort();
+
+    const totalDays = uniqueDates.length;
 
     const exportData = attendanceData.attendance.map((student, index) => {
         let row = {
@@ -77,9 +80,30 @@ export const exportAttendance = (attendanceData, courseCode) => {
             "Full Name": student.full_name,
             "Matric Number": student.matric_number,
         };
+
+        let presentCount = 0;
+
         uniqueDates.forEach((date) => {
-            row[date] = student.attendance[date] === "Present" ? 1 : 0; // Convert Present to 1, Absent to 0
+            const isPresent = student.attendance[date] === "Present";
+            row[date] = isPresent ? 1 : 0;
+            if (isPresent) presentCount++;
         });
+
+        // Calculate attendance percentage
+        const attendancePercentage =
+            totalDays > 0 ? (presentCount / totalDays) * 100 : 0;
+
+        // Assign attendance score (0 to 5 scale)
+        let attendanceScore = 0;
+        if (attendancePercentage >= 90) attendanceScore = 5;
+        else if (attendancePercentage >= 80) attendanceScore = 4;
+        else if (attendancePercentage >= 70) attendanceScore = 3;
+        else if (attendancePercentage >= 60) attendanceScore = 2;
+        else if (attendancePercentage >= 50) attendanceScore = 1;
+        else attendanceScore = 0;
+
+        row["Attendance Score"] = attendanceScore;
+
         return row;
     });
 

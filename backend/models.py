@@ -7,7 +7,7 @@ from datetime import datetime
 class Student(SQLModel, table=True):
     matric_number: str = Field(
         primary_key=True, unique=True, index=True
-    )  # Input by the student
+    ) 
     student_fullname: str
     student_email: str
     student_password: str
@@ -65,11 +65,11 @@ class LecturerCourses(SQLModel, table=True):
 # QR Code model
 class QRCode(SQLModel, table=True):
     qr_code_id: int = Field(primary_key=True, index=True)
-    course_code: str = Field(foreign_key="course.course_code")  # FK to Course
+    course_code: str = Field(foreign_key="course.course_code")
     lecturer_id: int = Field(foreign_key="lecturer.lecturer_id")  # FK to lecturer
-    generation_time: datetime  # Mandatory field without default factory
-    latitude: float  # Latitude of the lecturer
-    longitude: float  # Longitude of the lecturer
+    generation_time: datetime
+    latitude: float
+    longitude: float
     url: str
 
     # Relationships

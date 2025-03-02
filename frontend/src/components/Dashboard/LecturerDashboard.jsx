@@ -1,13 +1,30 @@
-import { Layout } from "antd";
+import { Layout, Typography } from "antd";
 import useDynamicHeadingLevel from "../../hooks/typography/useDynamicHeadingLevel";
+import useDynamicSubtitleLevel from "../../hooks/typography/useDynamicSubtitleLevel";
 import AttendanceRecord from "../Attendance/AttendanceRecord";
 import LecturerCourseStats from "../Courses/LecturerCourseStats";
-import { CustomSubtitle, CustomTitle } from "../CustomTypography";
+import { CustomSubtitle } from "../CustomTypography";
 import LatestQRCodes from "../QRCode/LatestQRCodes";
+
 const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
     const { Content } = Layout;
+    const { Title } = Typography;
 
     const titleLevel = useDynamicHeadingLevel();
+    const subtitleLevel = useDynamicSubtitleLevel();
+
+    // Split fullname into surname and first name
+    const nameParts = fullname.split(" ");
+    const surname = nameParts[0] || "";
+    const firstName = nameParts.slice(1).join(" ") || "";
+
+    // Determine greeting based on time
+    const getGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour < 12) return "Good Morning";
+        if (hour < 18) return "Good Afternoon";
+        return "Good Evening";
+    };
 
     return (
         <Content
@@ -17,9 +34,13 @@ const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
                     : "md:ml-[220px] lg:ml-[180px]"
             }`}
         >
-            <CustomTitle level={titleLevel} className="uppercase ">
-                Welcome, {fullname}
-            </CustomTitle>
+            <div>
+                <Title level={titleLevel} className="mb-6 uppercase">
+                    {getGreeting()}
+                </Title>
+                <Title level={subtitleLevel} className="uppercase">Surname: {surname}</Title>
+                <Title level={subtitleLevel} className="uppercase">Firstname: {firstName}</Title>
+            </div>
 
             <div className=" my-[2.5rem] flex flex-col justify-between lg:flex-row ">
                 <div className="flex-[56.33%]">
