@@ -21,7 +21,7 @@ export const handleQRCodeGeneration = async (
     setLoading(true);
     try {
         const BASE_URL =
-            import.meta.env.VITE_BASE_URL || "http://localhost:5173";
+            import.meta.env.VITE_BASE_URL;
 
         const lecturerId = localStorage.getItem("lecturer_id");
 
