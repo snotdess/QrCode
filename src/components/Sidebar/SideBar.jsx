@@ -77,7 +77,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
             collapsible
             collapsed={collapsed}
             onCollapse={setCollapsed}
-            width={260}
+            width={220}
             breakpoint="xl"
             collapsedWidth={85}
             className="min-h-screen z-[100] fixed left-0 top-0 bottom-0 overflow-auto flex flex-col justify-between bg-[#0039a6]"
