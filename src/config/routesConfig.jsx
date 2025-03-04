@@ -9,7 +9,7 @@ import Dashboard from "../routes/Dashboard/Dashboard";
 import FAQ from "../routes/Faq/FAQ";
 import HomePage from "../routes/Home/HomePage";
 import Onboarding from "../routes/Onboarding";
-import QRcode from "../routes/QRcode/QRcode";
+import QRcode from "../routes/QRCODE/QRcode";
 
 export const routes = [
     { path: "/", element: <HomePage /> },
