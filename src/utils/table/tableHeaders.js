@@ -48,7 +48,7 @@ export const getCourseTableHeaders = (userRole) => {
                 responsive: ["xs", "sm", "md", "lg"], // Visible on all screen sizes
             },
             {
-                title: "Attendance Score",
+                title: "Current Attendance Score",
                 dataIndex: "attendance_score", // Ensure backend returns this field
                 key: "attendance_score",
                 width: "10%",
@@ -88,13 +88,5 @@ export const commonFields = {
             placeholder: "Enter semester (e.g., 2024/2025.1)",
         },
     ],
-    // student: [
-    //     {
-    //         label: "Matric Number",
-    //         name: "matric_number",
-    //         placeholder: "Enter matric number (e.g., 12345678)",
-    //     },
-    // ],
-
     student: [],
 };

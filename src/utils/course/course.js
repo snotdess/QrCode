@@ -22,7 +22,7 @@ const fetchStudentCourses = async () => {
         toast.error(f`${error.response}`);
         console.log(error);
 
-        return []; 
+        return [];
     }
 };
 
@@ -91,7 +91,7 @@ export const exportAttendance = (attendanceData, courseCode) => {
 
         // Calculate attendance percentage
         const attendancePercentage =
-            totalDays > 0 ? (presentCount / totalDays) * 100 : 0;
+            totalDays > 0 ? ((presentCount / totalDays) * 100).toFixed(2) : 0;
 
         // Assign attendance score (0 to 5 scale)
         let attendanceScore = 0;
@@ -102,6 +102,7 @@ export const exportAttendance = (attendanceData, courseCode) => {
         else if (attendancePercentage >= 50) attendanceScore = 1;
         else attendanceScore = 0;
 
+        row["Attendance Percentage"] = `${attendancePercentage}%`;
         row["Attendance Score"] = attendanceScore;
 
         return row;

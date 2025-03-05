@@ -194,7 +194,8 @@ export const downloadQRCode = (courseName, canvasRefs) => {
  */
 export const handleDelete = async (courseName, setQRCodes) => {
     try {
-        await deleteQRCode(courseName);
+        const encodedCourseName = encodeURIComponent(courseName); // Encode special characters
+        await deleteQRCode(encodedCourseName); // Use encoded course name in the request
         setQRCodes((prevQRCodes) =>
             prevQRCodes.filter((qr) => qr.course_name !== courseName),
         );
@@ -202,4 +203,14 @@ export const handleDelete = async (courseName, setQRCodes) => {
     } catch (error) {
         toast.error(`Failed to delete QR Code: ${error}`);
     }
+};
+
+
+/**
+ * Handles viewing a QR code by opening a modal.
+ */
+export const handleViewQRCode = (record, setSelectedQRCode, setSelectedCourseName, setModalVisible) => {
+    setSelectedQRCode(record.qr_code_link);
+    setSelectedCourseName(record.course_name);
+    setModalVisible(true);
 };

@@ -1,33 +1,27 @@
-// LatestQRCodes.jsx
-
-import { DeleteOutlined, DownloadOutlined } from "@ant-design/icons";
-import { Button, Empty, Popconfirm, Table } from "antd";
-import { QRCodeCanvas } from "qrcode.react";
-import { useEffect, useRef, useState } from "react";
 import {
-    downloadQRCode,
-    fetchQRCodes,
-    handleDelete,
-} from "../../utils/qrcode/qrcode";
+    DeleteOutlined,
+    DownloadOutlined,
+    EyeOutlined,
+} from "@ant-design/icons";
+import { QRCodeCanvas } from "qrcode.react";
+import { Button, Empty, Popconfirm, Table, Modal, Typography } from "antd";
+import { useEffect, useRef, useState } from "react";
 import Loader from "../Loader/Loader";
+import { downloadQRCode, fetchQRCodes, handleViewQRCode, handleDelete } from "../../utils/qrcode/qrcode";
+
+const { Text } = Typography;
 
 const LatestQRCodes = () => {
     const [qrCodes, setQRCodes] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedQRCode, setSelectedQRCode] = useState(null);
+    const [selectedCourseName, setSelectedCourseName] = useState("");
     const canvasRefs = useRef({});
 
-    // Fetch QR codes when the component mounts
     useEffect(() => {
         fetchQRCodes({ setQRCodes, setLoading });
     }, []);
-
-    const handleDownload = (courseName) => {
-        downloadQRCode(courseName, canvasRefs);
-    };
-
-    const handleDeleteQRCode = (courseName) => {
-        handleDelete(courseName, setQRCodes);
-    };
 
     const columns = [
         {
@@ -36,10 +30,26 @@ const LatestQRCodes = () => {
             key: "sn",
             render: (_, __, index) => index + 1,
         },
+        { title: "Course Name", dataIndex: "course_name", key: "course_name" },
         {
-            title: "Course Name",
-            dataIndex: "course_name",
-            key: "course_name",
+            title: "View",
+            key: "view",
+            render: (_, record) => (
+                <Button
+                    type="default"
+                    icon={<EyeOutlined />}
+                    onClick={() =>
+                        handleViewQRCode(
+                            record,
+                            setSelectedQRCode,
+                            setSelectedCourseName,
+                            setModalVisible,
+                        )
+                    }
+                >
+                    View
+                </Button>
+            ),
         },
         {
             title: "Download",
@@ -48,7 +58,9 @@ const LatestQRCodes = () => {
                 <Button
                     type="primary"
                     icon={<DownloadOutlined />}
-                    onClick={() => handleDownload(record.course_name)}
+                    onClick={() =>
+                        downloadQRCode(record.course_name, canvasRefs)
+                    }
                 >
                     Download
                 </Button>
@@ -60,7 +72,9 @@ const LatestQRCodes = () => {
             render: (_, record) => (
                 <Popconfirm
                     title={`Delete QR Code for ${record.course_name}?`}
-                    onConfirm={() => handleDeleteQRCode(record.course_name)}
+                    onConfirm={() =>
+                        handleDelete(record.course_name, setQRCodes)
+                    }
                     okText="Yes"
                     cancelText="No"
                 >
@@ -70,37 +84,10 @@ const LatestQRCodes = () => {
         },
     ];
 
-    if (loading) {
-        return <Loader />;
-    }
+    if (loading) return <Loader />;
 
     return (
         <div className="my-[2rem]">
-            {/* Render QR codes off-screen for download */}
-            <div
-                style={{
-                    position: "absolute",
-                    left: "-9999px",
-                    visibility: "hidden",
-                }}
-            >
-                {qrCodes.map((record, index) => (
-                    <QRCodeCanvas
-                        key={`${record.course_name}-${index}`}
-                        value={record.qr_code_link}
-                        size={300}
-                        level="H"
-                        includeMargin={true}
-                        ref={(canvas) => {
-                            if (canvas && canvas.toDataURL) {
-                                canvasRefs.current[record.course_name] = canvas;
-                            }
-                        }}
-                    />
-                ))}
-            </div>
-
-            {/* Show an Empty component when no QR codes exist */}
             {qrCodes.length === 0 ? (
                 <Empty description="No QR Codes Available" />
             ) : (
@@ -114,6 +101,43 @@ const LatestQRCodes = () => {
                     scroll={{ x: true }}
                 />
             )}
+
+            {/* View QR Code Modal */}
+            <Modal
+                title="QR Code Image"
+                visible={modalVisible}
+                onCancel={() => setModalVisible(false)}
+                footer={null}
+                centered
+            >
+                <div style={{ textAlign: "center" }}>
+                    <Text
+                        strong
+                        style={{
+                            fontSize: "16px",
+                            marginBottom: "10px",
+                            display: "block",
+                        }}
+                    >
+                        {selectedCourseName}
+                    </Text>
+                    {selectedQRCode && (
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "center",
+                            }}
+                        >
+                            <QRCodeCanvas
+                                value={selectedQRCode.trim()} // Trim to remove accidental spaces
+                                size={250}
+                                level="H"
+                                includeMargin={true}
+                            />
+                        </div>
+                    )}
+                </div>
+            </Modal>
         </div>
     );
 };
