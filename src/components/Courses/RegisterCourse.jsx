@@ -8,6 +8,7 @@ import {
 } from "../../api/api";
 import useAuth from "../../hooks/auth/useAuth";
 import CourseFormFields from "../Form/CourseFormFields"; // Import the modularized form fields
+import Loader from "../Loader/Loader";
 
 const RegisterCourse = ({
     userRole,
@@ -44,32 +45,42 @@ const RegisterCourse = ({
     const handleSubmit = async (values) => {
         if (!values) {
             toast.info("Fill all data");
+            return;
         }
-        try {
-            const formData = { ...values };
 
-            if (userRole === "student") {
-                const [courseCode, lecturerName] = values.course.split("-");
-                formData.course_code = courseCode;
-                formData.lecturer_name = lecturerName;
+        setLoading(true); // Start loading
+        setTimeout(async () => {
+            try {
+                const formData = { ...values };
+
+                if (userRole === "student") {
+                    const [courseCode, lecturerName] = values.course.split("-");
+                    formData.course_code = courseCode;
+                    formData.lecturer_name = lecturerName;
+                }
+
+                if (userRole === "lecturer") {
+                    await createLectureCourse(formData);
+                } else if (userRole === "student") {
+                    await createStudentCourse(formData);
+                } else {
+                    toast.error("User not authenticated");
+                    setLoading(false);
+                    return;
+                }
+
+                toast.success("Course registered successfully!");
+                form.resetFields();
+                setIsModalVisible(false);
+                onCourseRegistered(); // Refresh course list
+            } catch (error) {
+                toast.error(
+                    error || "Failed to register the course. Try again.",
+                );
+            } finally {
+                setLoading(false); // Stop loading after API call
             }
-
-            if (userRole === "lecturer") {
-                await createLectureCourse(formData);
-            } else if (userRole === "student") {
-                await createStudentCourse(formData);
-            } else {
-                toast.error("User not authenticated");
-                return;
-            }
-
-            toast.success("Course registered successfully!");
-            form.resetFields();
-            setIsModalVisible(false);
-            onCourseRegistered(); // Refresh course list
-        } catch (error) {
-            toast.error(error || "Failed to register the course. Try again.");
-        }
+        }, 500); // Ensure loading state is visible for 0.5s
     };
 
     const handleCancel = () => {
@@ -95,13 +106,14 @@ const RegisterCourse = ({
                     >
                         Cancel
                     </Button>
+
                     <Button
                         type="primary"
                         htmlType="submit"
                         form="register-course-form"
                         className="text-white py-4 px-4 rounded-md"
                     >
-                        Register Course
+                        {loading ? <Loader /> : "Register Course"}
                     </Button>
                 </div>,
             ]}

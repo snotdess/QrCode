@@ -6,12 +6,15 @@ import {
     submitAttendance,
 } from "../../utils/attendanceHandler";
 import QRCodeScanner from "../QRCode/QRCodeScanner";
+import Loader from "../Loader/Loader";
+
 
 const AttendanceForm = ({ onSuccess, onCancel }) => {
     const [form] = Form.useForm();
     const { fetchingLocation, fetchLocation } = useLocation();
     const [scannedData, setScannedData] = useState(null);
     const [isScannerOpen, setIsScannerOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const customFont = { fontFamily: "Roboto, sans-serif" };
 
@@ -19,9 +22,18 @@ const AttendanceForm = ({ onSuccess, onCancel }) => {
         <Form
             form={form}
             layout="vertical"
-            onFinish={() =>
-                submitAttendance(form, scannedData, onSuccess, setScannedData)
-            }
+            onFinish={() => {
+                setLoading(true); // Start loading
+                setTimeout(async () => {
+                    await submitAttendance(
+                        form,
+                        scannedData,
+                        onSuccess,
+                        setScannedData,
+                    );
+                    setLoading(false); // Stop loading after submission
+                }, 500); // Show loading for 0.5s
+            }}
             style={customFont}
         >
             <Form.Item
@@ -108,7 +120,7 @@ const AttendanceForm = ({ onSuccess, onCancel }) => {
 
                 <Form.Item>
                     <Button type="primary" htmlType="submit" style={customFont}>
-                        Submit Attendance
+                        { loading ? <Loader /> : "Submit Attendance" }
                     </Button>
                 </Form.Item>
             </div>

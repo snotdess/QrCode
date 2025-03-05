@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import useLocation from "../../hooks/location/useLocation";
 import useLecturerCourses from "../../hooks/useLecturerCourses";
 import { handleQRCodeGeneration } from "../../utils/qrcode/qrcode";
-
+import Loader from "../Loader/Loader"
 const QRCodeForm = ({ onClose }) => {
     const [loading, setLoading] = useState(false);
     const { fetchingLocation, fetchLocation } = useLocation();
@@ -15,12 +15,17 @@ const QRCodeForm = ({ onClose }) => {
 
     const onFinish = async (values) => {
         try {
-            await handleQRCodeGeneration(values, setLoading, form, onClose);
+            setLoading(true);
+            setTimeout(async () => {
+                await handleQRCodeGeneration(values, setLoading, form, onClose);
+                setLoading(false);
+            }, 800);
         } catch (error) {
             toast.error(`${error}`);
+            setLoading(false);
         }
-        console.log(courses);
     };
+
 
     return (
         <Form
@@ -116,11 +121,13 @@ const QRCodeForm = ({ onClose }) => {
                     <Button
                         type="primary"
                         htmlType="submit"
-                        loading={loading}
                         className="rounded-md text-white py-4 px-4"
                         style={customFontStyle}
                     >
-                        Generate QR Code
+                        <Space>
+                            {loading && <Loader/>}
+                            {!loading && "Generate QR Code"}
+                        </Space>
                     </Button>
 
                     <Button
