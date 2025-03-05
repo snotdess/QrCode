@@ -14,14 +14,31 @@ const QRCodeScanner = ({ scannedData, setScannedData, form }) => {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
 
-    const startCamera = () => {
+    // const startCamera = () => {
+    //     setIsCameraOpen(true);
+    //     navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+    //         if (videoRef.current) {
+    //             videoRef.current.srcObject = stream;
+    //         }
+    //     });
+    // };
+
+    const startCamera = async () => {
         setIsCameraOpen(true);
-        navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: { exact: "environment" } }, // Use back camera
+            });
+
             if (videoRef.current) {
                 videoRef.current.srcObject = stream;
             }
-        });
+        } catch (error) {
+            toast.error("Camera access denied or unavailable.");
+            setIsCameraOpen(false);
+        }
     };
+
 
     const captureAndProcessImage = () => {
         if (!videoRef.current || !canvasRef.current) return;
