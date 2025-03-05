@@ -68,7 +68,7 @@ const Onboarding = () => {
                 </div>
 
                 <CustomParagraph
-                    className="mt-[2.7rem] text-[0.75rem] md:mt-4 text-sm absolute cursor-pointer left-[55%] top-[80%]"
+                    className="mt-[4.7rem] text-[0.75rem] md:mt-4 text-sm absolute cursor-pointer left-[55%] top-[80%]"
                     onClick={handleBackToHome}
                 >
                     Home
