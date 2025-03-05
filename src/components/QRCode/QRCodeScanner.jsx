@@ -14,14 +14,6 @@ const QRCodeScanner = ({ scannedData, setScannedData, form }) => {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
 
-    // const startCamera = () => {
-    //     setIsCameraOpen(true);
-    //     navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-    //         if (videoRef.current) {
-    //             videoRef.current.srcObject = stream;
-    //         }
-    //     });
-    // };
 
     const startCamera = async () => {
         setIsCameraOpen(true);
@@ -77,7 +69,7 @@ const QRCodeScanner = ({ scannedData, setScannedData, form }) => {
 
     return (
         <>
-            <div className="flex items-center justify-between">
+            <div className="flex w-full gap-3 items-center justify-between">
                 <Button
                     type="primary"
                     icon={<CameraOutlined />}
@@ -95,7 +87,7 @@ const QRCodeScanner = ({ scannedData, setScannedData, form }) => {
                     }
                 >
                     <Button icon={<UploadOutlined />} type="dashed" danger>
-                        Upload QR Code Image
+                        Upload Image
                     </Button>
                 </Upload>
             </div>
