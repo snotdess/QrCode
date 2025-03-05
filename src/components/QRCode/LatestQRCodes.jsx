@@ -51,21 +51,34 @@ const LatestQRCodes = () => {
                 </Button>
             ),
         },
+
         {
             title: "Download",
             key: "download",
             render: (_, record) => (
-                <Button
-                    type="primary"
-                    icon={<DownloadOutlined />}
-                    onClick={() =>
-                        downloadQRCode(record.course_name, canvasRefs)
-                    }
-                >
-                    Download
-                </Button>
+                <div>
+                    <QRCodeCanvas
+                        value={record.course_name.trim()}
+                        size={150}
+                        level="H"
+                        includeMargin={true}
+                        ref={(el) =>
+                            (canvasRefs.current[record.course_name] = el)
+                        }
+                    />
+                    <Button
+                        type="primary"
+                        icon={<DownloadOutlined />}
+                        onClick={() =>
+                            downloadQRCode(record.course_name, canvasRefs)
+                        }
+                    >
+                        Download
+                    </Button>
+                </div>
             ),
         },
+
         {
             title: "Delete",
             key: "action",
