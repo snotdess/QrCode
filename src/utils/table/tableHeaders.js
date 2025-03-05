@@ -88,11 +88,13 @@ export const commonFields = {
             placeholder: "Enter semester (e.g., 2024/2025.1)",
         },
     ],
-    student: [
-        {
-            label: "Matric Number",
-            name: "matric_number",
-            placeholder: "Enter matric number (e.g., 12345678)",
-        },
-    ],
+    // student: [
+    //     {
+    //         label: "Matric Number",
+    //         name: "matric_number",
+    //         placeholder: "Enter matric number (e.g., 12345678)",
+    //     },
+    // ],
+
+    student: [],
 };

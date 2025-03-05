@@ -6,6 +6,7 @@ import useUserInfo from "../../hooks/userInfo/useUserInfo";
 import StudentAttendance from "../Attendance/StudentAttendance";
 import RegisterCourse from "../Courses/RegisterCourse";
 import Summary from "../Courses/Summary";
+import { CustomTitle } from "../CustomTypography";
 
 const StudentDashboard = ({ fullname, matNo, sidebarCollapsed }) => {
     const { Content } = Layout;
@@ -46,12 +47,18 @@ const StudentDashboard = ({ fullname, matNo, sidebarCollapsed }) => {
                     : "md:ml-[220px] lg:ml-[180px]"
             }`}
         >
+            <CustomTitle>STUDENT DASHBOARD</CustomTitle>
+
             <div>
-                <Title level={titleLevel} className="mb-6 uppercase">
+                <Title level={subtitleLevel} className="mb-6 uppercase">
                     {getGreeting()}
                 </Title>
-                <Title className="uppercase" level={subtitleLevel}>Surname: {surname}</Title>
-                <Title className="uppercase" level={subtitleLevel}>Firstname: {firstName}</Title>
+                <Title className="uppercase" level={subtitleLevel}>
+                    Surname: {surname}
+                </Title>
+                <Title className="uppercase" level={subtitleLevel}>
+                    Firstname: {firstName}
+                </Title>
                 <Title level={subtitleLevel}>Matric Number: {matNo}</Title>
             </div>
 

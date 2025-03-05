@@ -144,11 +144,22 @@ export const handleImageUpload = async (file, processQRCodeFn) => {
 export const fetchQRCodes = async ({ setQRCodes, setLoading }) => {
     try {
         const data = await getLecturerLatestQRCodes();
-
         const response = data?.data || [];
 
         if (response.length > 0) {
-            setQRCodes(response);
+            // Group QR codes by course_name and keep the latest one
+            const latestQRCodes = response
+                .sort((a, b) => new Date(b.datetime) - new Date(a.datetime)) // Sort by latest datetime
+                .reduce((acc, curr) => {
+                    if (
+                        !acc.some((qr) => qr.course_name === curr.course_name)
+                    ) {
+                        acc.push(curr); // Add only the latest entry per course_name
+                    }
+                    return acc;
+                }, []);
+
+            setQRCodes(latestQRCodes);
         } else {
             toast.info("No Qrcode within the hour");
         }
@@ -158,6 +169,7 @@ export const fetchQRCodes = async ({ setQRCodes, setLoading }) => {
         setLoading(false);
     }
 };
+
 
 /**
  * Downloads the QR code image for a given course.

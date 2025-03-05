@@ -18,8 +18,14 @@ export const submitAttendance = async (
             return;
         }
 
+        const matricNumber = localStorage.getItem("matric_number"); // Get from local storage
+        if (!matricNumber) {
+            toast.error("Matric number not found. Please log in again.");
+            return;
+        }
+
         const requestData = {
-            matric_number: values.matric_number,
+            matric_number: matricNumber, // Use stored matric number
             course_code: scannedData.course_code,
             latitude: values.student_latitude,
             longitude: values.student_longitude,
@@ -30,13 +36,11 @@ export const submitAttendance = async (
 
         toast.success("Attendance marked successfully!");
 
-        // Reset form and scanned data after a short delay
         setTimeout(() => {
             form.resetFields();
             setScannedData(null);
         }, 250);
 
-        // Close modal and redirect to dashboard
         if (onSuccess) {
             setTimeout(() => {
                 onSuccess();
@@ -46,6 +50,7 @@ export const submitAttendance = async (
         toast.error(error || "Error submitting attendance.");
     }
 };
+
 
 // Function to handle location fetching
 export const handleGetLocation = async (fetchLocation, form) => {

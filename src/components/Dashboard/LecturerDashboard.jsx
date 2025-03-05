@@ -3,8 +3,9 @@ import useDynamicHeadingLevel from "../../hooks/typography/useDynamicHeadingLeve
 import useDynamicSubtitleLevel from "../../hooks/typography/useDynamicSubtitleLevel";
 import AttendanceRecord from "../Attendance/AttendanceRecord";
 import LecturerCourseStats from "../Courses/LecturerCourseStats";
-import { CustomSubtitle } from "../CustomTypography";
+import { CustomSubtitle, CustomTitle } from "../CustomTypography";
 import LatestQRCodes from "../QRCode/LatestQRCodes";
+
 
 const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
     const { Content } = Layout;
@@ -34,12 +35,17 @@ const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
                     : "md:ml-[220px] lg:ml-[180px]"
             }`}
         >
+            <CustomTitle>LECTURER DASHBOARD</CustomTitle>
             <div>
-                <Title level={titleLevel} className="mb-6 uppercase">
+                <Title level={subtitleLevel} className="mb-6 uppercase">
                     {getGreeting()}
                 </Title>
-                <Title level={subtitleLevel} className="uppercase">Surname: {surname}</Title>
-                <Title level={subtitleLevel} className="uppercase">Firstname: {firstName}</Title>
+                <Title level={subtitleLevel} className="uppercase">
+                    Surname: {surname}
+                </Title>
+                <Title level={subtitleLevel} className="uppercase">
+                    Firstname: {firstName}
+                </Title>
             </div>
 
             <div className=" my-[2.5rem] flex flex-col justify-between lg:flex-row ">

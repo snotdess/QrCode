@@ -48,12 +48,23 @@ const RegisterCourse = ({
             return;
         }
 
-        setLoading(true); // Start loading
+        setLoading(true);
         setTimeout(async () => {
             try {
                 const formData = { ...values };
 
                 if (userRole === "student") {
+                    const matricNumber = localStorage.getItem("matric_number"); // Get matric number from localStorage
+                    if (!matricNumber) {
+                        toast.error(
+                            "Matric number not found. Please log in again.",
+                        );
+                        setLoading(false);
+                        return;
+                    }
+
+                    formData.matric_number = matricNumber; // Attach to request
+
                     const [courseCode, lecturerName] = values.course.split("-");
                     formData.course_code = courseCode;
                     formData.lecturer_name = lecturerName;
@@ -78,9 +89,9 @@ const RegisterCourse = ({
                     error || "Failed to register the course. Try again.",
                 );
             } finally {
-                setLoading(false); // Stop loading after API call
+                setLoading(false);
             }
-        }, 500); // Ensure loading state is visible for 0.5s
+        }, 500);
     };
 
     const handleCancel = () => {
