@@ -46,10 +46,12 @@ const StudentAttendanceTable = ({
                 <span style={{ fontFamily: customFontFamily }}>{text}</span>
             ),
         },
+        // Dynamic columns for each unique date
         ...uniqueDates.map((date) => ({
             title: date,
             dataIndex: date,
             key: date,
+            width: 100,
             render: (text) => (
                 <span
                     style={{ fontFamily: customFontFamily }}
@@ -62,23 +64,79 @@ const StudentAttendanceTable = ({
                     {text}
                 </span>
             ),
-            width: 100,
         })),
+        // New column for current attendance count
+        {
+            title: "Current Attendance Score",
+            dataIndex: "presentCount",
+            key: "presentCount",
+            width: 150,
+            render: (text) => (
+                <span style={{ fontFamily: customFontFamily }}>{text}</span>
+            ),
+        },
+        // New column for current attendance percentage with conditional color
+        {
+            title: "Current Attendance Percentage",
+            dataIndex: "attendancePercentage",
+            key: "attendancePercentage",
+            width: 150,
+            render: (text) => {
+                const percentage = parseFloat(text);
+                const colorClass =
+                    percentage >= 75 && percentage <= 100
+                        ? "text-green-500 font-semibold"
+                        : "text-red-500 font-semibold";
+                return (
+                    <span
+                        style={{ fontFamily: customFontFamily }}
+                        className={colorClass}
+                    >
+                        {text}%
+                    </span>
+                );
+            },
+        },
     ];
 
     // Prepare table data by mapping each student to a row
-    const tableData = attendanceData.map((student, index) => ({
-        key: index,
-        serialNumber: index + 1,
-        full_name: student.full_name,
-        matric_number: student.matric_number,
-        ...Object.fromEntries(
-            uniqueDates.map((date) => [
-                date,
-                student.attendance[date] || "Absent", // Default to "Absent" if no record
-            ]),
-        ),
-    }));
+    const tableData = attendanceData.map((student, index) => {
+        // Count the number of "Present" entries
+        const presentCount = uniqueDates.reduce((count, date) => {
+            return (
+                count +
+                (student.attendance && student.attendance[date] === "Present"
+                    ? 1
+                    : 0)
+            );
+        }, 0);
+
+        // Total number of days based on uniqueDates length
+        const totalDays = uniqueDates.length;
+        // Calculate attendance percentage (to fixed 2 decimals)
+        const attendancePercentage =
+            totalDays > 0
+                ? ((presentCount / totalDays) * 100).toFixed(2)
+                : "0.00";
+
+        return {
+            key: index,
+            serialNumber: index + 1,
+            full_name: student.full_name,
+            matric_number: student.matric_number,
+            // Map attendance for each date
+            ...Object.fromEntries(
+                uniqueDates.map((date) => [
+                    date,
+                    student.attendance && student.attendance[date]
+                        ? student.attendance[date]
+                        : "Absent",
+                ]),
+            ),
+            presentCount,
+            attendancePercentage,
+        };
+    });
 
     // Handle pagination change
     const handleTableChange = (page, pageSize) => {

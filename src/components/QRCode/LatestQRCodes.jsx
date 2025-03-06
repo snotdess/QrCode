@@ -3,11 +3,16 @@ import {
     DownloadOutlined,
     EyeOutlined,
 } from "@ant-design/icons";
+import { Button, Empty, Modal, Popconfirm, Table, Typography } from "antd";
 import { QRCodeCanvas } from "qrcode.react";
-import { Button, Empty, Popconfirm, Table, Modal, Typography } from "antd";
 import { useEffect, useRef, useState } from "react";
+import {
+    downloadQRCode,
+    fetchQRCodes,
+    handleDelete,
+    handleViewQRCode,
+} from "../../utils/qrcode/qrcode";
 import Loader from "../Loader/Loader";
-import { downloadQRCode, fetchQRCodes, handleViewQRCode, handleDelete } from "../../utils/qrcode/qrcode";
 
 const { Text } = Typography;
 
@@ -90,6 +95,11 @@ const LatestQRCodes = () => {
                     }
                     okText="Yes"
                     cancelText="No"
+                    cancelButtonProps={{
+                        style: {
+                            color: "red",
+                        },
+                    }}
                 >
                     <Button type="primary" danger icon={<DeleteOutlined />} />
                 </Popconfirm>

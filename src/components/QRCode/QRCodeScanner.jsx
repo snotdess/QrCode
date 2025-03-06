@@ -86,7 +86,9 @@ const QRCodeScanner = ({ scannedData, setScannedData, form }) => {
                         )
                     }
                 >
-                    <Button icon={<UploadOutlined />} type="dashed" danger>
+                    <Button icon={ <UploadOutlined /> } type="dashed" style={ {
+                        borderColor: "blue"
+                    }} >
                         Upload Image
                     </Button>
                 </Upload>

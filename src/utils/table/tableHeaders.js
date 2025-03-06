@@ -48,7 +48,7 @@ export const getCourseTableHeaders = (userRole) => {
                 responsive: ["xs", "sm", "md", "lg"], // Visible on all screen sizes
             },
             {
-                title: "Current Attendance Score",
+                title: "Current Attendance Percentage",
                 dataIndex: "attendance_score", // Ensure backend returns this field
                 key: "attendance_score",
                 width: "10%",
