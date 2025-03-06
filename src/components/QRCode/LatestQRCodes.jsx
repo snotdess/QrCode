@@ -2,6 +2,7 @@ import {
     DeleteOutlined,
     DownloadOutlined,
     EyeOutlined,
+    CloseOutlined
 } from "@ant-design/icons";
 import { Button, Empty, Modal, Popconfirm, Table, Typography } from "antd";
 import { QRCodeCanvas } from "qrcode.react";
@@ -22,11 +23,20 @@ const LatestQRCodes = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedQRCode, setSelectedQRCode] = useState(null);
     const [selectedCourseName, setSelectedCourseName] = useState("");
+    const [zoom, setZoom] = useState(1);
     const canvasRefs = useRef({});
 
     useEffect(() => {
         fetchQRCodes({ setQRCodes, setLoading });
     }, []);
+
+    const handleZoomIn = () => {
+        setZoom((prev) => prev + 0.5);
+    };
+
+    const handleZoomOut = () => {
+        setZoom((prev) => Math.max(0.1, prev - 0.5));
+    };
 
     const columns = [
         {
@@ -56,7 +66,6 @@ const LatestQRCodes = () => {
                 </Button>
             ),
         },
-
         {
             title: "Download",
             key: "download",
@@ -83,7 +92,6 @@ const LatestQRCodes = () => {
                 </div>
             ),
         },
-
         {
             title: "Delete",
             key: "action",
@@ -129,11 +137,30 @@ const LatestQRCodes = () => {
             <Modal
                 title="QR Code Image"
                 visible={modalVisible}
-                onCancel={() => setModalVisible(false)}
+                onCancel={() => {
+                    setModalVisible(false);
+                    setZoom(1); // Reset zoom when closing modal
+                }}
                 footer={null}
                 centered
+                width={700} // Increased modal width
+                closeIcon={
+                    <CloseOutlined
+                        style={{
+                            position: "absolute",
+                            top: "-10px", // Moves the X upward
+                            right: "-10px",
+                            fontSize: "24px",
+                        }}
+                    />
+                }
             >
-                <div style={{ textAlign: "center" }}>
+                <div
+                    style={{
+                        textAlign: "center",
+                        fontFamily: "Roboto, sans-serif",
+                    }}
+                >
                     <Text
                         strong
                         style={{
@@ -147,16 +174,43 @@ const LatestQRCodes = () => {
                     {selectedQRCode && (
                         <div
                             style={{
-                                display: "flex",
-                                justifyContent: "center",
+                                position: "relative",
+                                display: "inline-block",
                             }}
                         >
-                            <QRCodeCanvas
-                                value={selectedQRCode.trim()} // Trim to remove accidental spaces
-                                size={250}
-                                level="H"
-                                includeMargin={true}
-                            />
+                            {/* QR Code Preview with zoom */}
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    transform: `scale(${zoom})`,
+                                    transformOrigin: "center",
+                                }}
+                            >
+                                <QRCodeCanvas
+                                    value={selectedQRCode.trim()}
+                                    size={250}
+                                    level="H"
+                                    includeMargin={true}
+                                />
+                            </div>
+                            {/* Zoom Buttons positioned in the bottom-right corner of the preview container */}
+                            <div
+                                style={{
+                                    position: "absolute",
+                                    bottom: "-250px",
+                                    right: "",
+                                    display: "flex",
+                                    gap: "8px",
+                                }}
+                            >
+                                <Button size="small" onClick={handleZoomOut}>
+                                    -
+                                </Button>
+                                <Button size="small" onClick={handleZoomIn}>
+                                    +
+                                </Button>
+                            </div>
                         </div>
                     )}
                 </div>

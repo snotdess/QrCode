@@ -86,16 +86,20 @@ const QRCodeScanner = ({ scannedData, setScannedData, form }) => {
                         )
                     }
                 >
-                    <Button icon={ <UploadOutlined /> } type="dashed" style={ {
-                        borderColor: "blue"
-                    }} >
+                    <Button
+                        icon={<UploadOutlined />}
+                        type="dashed"
+                        style={{
+                            borderColor: "blue",
+                        }}
+                    >
                         Upload Image
                     </Button>
                 </Upload>
             </div>
 
             {/* Camera Modal */}
-            <Modal
+            {/* <Modal
                 open={isCameraOpen}
                 onCancel={stopCamera}
                 footer={null}
@@ -106,6 +110,35 @@ const QRCodeScanner = ({ scannedData, setScannedData, form }) => {
                 <Button type="primary" onClick={captureAndProcessImage} block>
                     Capture
                 </Button>
+            </Modal> */}
+
+            <Modal
+                open={isCameraOpen}
+                onCancel={stopCamera}
+                footer={null}
+                centered
+            >
+                <div style={{ position: "relative" }}>
+                    <video
+                        ref={videoRef}
+                        autoPlay
+                        playsInline
+                        style={{ width: "100%" }}
+                    />
+                    <canvas ref={canvasRef} style={{ display: "none" }} />
+                    <Button
+                        type="primary"
+                        onClick={captureAndProcessImage}
+                        style={{
+                            position: "absolute",
+                            bottom: "10px",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                        }}
+                    >
+                        Capture
+                    </Button>
+                </div>
             </Modal>
 
             {scannedData && (
@@ -113,10 +146,9 @@ const QRCodeScanner = ({ scannedData, setScannedData, form }) => {
                     title="Scanned Data"
                     bordered
                     column={1}
-                    style={ { marginTop: "20px" } }
-
+                    style={{ marginTop: "20px" }}
                 >
-                    <Item label="Course Code" >{scannedData.course_code}</Item>
+                    <Item label="Course Code">{scannedData.course_code}</Item>
                     <Item label="Generated Time">
                         {scannedData.generated_at}
                     </Item>
