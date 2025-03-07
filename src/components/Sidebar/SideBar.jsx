@@ -89,6 +89,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                         src="/logo2.jpg"
                         width={50}
                         className="rounded-3xl"
+                        preview={false}
                     />
                 ) : (
                     <div className="flex items-center text-white gap-5 flex-col mt-[4rem]">
