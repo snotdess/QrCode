@@ -88,6 +88,8 @@ const RegisterCourse = ({
                 toast.error(
                     error || "Failed to register the course. Try again.",
                 );
+                console.log(error);
+                
             } finally {
                 setLoading(false);
             }

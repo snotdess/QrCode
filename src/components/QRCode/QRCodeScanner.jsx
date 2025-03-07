@@ -99,19 +99,6 @@ const QRCodeScanner = ({ scannedData, setScannedData, form }) => {
             </div>
 
             {/* Camera Modal */}
-            {/* <Modal
-                open={isCameraOpen}
-                onCancel={stopCamera}
-                footer={null}
-                centered
-            >
-                <video ref={videoRef} autoPlay playsInline />
-                <canvas ref={canvasRef} style={{ display: "none" }} />
-                <Button type="primary" onClick={captureAndProcessImage} block>
-                    Capture
-                </Button>
-            </Modal> */}
-
             <Modal
                 open={isCameraOpen}
                 onCancel={stopCamera}

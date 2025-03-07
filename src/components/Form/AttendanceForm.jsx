@@ -141,13 +141,15 @@ import {
 } from "../../utils/attendanceHandler";
 import QRCodeScanner from "../QRCode/QRCodeScanner";
 import Loader from "../Loader/Loader";
+import useUserInfo from "../../hooks/userInfo/useUserInfo";
 
 const AttendanceForm = ({ onSuccess, onCancel }) => {
     const [form] = Form.useForm();
     const { fetchingLocation, fetchLocation } = useLocation();
     const [scannedData, setScannedData] = useState(null);
     const [isScannerOpen, setIsScannerOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [ loading, setLoading ] = useState( false );
+    const { matNo } = useUserInfo();
 
     const customFont = { fontFamily: "Roboto, sans-serif" };
 
@@ -169,10 +171,12 @@ const AttendanceForm = ({ onSuccess, onCancel }) => {
             }}
             style={customFont}
         >
-            {/* Remove Matric Number Input Field */}
+
+            <Form.Item label={ <span style={ customFont }>Student matric Number: {matNo} </span> }>
+            </Form.Item>
 
             {/* QR Code Scanner Component */}
-            <Form.Item label={<span style={customFont}>QR Code</span>}>
+            <Form.Item className="mt-[-2rem]" label={<span style={customFont}>QR Code</span>}>
                 <QRCodeScanner
                     scannedData={scannedData}
                     setScannedData={setScannedData}

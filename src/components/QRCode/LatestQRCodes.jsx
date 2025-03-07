@@ -2,9 +2,10 @@ import {
     DeleteOutlined,
     DownloadOutlined,
     EyeOutlined,
-    CloseOutlined
+    MinusOutlined,
+    PlusOutlined,
 } from "@ant-design/icons";
-import { Button, Empty, Modal, Popconfirm, Table, Typography } from "antd";
+import { Button, Empty, Modal, Popconfirm, Table } from "antd";
 import { QRCodeCanvas } from "qrcode.react";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -14,16 +15,15 @@ import {
     handleViewQRCode,
 } from "../../utils/qrcode/qrcode";
 import Loader from "../Loader/Loader";
-
-const { Text } = Typography;
+import { toast } from "react-toastify";
 
 const LatestQRCodes = () => {
     const [qrCodes, setQRCodes] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [modalVisible, setModalVisible] = useState(false);
     const [selectedQRCode, setSelectedQRCode] = useState(null);
     const [selectedCourseName, setSelectedCourseName] = useState("");
-    const [zoom, setZoom] = useState(1);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [qrSize, setQrSize] = useState(300);
     const canvasRefs = useRef({});
 
     useEffect(() => {
@@ -31,11 +31,16 @@ const LatestQRCodes = () => {
     }, []);
 
     const handleZoomIn = () => {
-        setZoom((prev) => prev + 0.5);
+        setQrSize((prevSize) => prevSize + 50);
     };
 
     const handleZoomOut = () => {
-        setZoom((prev) => Math.max(0.1, prev - 0.5));
+        setQrSize((prevSize) => Math.max(100, prevSize - 50));
+    };
+
+    const handleCloseModal = () => {
+        setModalVisible(false);
+        toast.info("View QR Code modal closed");
     };
 
     const columns = [
@@ -45,7 +50,11 @@ const LatestQRCodes = () => {
             key: "sn",
             render: (_, __, index) => index + 1,
         },
-        { title: "Course Name", dataIndex: "course_name", key: "course_name" },
+        {
+            title: "Course Name",
+            dataIndex: "course_name",
+            key: "course_name",
+        },
         {
             title: "View",
             key: "view",
@@ -70,26 +79,15 @@ const LatestQRCodes = () => {
             title: "Download",
             key: "download",
             render: (_, record) => (
-                <div>
-                    <QRCodeCanvas
-                        value={record.course_name.trim()}
-                        size={150}
-                        level="H"
-                        includeMargin={true}
-                        ref={(el) =>
-                            (canvasRefs.current[record.course_name] = el)
-                        }
-                    />
-                    <Button
-                        type="primary"
-                        icon={<DownloadOutlined />}
-                        onClick={() =>
-                            downloadQRCode(record.course_name, canvasRefs)
-                        }
-                    >
-                        Download
-                    </Button>
-                </div>
+                <Button
+                    type="primary"
+                    icon={<DownloadOutlined />}
+                    onClick={() =>
+                        downloadQRCode(record.course_name, canvasRefs)
+                    }
+                >
+                    Download
+                </Button>
             ),
         },
         {
@@ -115,10 +113,35 @@ const LatestQRCodes = () => {
         },
     ];
 
-    if (loading) return <Loader />;
+    if (loading) {
+        return <Loader />;
+    }
 
     return (
         <div className="my-[2rem]">
+            <div
+                style={{
+                    position: "absolute",
+                    left: "-9999px",
+                    visibility: "hidden",
+                }}
+            >
+                {qrCodes.map((record, index) => (
+                    <QRCodeCanvas
+                        key={`${record.course_name}-${index}`}
+                        value={record.qr_code_link}
+                        size={300}
+                        level="H"
+                        includeMargin={true}
+                        ref={(canvas) => {
+                            if (canvas && canvas.toDataURL) {
+                                canvasRefs.current[record.course_name] = canvas;
+                            }
+                        }}
+                    />
+                ))}
+            </div>
+
             {qrCodes.length === 0 ? (
                 <Empty description="No QR Codes Available" />
             ) : (
@@ -133,86 +156,35 @@ const LatestQRCodes = () => {
                 />
             )}
 
-            {/* View QR Code Modal */}
+            {/* Modal for viewing QR Code */}
             <Modal
-                title="QR Code Image"
-                visible={modalVisible}
-                onCancel={() => {
-                    setModalVisible(false);
-                    setZoom(1); // Reset zoom when closing modal
-                }}
+                title={`QR Code for ${selectedCourseName}`}
+                open={modalVisible}
+                onCancel={handleCloseModal}
                 footer={null}
-                centered
-                width={700} // Increased modal width
-                closeIcon={
-                    <CloseOutlined
-                        style={{
-                            position: "absolute",
-                            top: "-10px", // Moves the X upward
-                            right: "-10px",
-                            fontSize: "24px",
-                        }}
-                    />
-                }
+                width={window.innerWidth < 768 ? "90%" : 850}
+                className="bg-transparent shadow-none"
+                style={{ background: "none" }}
             >
-                <div
-                    style={{
-                        textAlign: "center",
-                        fontFamily: "Roboto, sans-serif",
-                    }}
-                >
-                    <Text
-                        strong
-                        style={{
-                            fontSize: "16px",
-                            marginBottom: "10px",
-                            display: "block",
-                        }}
-                    >
-                        {selectedCourseName}
-                    </Text>
+                <div className="flex flex-col items-center gap-4">
                     {selectedQRCode && (
-                        <div
-                            style={{
-                                position: "relative",
-                                display: "inline-block",
-                            }}
-                        >
-                            {/* QR Code Preview with zoom */}
-                            <div
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    transform: `scale(${zoom})`,
-                                    transformOrigin: "center",
-                                }}
-                            >
-                                <QRCodeCanvas
-                                    value={selectedQRCode.trim()}
-                                    size={250}
-                                    level="H"
-                                    includeMargin={true}
-                                />
-                            </div>
-                            {/* Zoom Buttons positioned in the bottom-right corner of the preview container */}
-                            <div
-                                style={{
-                                    position: "absolute",
-                                    bottom: "-250px",
-                                    right: "",
-                                    display: "flex",
-                                    gap: "8px",
-                                }}
-                            >
-                                <Button size="small" onClick={handleZoomOut}>
-                                    -
-                                </Button>
-                                <Button size="small" onClick={handleZoomIn}>
-                                    +
-                                </Button>
-                            </div>
-                        </div>
+                        <QRCodeCanvas
+                            value={selectedQRCode}
+                            size={qrSize}
+                            level="H"
+                            marginSize={true}
+                        />
                     )}
+                    <div className="flex gap-2">
+                        <Button
+                            onClick={handleZoomOut}
+                            icon={<MinusOutlined />}
+                        />
+                        <Button
+                            onClick={handleZoomIn}
+                            icon={<PlusOutlined />}
+                        />
+                    </div>
                 </div>
             </Modal>
         </div>
