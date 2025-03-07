@@ -97,6 +97,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                             src="/logo2.jpg"
                             width={50}
                             className="rounded-3xl"
+                            preview={false}
                         />
                         <span style={{ fontFamily: customFontFamily }}>
                             GEO-QR
