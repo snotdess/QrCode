@@ -2,16 +2,17 @@ import { Form, Input, Select } from "antd";
 import React from "react";
 import { commonFields } from "../../utils/table/tableHeaders";
 import useUserInfo from "../../hooks/userInfo/useUserInfo";
+
 const CourseFormFields = ({ userRole, courses, loading }) => {
     const { Item } = Form;
     const customFontFamily = "Roboto, sans-serif";
-    const {matNo}= useUserInfo()
+    const { matNo } = useUserInfo();
 
     if (userRole === "lecturer" || userRole === "student") {
         return (
             <>
                 {commonFields[userRole].map(
-                    ({ label, name, placeholder, type }) => (
+                    ({ label, name, placeholder, type, pattern, title }) => (
                         <Item
                             key={name}
                             label={
@@ -25,6 +26,15 @@ const CourseFormFields = ({ userRole, courses, loading }) => {
                                     required: true,
                                     message: `Please enter ${label.toLowerCase()}.`,
                                 },
+                                ...(pattern
+                                    ? [
+                                          {
+                                              pattern: new RegExp(pattern),
+                                              message:
+                                                  title || "Invalid format.",
+                                          },
+                                      ]
+                                    : []),
                             ]}
                         >
                             <Input
@@ -37,11 +47,13 @@ const CourseFormFields = ({ userRole, courses, loading }) => {
                 )}
                 {userRole === "student" && (
                     <>
-
-                        <Item label={ <span style={ {
-                            fontFamily: customFontFamily
-                        }}>Student Matric Number: { matNo}</span>}>
-                        </Item>
+                        <Item
+                            label={
+                                <span style={{ fontFamily: customFontFamily }}>
+                                    Student Matric Number: {matNo}
+                                </span>
+                            }
+                        ></Item>
 
                         <Item
                             className="mt-[-2rem]"
