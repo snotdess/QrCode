@@ -82,10 +82,18 @@ export const commonFields = {
             placeholder: "Enter course credits (e.g., 3)",
             type: "number",
         },
+        // {
+        //     label: "Semester",
+        //     name: "semester",
+        //     placeholder: "Enter semester (e.g., 2024/2025.1)",
+        // },
+
         {
             label: "Semester",
             name: "semester",
             placeholder: "Enter semester (e.g., 2024/2025.1)",
+            pattern: "^\\d{4}/\\d{4}\\.[12]$",
+            title: "Format: YYYY/YYYY.S (e.g., 2024/2025.1, 2023/2024.2)",
         },
     ],
     student: [],
