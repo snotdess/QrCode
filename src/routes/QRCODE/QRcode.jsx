@@ -38,7 +38,7 @@ const QRcode = () => {
                 className="qr-code-image-container"
                 style={{ textAlign: "center", marginTop: 20 }}
             >
-                <Image width={200} src="qr.png" alt="QR Code Logo" />
+                <Image width={200} src="qr.png" alt="QR Code Logo" preview={false} />
             </div>
 
             <QRCodeForm onClose={handleClose} />
