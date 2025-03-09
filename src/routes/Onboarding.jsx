@@ -81,6 +81,7 @@ const Onboarding = () => {
                     src="/school.png"
                     alt="Onboarding Illustration"
                     className="w-[100%]  md:block hidden"
+                    preview = {false}
                 />
             </div>
         </div>

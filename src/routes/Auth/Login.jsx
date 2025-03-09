@@ -53,7 +53,7 @@ const Login = ({
     return (
         <div
             className="flex items-center justify-center min-h-screen"
-           
+
         >
             <div className="lg:flex-[55%]">
                 <FormComponent
@@ -85,6 +85,7 @@ const Login = ({
                     src={
                         isStudent ? "/Student Login.png" : "/Lecturer Login.png"
                     }
+                    preview={false}
                     alt={`${
                         isStudent ? "Student" : "Lecturer"
                     } Login Illustration`}

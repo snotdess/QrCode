@@ -20,7 +20,7 @@ const Navbar = () => {
     return (
         <nav className="flex items-center justify-between lg:ml-[1.5rem] lg:mr-[1.5rem]">
             <Link to={"/"} className="flex items-center justify-center">
-                <Image src="/logo2.jpg" width={50} className="rounded-3xl" />
+                <Image src="/logo2.jpg" width={ 50 } className="rounded-3xl" preview={ false} />
 
                 <CustomParagraph className="flex mt-3 items-center justify-center ml-2">
                     Geo

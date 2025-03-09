@@ -95,7 +95,8 @@ const Signup = ({ userType }) => {
                 <Image
                     src={`/${
                         userType.charAt(0).toUpperCase() + userType.slice(1)
-                    } Signup.png`}
+                        } Signup.png` }
+                    preview={false}
                     alt="Signup Illustration"
                     className="md:block hidden"
                 />
