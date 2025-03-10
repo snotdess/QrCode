@@ -139,8 +139,8 @@ const StudentAttendanceTable = ({
     });
 
     // Handle pagination change
-    const handleTableChange = (page, pageSize) => {
-        onTableChange({ current: page, pageSize });
+    const handleTableChange = (pagination) => {
+        onTableChange(pagination.current, pagination.pageSize);
     };
 
     // Show empty state if no attendance data is available
@@ -161,10 +161,10 @@ const StudentAttendanceTable = ({
                 current: pagination.current,
                 pageSize: pagination.pageSize,
                 total: attendanceData.length,
-                onChange: handleTableChange,
                 showSizeChanger: true,
                 pageSizeOptions: ["5", "10", "20"],
             }}
+            onChange={handleTableChange} 
             bordered
             scroll={{ x: "max-content" }}
             className="mt-4 whitespace-pre"

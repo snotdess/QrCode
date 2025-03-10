@@ -47,9 +47,10 @@ const AttendanceRecord = () => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    const handleTableChange = (page, pageSize) => {
-        setPagination({ current: page, pageSize });
+    const handleTableChange = (current, pageSize) => {
+        setPagination({ current, pageSize });
     };
+
 
     return (
         <div className="my-[2.5rem]" style={{ fontFamily: customFontFamily }}>
