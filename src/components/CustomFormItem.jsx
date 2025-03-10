@@ -25,12 +25,20 @@ const CustomFormItem = ({
             ]}
             {...props}
         >
-            <Input
-                type={type}
-                placeholder={placeholder}
-                size="large"
-                style={{ fontFamily: customFontFamily }}
-            />
+            {type === "password" ? (
+                <Input.Password
+                    placeholder={placeholder}
+                    size="large"
+                    style={{ fontFamily: customFontFamily }}
+                />
+            ) : (
+                <Input
+                    type={type}
+                    placeholder={placeholder}
+                    size="large"
+                    style={{ fontFamily: customFontFamily }}
+                />
+            )}
         </Form.Item>
     );
 };

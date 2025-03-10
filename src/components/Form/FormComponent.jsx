@@ -56,8 +56,12 @@ const FormComponent = ({
                             type={field.type}
                             placeholder={field.placeholder}
                         />
+
+
                     ))}
                 </div>
+
+
                 <Form.Item>
                     <CustomButton
                         type="primary"
