@@ -1,17 +1,14 @@
 import { Layout, Typography } from "antd";
-import useDynamicHeadingLevel from "../../hooks/typography/useDynamicHeadingLevel";
 import useDynamicSubtitleLevel from "../../hooks/typography/useDynamicSubtitleLevel";
 import AttendanceRecord from "../Attendance/AttendanceRecord";
 import LecturerCourseStats from "../Courses/LecturerCourseStats";
 import { CustomSubtitle, CustomTitle } from "../CustomTypography";
 import LatestQRCodes from "../QRCode/LatestQRCodes";
 
-
 const LecturerDashboard = ({ fullname, sidebarCollapsed }) => {
     const { Content } = Layout;
     const { Title } = Typography;
 
-    const titleLevel = useDynamicHeadingLevel();
     const subtitleLevel = useDynamicSubtitleLevel();
 
     // Split fullname into surname and first name
