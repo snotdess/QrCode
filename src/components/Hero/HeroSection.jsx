@@ -21,7 +21,7 @@ const HeroSection = () => {
                 <CustomTitle className="!leading-tight">
                     Seamless Attendance Tracking
                     <CustomSubtitle className="my-[0.4rem]" color={"blue"}>
-                        <span className="text-[1rem]">Using QR-Code</span>
+                        <span className="text-[1rem]">Using GeoQR</span>
                     </CustomSubtitle>
                 </CustomTitle>
                 <CustomParagraph className="text-base md:text-lg max-w-lg">

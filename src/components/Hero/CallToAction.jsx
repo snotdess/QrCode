@@ -14,7 +14,7 @@ const CallToAction = () => {
     return (
         <div className="my-7 py-20 text-center bg-gray-50">
             <CustomTitle className="">
-                Get Started with QR Attendance
+                Get Started with GeoQR
             </CustomTitle>
             <CustomParagraph className="">
                 Sign up today and start tracking attendance effortlessly!
