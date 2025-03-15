@@ -1,24 +1,3 @@
-// // hooks/useLocation.js
-// import { useState } from "react";
-// import { getLocation } from "../../utils/location/location";
-
-// const useLocation = () => {
-//     const [fetchingLocation, setFetchingLocation] = useState(false);
-
-//     const fetchLocation = (form) => {
-//         getLocation(setFetchingLocation, form);
-//     };
-
-//     return {
-//         fetchingLocation,
-//         fetchLocation,
-//     };
-// };
-
-// export default useLocation;
-
-
-
 import { useState } from "react";
 
 const useLocation = () => {
@@ -31,8 +10,8 @@ const useLocation = () => {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         const location = {
-                            latitude: position.coords.latitude.toFixed(6),
-                            longitude: position.coords.longitude.toFixed(6),
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude,
                         };
                         setFetchingLocation(false);
                         resolve(location);

@@ -1,9 +1,16 @@
+import CallToAction from "../../components/Hero/CallToAction";
+import FeaturesSection from "../../components/Hero/FeaturesSection";
 import HeroSection from "../../components/Hero/HeroSection";
-const HomePage = () => {
+import HowItWorks from "../../components/Hero/HowItWorks";
+
+const HomePage = ({ featuresRef }) => {
     return (
-        <div className=" lg:ml-[1.9rem] lg:mr-[2.0rem]">
+        <>
             <HeroSection />
-        </div>
+            <FeaturesSection ref={featuresRef} />
+            <HowItWorks />
+            <CallToAction />
+        </>
     );
 };
 

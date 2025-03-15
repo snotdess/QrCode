@@ -6,7 +6,8 @@ const useDynamicHeadingLevel = () => {
         if (width < 576) return 5; // Extra small devices
         if (width >= 576 && width < 768) return 4; // Small devices
         if (width >= 768 && width < 992) return 3; // Medium devices
-        return 2; // Large devices
+        if (width >= 992 && width < 1252) return 2; // large devices
+        return 1; // Extra Large devices
     };
 
     const [headingLevel, setHeadingLevel] = useState(

@@ -32,7 +32,7 @@ const FormComponent = ({
     return (
         <Card
             bordered={false}
-            className="w-full lg:w-[60%] md:px-4 md:py-2 lg:px-8 lg:py-4"
+            className="w-full lg:w-[60%]  md:py-2 lg:px-8 lg:py-4 px-6 md:px-16"
         >
             <CustomTitle className="text-center font-normal">
                 {title}
@@ -56,11 +56,8 @@ const FormComponent = ({
                             type={field.type}
                             placeholder={field.placeholder}
                         />
-
-
                     ))}
                 </div>
-
 
                 <Form.Item>
                     <CustomButton
@@ -89,3 +86,4 @@ const FormComponent = ({
 };
 
 export default FormComponent;
+

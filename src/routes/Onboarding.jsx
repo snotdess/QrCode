@@ -34,7 +34,7 @@ const Onboarding = () => {
     }
 
     return (
-        <div className="onboarding min-h-screen flex md:flex-row">
+        <div className="onboarding min-h-screen flex md:flex-row px-6 md:px-16">
             {/* Left Section */}
             <div className="left w-full md:w-1/2 flex flex-col justify-center px-8 py-6">
                 <Typography className="mb-5">
@@ -81,7 +81,7 @@ const Onboarding = () => {
                     src="/school.png"
                     alt="Onboarding Illustration"
                     className="w-[100%]  md:block hidden"
-                    preview = {false}
+                    preview={false}
                 />
             </div>
         </div>

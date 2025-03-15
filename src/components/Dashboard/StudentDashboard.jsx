@@ -41,10 +41,10 @@ const StudentDashboard = ({ fullname, matNo, sidebarCollapsed }) => {
 
     return (
         <Content
-            className={`min-h-screen mx-auto px-8 py-2 lg:px-4 lg:py-4 transition-all ${
+            className={`min-h-screen mx-auto  py-2 lg:px-4 lg:py-4 transition-all ${
                 sidebarCollapsed
-                    ? " ml-[45px] md:ml-[55px] lg:ml-[45px]"
-                    : "md:ml-[220px] lg:ml-[180px]"
+                    ? " ml-[45px] md:ml-[75px] lg:ml-[35px] px-6 md:px-30 lg:px-40"
+                    : "md:ml-[215px] lg:ml-[85px] px-6 md:px-30 lg:px-40"
             }`}
         >
             <CustomTitle>STUDENT DASHBOARD</CustomTitle>

@@ -5,15 +5,27 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --antd-font-family: "Roboto", sans-serif; /* Override default Ant Design font */
+}
+
 * {
     line-height: 1.3;
     font-weight: 550;
     font-style: normal;
     font-family: "Robotto, sans-serif";
+    font-family: "Roboto", sans-serif !important;
 
 
 }
 
 .custom-button {
     font-family: 'Roboto, sans-serif' !important;
+}
+
+
+.ant-typography,
+.ant-btn,
+.ant-btn-primary {
+    font-family: "Roboto", sans-serif !important;
 }

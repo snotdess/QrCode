@@ -4,12 +4,18 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CustomButton, CustomParagraph } from "../CustomTypography";
 
-const Navbar = () => {
+const Navbar = ({ featuresRef }) => {
     const navigate = useNavigate();
-    const customFontFamily = "Roboto, sans-serif";
 
     const reDirect = () => {
         navigate("/onboarding");
+    };
+
+    const scrollToFeatures = (e) => {
+        e.preventDefault();
+        if (featuresRef && featuresRef.current) {
+            featuresRef.current.scrollIntoView({ behavior: "smooth" });
+        }
     };
 
     const [open, setOpen] = useState(false);
@@ -18,9 +24,14 @@ const Navbar = () => {
         setOpen((prev) => !prev);
     };
     return (
-        <nav className="flex items-center justify-between lg:ml-[1.5rem] lg:mr-[1.5rem]">
+        <nav className="flex items-center justify-between lg:ml-[1.5rem] lg:mr-[1.5rem]  px-6 md:px-16 bg-gray-50">
             <Link to={"/"} className="flex items-center justify-center">
-                <Image src="/logo2.jpg" width={ 50 } className="rounded-3xl" preview={ false} />
+                <Image
+                    src="/logo2.jpg"
+                    width={50}
+                    className="rounded-3xl"
+                    preview={false}
+                />
 
                 <CustomParagraph className="flex mt-3 items-center justify-center ml-2">
                     Geo
@@ -29,29 +40,18 @@ const Navbar = () => {
             </Link>
 
             <section className=" hidden md:flex gap-9">
-                <Link
-                    style={{
-                        fontFamily: customFontFamily,
-                    }}
-                    to={"/"}
-                >
-                    Home
-                </Link>
-                <Link
-                    style={{
-                        fontFamily: customFontFamily,
-                    }}
-                    to={"/faq"}
-                >
-                    FAQ
-                </Link>
+                <Link to={"/"}>Home</Link>
+
+                <a href="#" onClick={scrollToFeatures}>
+                    Features
+                </a>
+                <Link to={"/faq"}>FAQ</Link>
             </section>
             <section className="right">
                 <CustomButton
                     type="primary"
                     className="my-[1.2rem] py-[0.3rem] shadow-lg h-[2.5rem] hidden md:block outline-none hover:border-b-[#32de84] text-white"
-                    onClick={ reDirect }
-
+                    onClick={reDirect}
                 >
                     Try It Now
                 </CustomButton>
@@ -77,6 +77,10 @@ const Navbar = () => {
                     onClick={menu}
                 >
                     <Link to={"/"}>Home</Link>
+
+                    <a href="#" onClick={scrollToFeatures}>
+                        Features
+                    </a>
                     <Link to={"/faq"}>FAQ</Link>
                     <CustomButton
                         type="primary"

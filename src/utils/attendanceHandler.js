@@ -62,8 +62,8 @@ export const handleGetLocation = async (fetchLocation, form) => {
 
             if (!isNaN(latitude) && !isNaN(longitude)) {
                 form.setFieldsValue({
-                    student_latitude: latitude.toFixed(2),
-                    student_longitude: longitude.toFixed(2),
+                    student_latitude: latitude,
+                    student_longitude: longitude,
                 });
             } else {
                 message.error("Invalid location data received.");
