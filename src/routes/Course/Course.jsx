@@ -29,8 +29,8 @@ const Course = ({ sidebarCollapsed }) => {
         <Content
             className={`min-h-screen mx-auto px-8 py-2 lg:px-8 lg:py-4 transition-all ${
                 sidebarCollapsed
-                    ? " ml-[45px] md:ml-[75px] lg:ml-[35px] px-6 md:px-30 lg:px-40"
-                    : "md:ml-[215px] lg:ml-[85px] px-6 md:px-30 lg:px-40"
+                    ? " ml-[20px] md:ml-[105px]  px-6 md:px-30 lg:px-40"
+                    : " ml-[20px] md:ml-[215px] lg:ml-[175px] px-6 md:px-30 lg:px-40"
             }`}
         >
             <CustomTitle className="uppercase mb-6" style={{ fontWeight: 650 }}>
