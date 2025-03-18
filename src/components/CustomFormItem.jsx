@@ -30,12 +30,14 @@ const CustomFormItem = ({
                     placeholder={placeholder}
                     size="large"
                     style={{ fontFamily: customFontFamily }}
+                    className="max-w-[280px] md:max-w-[550px] lg:max-w-[600px] lg:w-[90%] sm:w-3/4 md:w-[80%]"
                 />
             ) : (
                 <Input
                     type={type}
                     placeholder={placeholder}
                     size="large"
+                    className="max-w-[280px] md:max-w-[550px] lg:max-w-[600px] lg:w-[90%] sm:w-3/4 md:w-[80%]"
                     style={{ fontFamily: customFontFamily }}
                 />
             )}
