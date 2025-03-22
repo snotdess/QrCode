@@ -17,11 +17,11 @@ const fetchStudentCourses = async () => {
     try {
         const response = await getStudentCourse();
         console.log(response);
-        
+
         return response.data;
     } catch (error) {
         // toast.error("Failed to load courses. Please try again.");
-        toast.error(f`${error.response}`);
+        toast.error(`${error.response}`);
         console.log(error);
 
         return [];
