@@ -39,6 +39,7 @@ export const fetchAndSetCourses = async ({
 
         if (userRole === "student") {
             coursesData = await fetchStudentCourses();
+            console.log("Fetched Courses Data:", coursesData); // Log data
         } else {
             toast.error("User not allowed.");
             navigate("/onboarding");
@@ -46,12 +47,14 @@ export const fetchAndSetCourses = async ({
         }
 
         if (!coursesData || coursesData.length === 0) {
-            setCourses([]);
+            console.warn("No courses found."); // Warn if empty
+            setCourses([]); // Ensure it's an empty array
             setError("No courses available.");
         } else {
             setCourses(coursesData);
         }
     } catch (err) {
+        console.error("Error fetching courses:", err);
         setError("Failed to load courses.");
     } finally {
         setLoading(false);
