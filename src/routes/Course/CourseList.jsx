@@ -47,6 +47,11 @@ const CourseList = ({ reload, sidebarCollapsed }) => {
         });
     }, [pagination, reload]); // Depend on reload to trigger re-fetch
 
+    // Log courses whenever they change
+    useEffect(() => {
+        console.log("Fetched Courses:", courses);
+    }, [courses]);
+
     const handleTableChange = (page, pageSize) => {
         setPagination({ current: page, pageSize });
     };
