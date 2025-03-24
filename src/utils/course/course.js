@@ -8,7 +8,7 @@ export const fetchLecturerCourses = async () => {
         const response = await getLecturerCourse();
         return response;
     } catch (error) {
-        toast.error(f`${error.response}`);
+        toast.error(`${error}`);
         return [];
     }
 };
@@ -21,7 +21,7 @@ const fetchStudentCourses = async () => {
         return response.data;
     } catch (error) {
         // toast.error("Failed to load courses. Please try again.");
-        toast.error(`${error.response}`);
+        toast.error(`${error}`);
         console.log(error);
 
         return [];
