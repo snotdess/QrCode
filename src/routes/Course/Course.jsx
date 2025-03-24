@@ -49,7 +49,7 @@ const Course = ({ sidebarCollapsed }) => {
                                 onClick={handleClick}
                                 className="bg-blue-500 text-white px-4 py-2 rounded-md"
                             >
-                                Register Course
+                                Create Course
                             </button>
                         </div>
                         <CourseTable reload={reload} />
